@@ -74,7 +74,7 @@ python3 main.py \
 ```
 
 #### Output:
-The connector generates a metadata extract in JSONL format as described [in the documentation](https://cloud.google.com/dataplex/docs/import-metadata#metadata-import-file). A sample output from the MySQL connector can be found [here](sample/mysql_output_classicmodels_db.jsonl)
+The connector generates a metadata extract in JSONL format as described [in the documentation](https://cloud.google.com/dataplex/docs/import-metadata#metadata-import-file). A sample output from the MySQL connector can be found [here](sample/)
 
 ### Build a container and extract metadata with a Dataproc Serverless job:
 
@@ -86,12 +86,14 @@ Ensure the user you run the script with has /artifactregistry.repositories.uploa
 
 1. Ensure you are authenticated to your Google Cloud account by running ```gcloud auth login```
 2. chmod a+x build_and_push_docker.sh to make the script executuable
-2. Edit ```build_and_push_docker.sh``` and set PROJECT_ID and REGION_ID to the appropriate values for your project
-2. Run```build_and_push_docker.sh``` to build the Docker container and store it in Artifact Registry. This process can take several minutes.
-3. Create a GCS bucket which will be used for Dataproc Serverless as a working directory (add to the **--deps-bucket** parameter below)
+3. Edit ```build_and_push_docker.sh``` and set PROJECT_ID and REGION_ID to the appropriate values for your project
+4. Run```build_and_push_docker.sh``` to build the Docker container and store it in Artifact Registry. This process can take several minutes.
+    When finished the container will be called **dataplex-mysql-pyspark:0.0.2**
 
 #### Submitting a metadata extraction job to Dataproc serverless:
 Once the container is built you can run the metadata extract with the command below (substituting appropriate values for your environment). 
+
+Before running the Dataproc job for the first time, create a GCS bucket which will be used for Dataproc Serverless as a working directory (add to the **--deps-bucket** parameter below)
 
 #### Required IAM Roles
 The service account you submit for the job using **--service-account** below needs to have the following IAM roles:
