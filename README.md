@@ -1,12 +1,11 @@
 # Google Cloud Dataplex
 
-This repository contains code and documentation for use with
-[Google Cloud Dataplex](https://cloud.google.com/dataplex/).
+This repository contains custom metadata connectors for Google Cloud Dataplex Catalog
 
-Code was based on the sample connector code found in the Google Cloud repository
+Based on the sample connector code found in the Google Cloud repository:
 https://github.com/GoogleCloudPlatform/cloud-dataplex
 
-See each directories README for more information about each connector.
+See the README in each directory for more information about the specific connectors.
 
 ## Licensing
 
