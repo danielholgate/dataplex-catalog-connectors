@@ -7,6 +7,14 @@ https://github.com/GoogleCloudPlatform/cloud-dataplex
 
 See the README in each directory for more information about the specific connectors.
 
+## Connector List
+
+* [Oracle](/managed-connectivity/oracle-connector)
+* [SQL Server](/managed-connectivity/sql-server-connector)
+* [PostgreSQL](/managed-connectivity/postgresql-connector)
+* [MySQL](/managed-connectivity/mysql-connector)
+
+
 ## Licensing
 
 * See [LICENSE](LICENSE)
