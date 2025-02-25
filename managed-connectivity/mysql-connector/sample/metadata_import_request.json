@@ -1,0 +1,27 @@
+{
+type: "IMPORT",
+import_spec: {
+source_storage_uri: "gs://dataplex-dataproc-connector-output/mysql/2025222-235337/",
+scope: {
+  entryGroups: [
+    "projects/daniel-dataplex/locations/us-central1/entryGroups/mysql"
+  ],
+  entry_types: [
+    "projects/daniel-dataplex/locations/us-central1/entryTypes/mysql-instance",
+    "projects/daniel-dataplex/locations/us-central1/entryTypes/mysql-table",
+    "projects/daniel-dataplex/locations/us-central1/entryTypes/mysql-database",
+    "projects/daniel-dataplex/locations/us-central1/entryTypes/mysql-view"
+  ],
+  aspect_types: [
+    "projects/daniel-dataplex/locations/us-central1/aspectTypes/mysql-instance",
+    "projects/daniel-dataplex/locations/us-central1/aspectTypes/mysql-table",
+    "projects/daniel-dataplex/locations/us-central1/aspectTypes/mysql-database",
+    "projects/daniel-dataplex/locations/us-central1/aspectTypes/mysql-view",
+    "projects/dataplex-types/locations/global/aspectTypes/schema"
+  ]
+    },
+entry_sync_mode: "FULL",
+aspect_sync_mode: "INCREMENTAL",
+log_level: "DEBUG"
+  }
+}
