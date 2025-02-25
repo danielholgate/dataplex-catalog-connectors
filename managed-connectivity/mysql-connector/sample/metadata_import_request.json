@@ -1,22 +1,22 @@
 {
 type: "IMPORT",
 import_spec: {
-source_storage_uri: "gs://dataplex-dataproc-connector-output/mysql/2025222-235337/",
+source_storage_uri: 'gs://your-metadata-file-gcs-bucket/mysql_testing/',
 scope: {
   entryGroups: [
-    "projects/daniel-dataplex/locations/us-central1/entryGroups/mysql"
+    "projects/the-gcp-project/locations/us-central1/entryGroups/mysql"
   ],
   entry_types: [
-    "projects/daniel-dataplex/locations/us-central1/entryTypes/mysql-instance",
-    "projects/daniel-dataplex/locations/us-central1/entryTypes/mysql-table",
-    "projects/daniel-dataplex/locations/us-central1/entryTypes/mysql-database",
-    "projects/daniel-dataplex/locations/us-central1/entryTypes/mysql-view"
+    "projects/the-gcp-project/locations/us-central1/entryTypes/mysql-instance",
+    "projects/the-gcp-project/locations/us-central1/entryTypes/mysql-table",
+    "projects/the-gcp-project/locations/us-central1/entryTypes/mysql-database",
+    "projects/the-gcp-project/locations/us-central1/entryTypes/mysql-view"
   ],
   aspect_types: [
-    "projects/daniel-dataplex/locations/us-central1/aspectTypes/mysql-instance",
-    "projects/daniel-dataplex/locations/us-central1/aspectTypes/mysql-table",
-    "projects/daniel-dataplex/locations/us-central1/aspectTypes/mysql-database",
-    "projects/daniel-dataplex/locations/us-central1/aspectTypes/mysql-view",
+    "projects/the-gcp-project/locations/us-central1/aspectTypes/mysql-instance",
+    "projects/the-gcp-project/locations/us-central1/aspectTypes/mysql-table",
+    "projects/the-gcp-project/locations/us-central1/aspectTypes/mysql-database",
+    "projects/the-gcp-project/locations/us-central1/aspectTypes/mysql-view",
     "projects/dataplex-types/locations/global/aspectTypes/schema"
   ]
     },

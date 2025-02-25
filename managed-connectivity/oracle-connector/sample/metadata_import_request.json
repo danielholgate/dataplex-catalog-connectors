@@ -1,24 +1,24 @@
 {
 type: 'IMPORT',
 import_spec: {
-source_storage_uri: 'gs://dataplex-metadata-collection-usc1/oracle_testing/',
+source_storage_uri: 'gs://your-metadata-file-gcs-bucket/oracle_testing/',
 scope: {
   entryGroups: [
-    'projects/daniel-dataplex/locations/us-central1/entryGroups/oracle'
+    'projects/the-gcp-project/locations/us-central1/entryGroups/oracle'
   ],
   entry_types: [
-    'projects/daniel-dataplex/locations/us-central1/entryTypes/oracle-instance',
-    'projects/daniel-dataplex/locations/us-central1/entryTypes/oracle-database',
-    'projects/daniel-dataplex/locations/us-central1/entryTypes/oracle-schema',
-    'projects/daniel-dataplex/locations/us-central1/entryTypes/oracle-table',
-    'projects/daniel-dataplex/locations/us-central1/entryTypes/oracle-view'
+    'projects/the-gcp-project/locations/us-central1/entryTypes/oracle-instance',
+    'projects/the-gcp-project/locations/us-central1/entryTypes/oracle-database',
+    'projects/the-gcp-project/locations/us-central1/entryTypes/oracle-schema',
+    'projects/the-gcp-project/locations/us-central1/entryTypes/oracle-table',
+    'projects/the-gcp-project/locations/us-central1/entryTypes/oracle-view'
   ],
   aspect_types: [
-    'projects/daniel-dataplex/locations/us-central1/aspectTypes/oracle-instance',
-    'projects/daniel-dataplex/locations/us-central1/aspectTypes/oracle-schema',
-    'projects/daniel-dataplex/locations/us-central1/aspectTypes/oracle-database',
-    'projects/daniel-dataplex/locations/us-central1/aspectTypes/oracle-table',
-    'projects/daniel-dataplex/locations/us-central1/aspectTypes/oracle-view',
+    'projects/the-gcp-project/locations/us-central1/aspectTypes/oracle-instance',
+    'projects/the-gcp-project/locations/us-central1/aspectTypes/oracle-schema',
+    'projects/the-gcp-project/locations/us-central1/aspectTypes/oracle-database',
+    'projects/the-gcp-project/locations/us-central1/aspectTypes/oracle-table',
+    'projects/the-gcp-project/locations/us-central1/aspectTypes/oracle-view',
     'projects/dataplex-types/locations/global/aspectTypes/schema'
   ]
     },
