@@ -43,6 +43,7 @@ The metadata connector can be run ad-hoc from the command line for development o
 3. Ensure a Java Runtime Environment (JRE) is installed in your environment
 4. Install PySpark: `pip3 install pyspark`
 5. Install all dependencies from the requirements.txt file with `pip3 install -r requirements.txt`
+6. Ensure you have a clear network path from the machine where you will run the script to the target database server
 
 #### Required IAM Roles
 - roles/secretmanager.secretAccessor

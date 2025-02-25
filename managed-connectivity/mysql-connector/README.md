@@ -42,6 +42,7 @@ The metadata connector can be run ad-hoc from the command line for development o
 3. Ensure a Java Runtime Environment (JRE) is installed in your environment
 4. Install PySpark: `pip3 install pyspark`
 5. Install all dependencies from the requirements.txt file with `pip3 install -r requirements.txt`
+6. Ensure you have a clear network path from the machine where you will run the script to the target database server
 
 #### Required IAM Roles
 - roles/secretmanager.secretAccessor
@@ -83,7 +84,7 @@ Ensure the user you run the script with has /artifactregistry.repositories.uploa
 3. Create a GCS bucket which will be used for Dataproc Serverless as a working directory (add to the **--deps-bucket** parameter below)
 
 #### Submitting a metadata extraction job to Dataproc serverless:
-Once the container is built you can run the metadata extract with the following command (substituting appropriate values for your environment). 
+Once the container is built you can run the metadata extract with the command below (substituting appropriate values for your environment). 
 
 #### Required IAM Roles
 The service account you submit for the job using **--service-account** below needs to have the following IAM roles:
@@ -121,7 +122,7 @@ gcloud dataproc batches submit pyspark \
       --database employees \
       --output_bucket gcs_output_bucket_path \
       --output_folder mysql
-    ```
+```
 
 See the documentatrion for [gcloud dataproc batches submit pyspark](https://cloud.google.com/sdk/gcloud/reference/dataproc/batches/submit/pyspark) for more information
 
