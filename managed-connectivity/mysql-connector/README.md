@@ -1,40 +1,40 @@
-# Mysql Connector
+# MySQL Connector
 
 This custom connector exports metadata for tables and views from mysql databases to create a [metadata import file](https://cloud.google.com/dataplex/docs/import-metadata#components) which can be imported into Google Dataplex. 
 You can read more about custom connectors in the documentation for [Dataplex Managed Connectivity framework](https://cloud.google.com/dataplex/docs/managed-connectivity-overview) and [Developing a custom connector](https://cloud.google.com/dataplex/docs/develop-custom-connector) for Dataplex.
 
-### Prepare your Mysql environment:
+### Prepare your MySQL environment:
 
-1. Create a user in the Mysql instance(s) which will be used by Dataplex to connect and extract metadata about tables and views. The user requires at minimum the following Mysql privileges: 
+1. Create a user in the MySQL instance(s) which will be used by Dataplex to connect and extract metadata about tables and views. The user requires at minimum the following MySQL privileges: 
     * SELECT on information_schema.tables
     * SELECT on information_schema.columns
     * SELECT on information_schema.views
 2. Add the password for the user to the Google Cloud Secret Manager in your project and note the Secret ID (format is: projects/[project-number]/secrets/[secret-name])
 
 ### Parameters
-The Mysql connector takes the following parameters:
-|Parameter|Description|Mandatory/Optional|
+The MySQL connector takes the following parameters:
+|Parameter|Description|Requiredy/Optional|
 |---------|------------|-------------|
-|target_project_id|Value is GCP Project ID/Project Number, or 'global'. Used in the generated Dataplex Entry, Aspects and AspectTypes|MANDATORY|
-|target_location_id|GCP Region ID, or 'global'. Used in the generated Dataplex Entry, Aspects and AspectTypes|MANDATORY|
-|target_entry_group_id|Dataplex Entry Group ID to use in the generated data|MANDATORY|
-|host|Mysql server to connect to|MANDATORY|
-|port|Mysql server port (usually 3306)|MANDATORY|
-|database|Mysql database to connect to|MANDATORY|
-|user|Mysql Username to connect with|MANDATORY|
-|password-secret|GCP Secret Manager ID holding the password for the Mysql user. Format: projects/[PROJ]/secrets/[SECRET]|MANDATORY|
-|output_bucket|GCS bucket where the output file will be stored (do not include gs:// prefix)|MANDATORY|
-|output_folder|Folder in the GCS bucket where the export output file will be stored|MANDATORY|
+|target_project_id|A GCP Project ID/Project Number, or 'global'. Used in the generated Dataplex Entry, Aspects and AspectTypes|REQUIRED|
+|target_location_id|GCP Region ID, or 'global'. Used in the generated Dataplex Entry, Aspects and AspectTypes|REQUIRED|
+|target_entry_group_id|Dataplex Entry Group ID to use in the generated data|REQUIRED|
+|host|MySQL server to connect to|REQUIRED|
+|port|MySQL server port (usually 3306)|REQUIRED|
+|database|MySQL database to connect to|REQUIRED|
+|user|MySQL Username to connect with|REQUIRED|
+|password-secret|GCP Secret Manager ID holding the password for the MySQL user. Format: projects/[PROJ]/secrets/[SECRET]|REQUIRED|
+|output_bucket|GCS bucket where the output file will be stored (do not include gs:// prefix)|REQUIRED|
+|output_folder|Folder in the GCS bucket where the export output file will be stored|REQUIRED|
 
 ## Running the connector
 There are three ways to run the connector:
 1) [Run the script directly from the command line](###running-from-the-command-line) (extract metadata to GCS only)
 2) [Run as a container via a Dataproc Serverless job](###build-a-container-and-extract-metadata-with-a-dataproc-serverless-job) (extract metadata to GCS only)
-3) [Schedule and run as a container via Workflows](###schedule-end-to-end-metadata-extraction-and-import-using-google-cloud-workflows) (End-to-end. Extracts metadata into GCS and imports into Dataplex)
+3) [Schedule and run as a container via Workflows](###schedule-end-to-end-metadata-extraction-and-import-using-google-cloud-workflows) (End-to-end. Extracts metadata into GCS + imports into Dataplex)
 
 ### Running from the command line
 
-The metadata connector can be run ad-hoc from the command line for development or testing by directly executing the main.py script.
+The metadata connector can be run directly from the command line for development or testing by executing the main.py script.
 
 #### Prepare the environment:
 1. Download **mysql-connector-j-9.2.0.jar** [from MySQL](https://dev.mysql.com/downloads/connector/j/?os=26)
@@ -49,7 +49,7 @@ The metadata connector can be run ad-hoc from the command line for development o
     python -m venv myvenv
     source myvenv/bin/activate
     ```
-6. Ensure you have a clear network path from the machine where you will run the script to the target database server
+6. Ensure you have a clear network path from the machine where you will run the script to the target database server.
 
 #### Required IAM Roles
 - roles/secretmanager.secretAccessor
@@ -57,7 +57,7 @@ The metadata connector can be run ad-hoc from the command line for development o
 
 Before you run the script ensure you session is authenticated as a user which has these roles at minimum (ie using ```gcloud auth application-default login```)
 
-To execute the metadata extraction run the following command (substituting appropriate values for your environment):
+Execute the metadata extraction with the following command (substituting appropriate values for your environment):
 
 ```shell 
 python3 main.py \
@@ -74,7 +74,7 @@ python3 main.py \
 ```
 
 #### Output:
-The connector generates a metadata extract in JSONL format as described [in the documentation](https://cloud.google.com/dataplex/docs/import-metadata#metadata-import-file). A sample output from the Mysql connector can be found [here](sample/mysql_output_classicmodels_db.jsonl)
+The connector generates a metadata extract in JSONL format as described [in the documentation](https://cloud.google.com/dataplex/docs/import-metadata#metadata-import-file). A sample output from the MySQL connector can be found [here](sample/mysql_output_classicmodels_db.jsonl)
 
 ### Build a container and extract metadata with a Dataproc Serverless job:
 
