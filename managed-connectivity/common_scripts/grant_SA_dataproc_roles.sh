@@ -34,4 +34,4 @@ for ROLE in "${ROLES[@]}"; do
   fi
 done
 
-echo "Finished granting roles."
+echo "Finished granting roles to ${SERVICE_ACCOUNT_EMAIL}"

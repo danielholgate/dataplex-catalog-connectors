@@ -1,20 +1,27 @@
 # SQL Server Connector
 
-This custom connector exports metadata for tables and views from SQL Server databases to create a [metadata import file](https://cloud.google.com/dataplex/docs/import-metadata#components) which can be imported into Google Dataplex. 
+This custom connector extracts metadata from SQL Server databases to create a [metadata import file](https://cloud.google.com/dataplex/docs/import-metadata#components) for Google Dataplex. 
 
-The connector will connect to the instance and database specified and extract metadata for all schemas other than the following:
+## Target objects and schemas:
 
+The connector will extract metadata for the following database objects:
+* Tables
+* Views
 
-You can read more about custom connectors in the documentation for [Dataplex Managed Connectivity framework](https://cloud.google.com/dataplex/docs/managed-connectivity-overview) and [Developing a custom connector](https://cloud.google.com/dataplex/docs/develop-custom-connector) for Dataplex.
+It will not extract metadata for the following schemas:
+* INFORMATION_SCHEMA
+* db_accessadmin,db_backupoperator,db_datareader,db_datawriter,db_ddladmin,db_denydatareader,db_denydatawriter,db_owner,db_security,admin,guest,sys
 
 ## Prepare your SQL Server environment:
 
-1. Create a user in the SQL Server instance(s) which will be used by Dataplex to connect and extract metadata about tables and views. This user requires the following SQL Server permissions: 
+Best practise is to connect to the database using a dedicated user which has the minimum required privileges to extract metadata. 
+
+1. Create a user in the SQL Server instance(s) and grant it the following permissions: 
     * CONNECT to the database
     * SELECT on all tables in the target database(s)
 2. Add the password for the user to the Google Cloud Secret Manager in your project and note the Secret ID (format is: projects/[project-number]/secrets/[secret-name])
 
-### Parameters
+## Parameters
 The SQL Server connector takes the following parameters:
 |Parameter|Description|Required/Optional|
 |---------|------------|-------------|
@@ -42,10 +49,16 @@ The metadata connector can be run ad-hoc from the command line for development o
 
 ### Prepare the environment:
 1. Download the **mssql-jdbc** jar file [from Microsoft](https://docs.microsoft.com/en-us/sql/connect/jdbc/download-microsoft-jdbc-driver-for-sql-server?view=sql-server-2022) and include in the same folder as the other python files for this connector
-2. Edit the SPARK_JAR_PATH variable in [sqlserver_connector.py](src/sqlserver_connector.py) to match the location of the jar file
+2. Edit SPARK_JAR_PATH in [sqlserver_connector.py](src/sqlserver_connector.py) to match the location of the jar file
 3. Ensure a Java Runtime Environment (JRE) is installed in your environment
-4. Install PySpark: `pip3 install pyspark`
-5. Install all dependencies from the requirements.txt file with `pip3 install -r requirements.txt`
+4. Install PySpark
+    ```bash
+    pip3 install pyspark
+    ```
+5. Install all dependencies from the requirements.txt file 
+    ```bash
+    pip3 install -r requirements.txt
+    ```
 6. If you don't have one set up already, create a Python virtual environment to isolate the connector.
     See [here](https://www.freecodecamp.org/news/how-to-setup-virtual-environments-in-python/) for more details but the TL;DR instructions are to run the following in your home directory:
     ```
@@ -59,7 +72,10 @@ The metadata connector can be run ad-hoc from the command line for development o
 - roles/secretmanager.secretAccessor
 - roles/storage.objectUser
 
-Before you run the script ensure you session is authenticated as a user which has these roles at minimum (ie using ```gcloud auth application-default login```)
+Before you run the script ensure you session is authenticated as a user which has the above roles at minimum. For example, using 
+```bash
+gcloud auth application-default login
+```
 
 To execute the metadata extraction run the following command (substituting appropriate values for your environment):
 
@@ -81,30 +97,28 @@ python3 main.py \
 ### Output:
 The connector generates a metadata extract file in JSONL format as described [in the documentation](https://cloud.google.com/dataplex/docs/import-metadata#metadata-import-file). A sample output from the SQL Server connector can be found [here](sample/sqlserver_output_sample.jsonl)
 
-## Build a container and extract metadata using [Dataproc Serverless](https://cloud.google.com/dataproc-serverless/docs)
+## Build a container and extract metadata using Dataproc Serverless
 
-To build a Docker container for the connector and run the extraction process as a Dataproc serverless job:
+Building a Docker container for the connector allows it to be run from a variety of Google Cloud services including [Dataproc serverless](https://cloud.google.com/dataproc-serverless/docs) job:
 
 ### Building the container (one-time task)
-1. Run the script ```build_and_push_docker.sh``` to build the Docker container and store it in Artifact Registry. This process can take take up to 10 minutes.
-2. Upload the **mssql-jdbc** jar file to a Google Cloud Storage location (add this path to the **--jars** parameter below)
-3. Create a GCS bucket which will be used for Dataproc Serverless as a working directory (add to the **--deps-bucket** parameter below)
+1. Edit [build_and_push_docker.sh](build_and_push_docker.sh) and set the PROJECT AND REGION_ID
+2. Make the script executable and run
+    ```bash
+    chmod a+x build_and_push_docker.sh
+    ./build_and_push_docker.sh
+    ``` 
+    This will build a Docker container called **dataplex-sqlserver-pyspark** and store it in Artifact Registry. 
+    This process can take take up to 10 minutes.
 
 ### Submitting a metadata extraction job to Dataproc serverless:
 Once the container is built you can run the metadata extract with the following command (substituting appropriate values for your environment). 
 
-Note the service account you submit for the job with --service-account needs the following roles:
-
-- roles/dataplex.catalogEditor
-- roles/dataplex.entryGroupOwner
-- roles/dataplex.metadataJobOwner
-- roles/dataproc.admin
-- roles/dataproc.editor
-- roles/dataproc.worker
-- roles/iam.serviceAccountUser
-- roles/logging.logWriter
-- roles/secretmanager.secretAccessor
-- roles/workflows.invoker
+Before you run please ensure:
+1. You upload the **mssql-jdbc** jar file to a Google Cloud Storage location and use the path to this in the **--jars** parameter below.
+2. Create a GCS bucket which will be used for Dataproc Serverless as a working directory (add to the **--deps-bucket** parameter below.
+3. The service account you run the job with using **--service-account** below has the IAM roles described [here](https://cloud.google.com/dataplex/docs/import-using-workflows-custom-source#required-roles).
+You can use this [script](../common_scripts/grant_SA_dataproc_roles.sh) to grant the required roles to your service account.
 
 ```shell
 gcloud dataproc batches submit pyspark \
@@ -129,16 +143,14 @@ gcloud dataproc batches submit pyspark \
       --output_folder sqlserver
 ```
 
-## Schedule an end-to-end metadata extract and import with Workflows
+### 3. Schedule end-to-end metadata extraction and import using Google Cloud Workflows
 
-Assumes you have already built the container. To run an end-to-end metadata extraction and import process via Google Workflows follow the Dataplex documentation here: [Import metadata from a custom source using Workflows ](https://cloud.google.com/dataplex/docs/import-using-workflows-custom-source)
+To run an end-to-end metadata extraction and import process, run the container via Google Cloud Workflows. 
 
-## Manually initiating a metadata import file into Dataplex
+Follow the Dataplex documentation here: [Import metadata from a custom source using Workflows](https://cloud.google.com/dataplex/docs/import-using-workflows-custom-source) and use (this yaml file)[https://github.com/GoogleCloudPlatform/cloud-dataplex/blob/main/managed-connectivity/cloud-workflows/byo-connector/templates/byo-connector.yaml] as a template.
 
-To import a metadata import file into Dataplex call the Import API with the following:
 
-```http
-POST https://dataplex.googleapis.com/v1/projects/PROJECT_NUMBER/locations/LOCATION_ID/metadataJobs?metadataJobId=METADATA_JOB_ID
-```
+## Manually running a metadata import into Dataplex
 
-See the [Dataplex documetation](https://cloud.google.com/dataplex/docs/import-metadata#import-metadata) for full instructions about importing metadata.
+To import a metadata import file into Dataplex, see the [Dataplex documetation](https://cloud.google.com/dataplex/docs/import-metadata#import-metadata) for full instructions about calling the API.
+The [samples](/samples) directory contains an examples metadata import file and request file for callng the API

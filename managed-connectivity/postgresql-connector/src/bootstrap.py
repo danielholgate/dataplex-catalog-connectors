@@ -46,18 +46,14 @@ def run():
 
     """Build the output folder name and filename"""
     currentDate = datetime.now()
-    FOLDERNAME = f"{SOURCE_TYPE}/{currentDate.year}{currentDate.month}{currentDate.day}-{currentDate.hour}{currentDate.minute}{currentDate.second}"
+    folder = ''
+    if config['output_folder'] and len(config['output_folder']):
+        folder = f"{config['output_folder']}/"
+    FOLDERNAME = f"{folder}{currentDate.year}{'{:02d}'.format(currentDate.month)}{'{:02d}'.format(currentDate.day)}-{'{:02d}'.format(currentDate.hour)}{'{:02d}'.format(currentDate.minute)}{'{:02d}'.format(currentDate.second)}"
     """Build the default output filename"""
     FILENAME = f"{SOURCE_TYPE}-output.jsonl"
 
     print(f"GCS output path is {config['output_bucket']}/{FOLDERNAME}")
-
-    if config["testing"]=='Y':
-        FILENAME = f"postgresql-output-{config['database']}"
-        with open(FILENAME, "w", encoding="utf-8") as file:
-            file.writelines("TEST OUTPUT FILE\n")
-        gcs_uploader.upload(config, FILENAME, FOLDERNAME)
-        sys.exit()
 
     try:
         config["password"] = secret_manager.get_password(config["password_secret"])
@@ -71,7 +67,7 @@ def run():
     entries_count = 0
 
     # Build the output file name from connection details
-    FILENAME = f"postgresql-output-{config['database']}.jsonl"
+    FILENAME = f"{SOURCE_TYPE}-output-{config['database']}.jsonl"
 
     output_path = './output'
 

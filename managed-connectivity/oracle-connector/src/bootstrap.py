@@ -44,9 +44,12 @@ def run():
 
     """Build the output folder name and filename"""
     currentDate = datetime.now()
-    FOLDERNAME = f"{SOURCE_TYPE}/{currentDate.year}{currentDate.month}{currentDate.day}-{currentDate.hour}{currentDate.minute}{currentDate.second}"
+    folder = ''
+    if config['output_folder'] and len(config['output_folder']):
+        folder = f"{config['output_folder']}/"
+    FOLDERNAME = f"{folder}{currentDate.year}{'{:02d}'.format(currentDate.month)}{'{:02d}'.format(currentDate.day)}-{'{:02d}'.format(currentDate.hour)}{'{:02d}'.format(currentDate.minute)}{'{:02d}'.format(currentDate.second)}"
     """Build the default output filename"""
-    FILENAME = SOURCE_TYPE + "-output.jsonl"
+    FILENAME = f"{SOURCE_TYPE}-output.jsonl"
 
     print(f"output GCS folder is {config['output_bucket']}/{FOLDERNAME}")
 
@@ -63,9 +66,9 @@ def run():
 
     # Build the output file name from connection details
     if config['sid'] and len(config['sid']) > 0:
-        FILENAME = f"oracle-output-{config['sid']}.jsonl"
+        FILENAME = f"{SOURCE_TYPE}-output-{config['sid']}.jsonl"
     else:
-        FILENAME = f"oracle-output-{config['service']}.jsonl"
+        FILENAME = f"{SOURCE_TYPE}-output-{config['service']}.jsonl"
 
     output_path = './output'
 

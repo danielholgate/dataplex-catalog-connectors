@@ -1,10 +1,14 @@
 #!/bin/bash
 
-IMAGE=dataplex-mysql-pyspark:0.0.2
-PROJECT=daniel-dataplex
+# Edit PROJECT and REGION to match your environment
+PROJECT=PROJECT_ID
 REGION=us-central1
 
-REPO_IMAGE=${REGION}-docker.pkg.dev/${PROJECT}/docker-repo/dataplex-mysql-pyspark
+IMAGE_NAME="dataplex-mysql-pyspark"
+IMAGE_VERSION="0.0.2"
+IMAGE=${IMAGE_NAME}:${IMAGE_VERSION}
+
+REPO_IMAGE=${REGION}-docker.pkg.dev/${PROJECT}/docker-repo/${IMAGE_NAME}
 
 docker build -t "${IMAGE}" .
 

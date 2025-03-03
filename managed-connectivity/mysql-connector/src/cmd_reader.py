@@ -1,7 +1,16 @@
 """Command line reader."""
 
-import argparse
+import argparse,sys
 
+# Validate GCE folder name
+class ValidateGCS(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        #if not re.match(r'^[A-Za-z0-9_-]+$', values):
+        if values in ['.','..']:
+            print(f"Invalid GCS output_folder: {values}")
+            print(f"Exiting")
+            sys.exit(1)
+        setattr(namespace, self.dest, values)
 
 def read_args():
     """Reads arguments from the command line."""
@@ -33,7 +42,7 @@ def read_args():
     # It is assumed that the bucket is in the same region as the entry group
     parser.add_argument("--output_bucket", type=str, required=True,
                         help="The Cloud Storage bucket to write the generated metadata import file. Do not include gs:// ")
-    parser.add_argument("--output_folder", type=str, required=True,
+    parser.add_argument("--output_folder", type=str, required=False,action=ValidateGCS,
                         help="The folder within the Cloud Storage bucket, to write the generated metadata import files. Name only required")
 
     # Development arguments

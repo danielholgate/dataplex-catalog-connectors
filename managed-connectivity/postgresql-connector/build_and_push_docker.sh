@@ -1,10 +1,14 @@
 #!/bin/bash
 
-IMAGE=dataplex-postgres-pyspark:0.0.1
+# Edit PROJECT and REGION to match your environment
 PROJECT=<PROJECT_ID>
 REGION=us-central1
 
-REPO_IMAGE=${REGION}-docker.pkg.dev/${PROJECT}/docker-repo/dataplex-postgres-pyspark
+IMAGE_NAME="dataplex-postgresql-pyspark"
+IMAGE_VERSION="0.0.1"
+IMAGE=${IMAGE_NAME}:${IMAGE_VERSION}
+
+REPO_IMAGE=${REGION}-docker.pkg.dev/${PROJECT}/docker-repo/${IMAGE_NAME}
 
 docker build -t "${IMAGE}" .
 
