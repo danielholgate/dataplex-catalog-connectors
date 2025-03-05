@@ -47,20 +47,20 @@ The metadata connector can be from the command line by directly executing the ma
 1. Download **ojdbc11.jar** [from Oracle](https://www.oracle.com/database/technologies/appdev/jdbc-downloads.html)
 2. Edit SPARK_JAR_PATH in [oracle_connector.py](src/oracle_connector.py) to match the location of the jar file
 3. Ensure a Java Runtime Environment (JRE) is installed in your environment
-4. Install PySpark for your local environment
-```bash
-pip3 install pyspark
-```
-5. Install all remaining dependencies for the connector 
-```bash
-pip3 install -r requirements.txt
-```
-6. If you don't have one set up already, create a Python virtual environment to isolate the connector.
+4. If you don't have one set up already, create a Python virtual environment to isolate the connector.
     See [here](https://www.freecodecamp.org/news/how-to-setup-virtual-environments-in-python/) for more details but the TL;DR instructions are to run the following in your home directory:
 ```
 pip install virtualenv
 python -m venv myvenv
 source venv/bin/activate
+```
+5. Install PySpark for your local environment
+```bash
+pip3 install pyspark
+```
+6. Install all remaining dependencies for the connector 
+```bash
+pip3 install -r requirements.txt
 ```
 7. Ensure you have a clear network path from the machine where you will run the script to the target database server
 8. Ensure the user you are running the script with has the following Google Cloud IAM roles:
@@ -101,7 +101,7 @@ You can build a Docker container for the connector and run the extraction proces
 
 #### Building the container (one-time task)
 
-Ensure the user you run the script with has artifactregistry.repositories.uploadArtifacts privilege on the artfiact registry in your project 
+Before you begin ensure you have Docker installed in your environment and that the user you run the script with has artifactregistry.repositories.uploadArtifacts privilege on the artfiact registry in your project.
 
 1. Edit [build_and_push_docker.sh](build_and_push_docker.sh) and set the PROJECT AND REGION_ID
 2. Make the script executable and run

@@ -46,20 +46,20 @@ The metadata connector can be run directly from the command line for development
 1. Download **mysql-connector-j-9.2.0.jar** [from MySQL](https://dev.mysql.com/downloads/connector/j/?os=26)
 2. Edit SPARK_JAR_PATH in [mysql_connector.py](src/mysql_connector.py) to match the location of the jar file
 3. Ensure a Java Runtime Environment (JRE) is installed in your environment
-4. Install PySpark in your local environment
-```
-pip3 install pyspark
-```
-5. Install all other dependencies for the connector 
-```
-pip3 install -r requirements.txt
-```
-6. Create a Python virtual environment to isolate the connector environment.
+4. Create a Python virtual environment to isolate the connector environment.
     See [here](https://www.freecodecamp.org/news/how-to-setup-virtual-environments-in-python/) for more details but the TLDR; instructions are to run the following in your home directory:
 ```
 pip install virtualenv
 python -m venv myvenv
 source myvenv/bin/activate
+```
+5. Install PySpark in your local environment
+```
+pip3 install pyspark
+```
+6. Install all other dependencies for the connector 
+```
+pip3 install -r requirements.txt
 ```
 7. Ensure you have a clear network path from the machine where you will run the script to the target database server.
 8. Ensure the user you are running the script with a user which has the following Google Cloud IAM roles:
@@ -100,7 +100,7 @@ You can build a Docker container for the connector and run the extraction proces
 
 #### Building the container (one-time task)
 
-Ensure the user you run the script with has artifactregistry.repositories.uploadArtifacts privilege on the artfiact registry in your project 
+Before you begin ensure you have Docker installed in your environment and that the user you run the script with has artifactregistry.repositories.uploadArtifacts privilege on the artfiact registry in your project.
 
 1. Edit [build_and_push_docker.sh](build_and_push_docker.sh) and set the PROJECT AND REGION_ID
 2. Make the script executable and run

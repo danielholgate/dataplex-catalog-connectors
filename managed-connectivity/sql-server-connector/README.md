@@ -51,20 +51,20 @@ The metadata connector can be run ad-hoc from the command line for development o
 1. Download the **mssql-jdbc** jar file [from Microsoft](https://docs.microsoft.com/en-us/sql/connect/jdbc/download-microsoft-jdbc-driver-for-sql-server?view=sql-server-2022) and include in the same folder as the other python files for this connector
 2. Edit SPARK_JAR_PATH in [sqlserver_connector.py](src/sqlserver_connector.py) to match the location of the jar file
 3. Ensure a Java Runtime Environment (JRE) is installed in your environment
-4. Install PySpark
-    ```bash
-    pip3 install pyspark
-    ```
-5. Install all dependencies from the requirements.txt file 
-    ```bash
-    pip3 install -r requirements.txt
-    ```
-6. If you don't have one set up already, create a Python virtual environment to isolate the connector.
+4. If you don't have one set up already, create a Python virtual environment to isolate the connector.
     See [here](https://www.freecodecamp.org/news/how-to-setup-virtual-environments-in-python/) for more details but the TL;DR instructions are to run the following in your home directory:
     ```
     pip install virtualenv
     python -m venv myvenv
     source venv/bin/activate
+    ```
+5. Install PySpark
+    ```bash
+    pip3 install pyspark
+    ```
+6. Install all dependencies from the requirements.txt file 
+    ```bash
+    pip3 install -r requirements.txt
     ```
 7. Ensure you have a clear network path from the machine where you will run the script to the target database server
 
@@ -102,6 +102,9 @@ The connector generates a metadata extract file in JSONL format as described [in
 Building a Docker container for the connector allows it to be run from a variety of Google Cloud services including [Dataproc serverless](https://cloud.google.com/dataproc-serverless/docs) job:
 
 ### Building the container (one-time task)
+
+Ensure you have Docker installed in your environment before you begin and that the user you run the script with has artifactregistry.repositories.uploadArtifacts privilege on the artfiact registry in your project.
+
 1. Edit [build_and_push_docker.sh](build_and_push_docker.sh) and set the PROJECT AND REGION_ID
 2. Make the script executable and run
     ```bash
