@@ -131,7 +131,7 @@ gcloud dataproc batches submit pyspark \
     --deps-bucket=dataplex-metadata-collection-usc1 \  
     --container-image=us-central1-docker.pkg.dev/my-gcp-project-id/docker-repo/sqlserver-pyspark@sha256:dab02ca02f60a9e12767996191b06d859b947d89490d636a34fc734d4a0b6d08 \
     --service-account=440165342669-compute@developer.gserviceaccount.com \
-    --jars=[gs://path/to/mssql-jdbc-9.4.1.jre8.jar]  \
+    --jars=gs://path/to/mssql-jdbc-9.4.1.jre8.jar  \
     --network=[Your-Network-Name] \
     main.py \
 --  --target_project_id my-gcp-project-id \

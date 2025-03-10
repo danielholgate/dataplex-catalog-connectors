@@ -4,14 +4,14 @@ from pyspark.sql import SparkSession, DataFrame
 
 from src.constants import EntryType
 
-SPARK_JAR_PATH = "./mysql-connector-j-9.2.0.jar"
+SPARK_JAR_PATH = "/opt/spark/jars/mysql-connector-j-9.2.0.jar"
 
 class MysqlConnector:
     """Reads data from Mysql and returns Spark Dataframes."""
 
     def __init__(self, config: Dict[str, str]):
         # PySpark entrypoint
-        self._spark = SparkSession.builder.appName("OracleIngestor") \
+        self._spark = SparkSession.builder.appName("MySQLIngestor") \
             .config("spark.jars", SPARK_JAR_PATH) \
             .getOrCreate()
 

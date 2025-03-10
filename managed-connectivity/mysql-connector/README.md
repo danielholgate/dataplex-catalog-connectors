@@ -102,6 +102,12 @@ You can build a Docker container for the connector and run the extraction proces
 
 Before you begin ensure you have Docker installed in your environment and that the user you run the script with has artifactregistry.repositories.uploadArtifacts privilege on the artfiact registry in your project.
 
+Use this command:
+```bash
+gcloud artifacts repositories add-iam-policy-binding docker-repo \
+--location=us-central1 --member=serviceAccount:440165342669-compute@developer.gserviceaccount.com --role=roles/artifactregistry.writer
+```
+
 1. Edit [build_and_push_docker.sh](build_and_push_docker.sh) and set the PROJECT AND REGION_ID
 2. Make the script executable and run
     ```bash
@@ -127,7 +133,8 @@ gcloud dataproc batches submit pyspark \
     --batch=0001 \
     --deps-bucket=dataplex-metadata-collection-bucket  \
     --container-image=us-central1-docker.pkg.dev/my-gcp-project-id/docker-repo/mysql-pyspark@sha256:dab02ca02f60a9e12769999191b06d859b947d89490d636a34fc734d4a0b6d08 \
-    --service-account=440199992669-compute@developer.gserviceaccount.com \
+    --service-account=440165342669-compute@developer.gserviceaccount.com \
+    --jars=gs://gcs/path/to/mysql-connector-j-9.2.0.jar  \
     --network=Your-Network-Name \
     main.py \
 --  --target_project_id my-gcp-project-id \
