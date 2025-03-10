@@ -29,6 +29,7 @@ class SQLServerConnector:
             .option("url", self._url) \
             .option("query", query) \
             .option("user", self._config["user"]) \
+            .option("database", self._config["database"]) \
             .option("password", self._config["password"]) \
             .option("trustServerCertificate","true") \
             .load()
