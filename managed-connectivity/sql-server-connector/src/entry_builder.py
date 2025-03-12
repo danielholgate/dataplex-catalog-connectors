@@ -106,6 +106,7 @@ def build_dataset(config, df_raw, db_schema, entry_type):
     """
     schema_key = "dataplex-types.global.schema"
 
+
     # The transformation below does the following
     # 1. Alters IS_NULLABLE content from 1/0 to NULLABLE/REQUIRED
     # 2. Renames IS_NULLABLE to mode
@@ -113,14 +114,15 @@ def build_dataset(config, df_raw, db_schema, entry_type):
     # 4. Renames COLUMN_NAME to name
     df = df_raw \
       .withColumn("mode", F.when(F.col("IS_NULLABLE") == 1, "NULLABLE").otherwise("REQUIRED")) \
-      .drop("IS_NULLABLE") \
-      .withColumn("metadataType", choose_metadata_type_udf("DATA_TYPE")) \
-      .withColumnRenamed("COLUMN_NAME", "name")
+        .drop("IS_NULLABLE") \
+        .withColumnRenamed("DATA_TYPE", "dataType") \
+        .withColumn("metadataType", choose_metadata_type_udf("dataType")) \
+        .withColumnRenamed("COLUMN_NAME", "name")
 
     # The transformation below aggregate fields, denormalizing the table
     # TABLE_NAME becomes top-level filed, and the rest is put into
     # the array type called "fields"
-    aspect_columns = ["name", "mode", "DATA_TYPE", "metadataType"]
+    aspect_columns = ["name", "mode", "dataType", "metadataType"]
     df = df.withColumn("columns", F.struct(aspect_columns)) \
       .groupby('TABLE_NAME') \
       .agg(F.collect_list("columns").alias("fields"))
