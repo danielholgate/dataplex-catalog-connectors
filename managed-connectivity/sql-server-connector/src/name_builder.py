@@ -20,7 +20,7 @@ def create_fqn(config: Dict[str, str], entry_type: EntryType,
         return f"{SOURCE_TYPE}:`{config['host']}`"
     if entry_type == EntryType.DATABASE:
         instance = create_fqn(config, EntryType.INSTANCE)
-        return f"{instance}.{config['instancename']}"
+        return f"{instance}.{config['database']}"
     if entry_type == EntryType.DB_SCHEMA:
         database = create_fqn(config, EntryType.DATABASE)
         return f"{database}.{schema_name}"
