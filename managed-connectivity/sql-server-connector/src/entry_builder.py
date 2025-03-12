@@ -113,7 +113,7 @@ def build_dataset(config, df_raw, db_schema, entry_type):
     # 3. Creates metadataType column based on dataType column
     # 4. Renames COLUMN_NAME to name
     df = df_raw \
-      .withColumn("mode", F.when(F.col("IS_NULLABLE") == 1, "NULLABLE").otherwise("REQUIRED")) \
+      .withColumn("mode", F.when(F.col("IS_NULLABLE") == True, "NULLABLE").otherwise("REQUIRED")) \
         .drop("IS_NULLABLE") \
         .withColumnRenamed("DATA_TYPE", "dataType") \
         .withColumn("metadataType", choose_metadata_type_udf("dataType")) \
