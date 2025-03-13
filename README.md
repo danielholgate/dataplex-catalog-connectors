@@ -1,6 +1,6 @@
-# Google Cloud Dataplex
+# Dataplex Connectors
 
-This repository contains custom metadata connectors for Google Cloud Dataplex Catalog
+This repository contains metadata connectors for [Google Cloud Dataplex Catalog](https://cloud.google.com/dataplex/docs/catalog-overview)
 
 Based on the sample connector code found in the Google Cloud repository:
 https://github.com/GoogleCloudPlatform/cloud-dataplex
@@ -13,6 +13,8 @@ See the README in each directory for more information about the specific connect
 * [SQL Server](/managed-connectivity/sql-server-connector)
 * [PostgreSQL](/managed-connectivity/postgresql-connector)
 * [MySQL](/managed-connectivity/mysql-connector)
+
+
 
 
 ## Licensing
