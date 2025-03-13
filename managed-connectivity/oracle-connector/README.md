@@ -45,7 +45,7 @@ The metadata connector can be from the command line by directly executing the ma
 
 #### Prepare the environment:
 1. Download **ojdbc11.jar** [from Oracle](https://www.oracle.com/database/technologies/appdev/jdbc-downloads.html)
-2. Edit SPARK_JAR_PATH in [oracle_connector.py](src/oracle_connector.py) to match the location of the jar file
+2. Edit JAR_FILE and SPARK_JAR_PATH in [connection_jar.py](src/connection_jar.py) to match the name and location of the jar file
 3. Ensure a Java Runtime Environment (JRE) is installed in your environment
 4. If you don't have one set up already, create a Python virtual environment to isolate the connector.
     See [here](https://www.freecodecamp.org/news/how-to-setup-virtual-environments-in-python/) for more details but the TL;DR instructions are to run the following in your home directory:
@@ -78,7 +78,7 @@ Execute metadata extraction with the following command, substituting appropriate
 python3 main.py \
 --target_project_id my-gcp-project-id \
 --target_location_id us-central1 \
---target_entry_group_id oracledb \
+--target_entry_group_id oracle \
 --host the-oracle-server \
 --port 1521 \
 --user dataplexagent \
@@ -134,7 +134,7 @@ gcloud dataproc batches submit pyspark \
     main.py \
 --  --target_project_id my-gcp-project-id \
       --target_location_id us-central1	\
-      --target_entry_group_id myEntryGroup \
+      --target_entry_group_id oracle \
       --host the-oracle-server \
       --port 1521 \
       --user dataplexagent \

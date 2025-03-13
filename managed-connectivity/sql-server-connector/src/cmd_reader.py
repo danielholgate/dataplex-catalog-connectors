@@ -39,7 +39,15 @@ def read_args():
         help="The name of the SQL Server database to extract metadata from")
     parser.add_argument("--database", type=str,required=True,
         help="SQL Server database")
-
+    parser.add_argument("--logintimeout", type=int,required=False,default=0,
+        help="Allowed timeout in seconds to establish connecting to SQL Server")
+    parser.add_argument("--encrypt", type=str,required=False,
+        help="Encrypt connection to database")
+    parser.add_argument("--trustservercertificate", type=str,required=False,
+        help="SQL Server TLS certificate or not")
+    parser.add_argument("--hostnameIncertificate", type=str,required=False,
+        help="domain of host certificate")
+    
     # Google Cloud Storage arguments
     # It is assumed that the bucket is in the same region as the entry group
     parser.add_argument("--output_bucket", type=str, required=True,

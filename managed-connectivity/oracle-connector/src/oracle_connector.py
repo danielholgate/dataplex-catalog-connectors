@@ -3,8 +3,7 @@ from typing import Dict
 from pyspark.sql import SparkSession, DataFrame
 
 from src.constants import EntryType
-
-SPARK_JAR_PATH = "/opt/spark/jars/ojdbc11.jar"
+from src.connection_jar import SPARK_JAR_PATH
 
 class OracleConnector:
     """Reads data from Oracle and returns Spark Dataframes."""

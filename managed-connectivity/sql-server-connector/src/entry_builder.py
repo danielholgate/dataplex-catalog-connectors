@@ -112,15 +112,16 @@ def build_dataset(config, df_raw, db_schema, entry_type):
     # 3. Creates metadataType column based on dataType column
     # 4. Renames COLUMN_NAME to name
     df = df_raw \
-      .withColumn("mode", F.when(F.col("IS_NULLABLE") == 1, "NULLABLE").otherwise("REQUIRED")) \
-      .drop("IS_NULLABLE") \
-      .withColumn("metadataType", choose_metadata_type_udf("DATA_TYPE")) \
-      .withColumnRenamed("COLUMN_NAME", "name")
+      .withColumn("mode", F.when(F.col("IS_NULLABLE") == True, "NULLABLE").otherwise("REQUIRED")) \
+        .drop("IS_NULLABLE") \
+        .withColumnRenamed("DATA_TYPE", "dataType") \
+        .withColumn("metadataType", choose_metadata_type_udf("dataType")) \
+        .withColumnRenamed("COLUMN_NAME", "name")
 
     # The transformation below aggregate fields, denormalizing the table
     # TABLE_NAME becomes top-level filed, and the rest is put into
     # the array type called "fields"
-    aspect_columns = ["name", "mode", "DATA_TYPE", "metadataType"]
+    aspect_columns = ["name", "mode", "dataType", "metadataType"]
     df = df.withColumn("columns", F.struct(aspect_columns)) \
       .groupby('TABLE_NAME') \
       .agg(F.collect_list("columns").alias("fields"))
@@ -162,6 +163,7 @@ def build_dataset(config, df_raw, db_schema, entry_type):
 
     # Fill the top-level fields
     column = F.col("TABLE_NAME")
+
     df = df.withColumn("name", create_name_udf(column)) \
       .withColumn("fully_qualified_name", create_fqn_udf(column)) \
       .withColumn("entry_type", F.lit(full_entry_type)) \

@@ -48,7 +48,7 @@ The metadata connector can be run directly from the command line by executing th
 
 ### Prepare the environment:
 1. Download **postgresql-42.7.5.jar** [from PostgreSQL.org](https://jdbc.postgresql.org/download/)
-2. Edit SPARK_JAR_PATH in [postgres_connector.py](src/postgres_connector.py) to match the location of the jar file
+2. Edit JAR_FILE and SPARK_JAR_PATH in [connection_jar.py](src/connection_jar.py) to match the name and location of the jar file
 3. Ensure a Java Runtime Environment (JRE) is installed in your environment
 4. If you don't have one set up already, create a Python virtual environment to isolate the connector.
     See [here](https://www.freecodecamp.org/news/how-to-setup-virtual-environments-in-python/) for more details but the TL;DR instructions are to run the following in your home directory:

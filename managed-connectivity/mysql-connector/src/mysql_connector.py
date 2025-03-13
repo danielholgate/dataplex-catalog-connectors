@@ -3,8 +3,7 @@ from typing import Dict
 from pyspark.sql import SparkSession, DataFrame
 
 from src.constants import EntryType
-
-SPARK_JAR_PATH = "/opt/spark/jars/mysql-connector-j-9.2.0.jar"
+from src.connection_jar import SPARK_JAR_PATH
 
 class MysqlConnector:
     """Reads data from Mysql and returns Spark Dataframes."""

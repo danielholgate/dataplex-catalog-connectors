@@ -3,8 +3,7 @@ from typing import Dict
 from pyspark.sql import SparkSession, DataFrame
 
 from src.constants import EntryType
-
-SPARK_JAR_PATH = "/opt/spark/jars/mssql-jdbc-9.4.1.jre8.jar"
+from src.connection_jar import SPARK_JAR_PATH
 
 class SQLServerConnector:
     """Reads data from SQL Server and returns Spark Dataframes."""
@@ -31,7 +30,7 @@ class SQLServerConnector:
             .option("user", self._config["user"]) \
             .option("database", self._config["database"]) \
             .option("password", self._config["password"]) \
-            .option("trustServerCertificate","true") \
+            .option("loginTimeout",self._config["logintimeout"]) \
             .load()
 
     def get_db_schemas(self) -> DataFrame:
