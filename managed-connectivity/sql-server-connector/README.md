@@ -32,6 +32,10 @@ The SQL Server connector takes the following parameters:
 |port|SQL Server host port (usually 1443)|REQUIRED|
 |instancename|The SQL Server instance to connect to. If not provided the default instance will be used|OPTIONAL
 |database|The SQL Server database name|REQUIRED|
+|logintimeout|0-60 Allowed timeout in seconds to establish connection to SQL Server|OPTIONAL
+|encrypt|True/False Encrypt connection to database|OPTIONAL
+|trustservercertificate|True/False SQL Server TLS certificate or not|OPTIONAL
+|hostnameincertificate|domain of host certificate|OPTIONAL
 |user|Username to connect with|REQUIRED|
 |password-secret|GCP Secret Manager ID holding the password for the user. Format: projects/PROJ/secrets/SECRET|REQUIRED|
 |output_bucket|GCS bucket where the output file will be stored|REQUIRED|
@@ -83,13 +87,12 @@ To execute the metadata extraction run the following command (substituting appro
 python3 main.py \
 --target_project_id my-gcp-project-id \
 --target_location_id us-central1 \
---target_entry_group_id sqlserverdbs \
+--target_entry_group_id sqlserver \
 --host the-sqlserver-server \
 --port 1433 \
---database testdb \
+--database dbtoextractfrom \
 --user dataplexagent \
 --password-secret projects/73813454526/secrets/dataplexagent_sqlserver \
---database AdventureWorksDW2019 \
 --output_bucket dataplex_connectivity_imports \
 --output_folder sqlserver
 ```
