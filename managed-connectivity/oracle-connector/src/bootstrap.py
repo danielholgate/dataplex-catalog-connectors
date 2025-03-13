@@ -93,14 +93,16 @@ def run():
 
         # Ingest tables and views for every schema in a list
         for schema in schemas:
-            print(f"Processing tables for {schema}")
+            print(f"Processing tables for {schema}:  ",end='')
             tables_json = process_dataset(connector, config, schema, EntryType.TABLE)
+            print(f"{len(tables_json)} tables")
             entries_count += len(tables_json)
             write_jsonl(file, tables_json)
-            print(f"Processing views for {schema}")
+            print(f"Processing views for {schema}: ",end='')
             views_json = process_dataset(connector, config, schema, EntryType.VIEW)
+            print(f"{len(views_json)} views")
             entries_count += len(views_json)
             write_jsonl(file, views_json)
 
-    print(f"{schemas_count + entries_count} rows written to file") 
+    print(f"{schemas_count + entries_count} rows written to file {FILENAME}") 
     gcs_uploader.upload(config,FILENAME,FOLDERNAME)
