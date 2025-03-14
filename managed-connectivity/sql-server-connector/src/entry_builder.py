@@ -106,6 +106,7 @@ def build_dataset(config, df_raw, db_schema, entry_type):
     """
     schema_key = "dataplex-types.global.schema"
 
+
     # The transformation below does the following
     # 1. Alters IS_NULLABLE content from 1/0 to NULLABLE/REQUIRED
     # 2. Renames IS_NULLABLE to mode
