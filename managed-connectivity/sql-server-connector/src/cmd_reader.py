@@ -45,7 +45,7 @@ def read_args():
         help="Encrypt connection to database")
     parser.add_argument("--trustservercertificate", type=str,required=False,
         help="SQL Server TLS certificate or not")
-    parser.add_argument("--hostnameIncertificate", type=str,required=False,
+    parser.add_argument("--hostnameincertificate", type=str,required=False,
         help="domain of host certificate")
     
     # Google Cloud Storage arguments
