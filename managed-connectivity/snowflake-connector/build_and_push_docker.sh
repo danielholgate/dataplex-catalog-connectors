@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PROJECT=PROJECTID
+PROJECT_ID=PROJECTID
 REGION=us-central1
 
 IMAGE_NAME="dataplex-snowflake-pyspark"

@@ -32,8 +32,11 @@ def read_args():
     # It is assumed that the bucket is in the same region as the entry group
     parser.add_argument("--output_bucket", type=str, required=True,
                         help="The Cloud Storage bucket to write the generated metadata import file. Format begins with gs:// ")
-    parser.add_argument("--output_folder", type=str, required=True,
+    parser.add_argument("--output_folder", type=str, required=False,
                         help="The folder within the Cloud Storage bucket, to write the generated metadata import files. Name only required")
+    parser.add_argument("--local", type=str, required=False,
+                        help="Write the generated metadata import file locally only, do not output to GCS bucket")
+
 
     # Development arguments
     parser.add_argument("--testing", type=str, required=False,
