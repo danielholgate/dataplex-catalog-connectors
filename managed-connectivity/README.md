@@ -8,3 +8,4 @@ This repo contains connectors for importing metadata from external systems to Go
 * [SQL Server](/managed-connectivity/sql-server-connector)
 * [PostgreSQL](/managed-connectivity/postgresql-connector)
 * [MySQL](/managed-connectivity/mysql-connector)
+* [SnowFlake](/managed-connectivity/snowflake-connector)
