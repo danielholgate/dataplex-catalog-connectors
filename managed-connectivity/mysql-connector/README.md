@@ -23,7 +23,7 @@ The MySQL connector takes the following parameters:
 |user|MySQL Username to connect with|REQUIRED|
 |password-secret|GCP Secret Manager ID holding the password for the MySQL user. Format: projects/PROJECT-ID/secrets/SECRET|REQUIRED|
 |output_bucket|GCS bucket where the output file will be stored (do not include gs:// prefix)|REQUIRED|
-|output_folder|Folder in the GCS bucket where the export output file will be stored|REQUIRED|
+|output_folder|Folder in the GCS bucket where the export output file will be stored|OPTIONAL|
 
 ### Prepare your database environment:
 

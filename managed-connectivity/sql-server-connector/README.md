@@ -41,7 +41,7 @@ The SQL Server connector takes the following parameters:
 |user|Username to connect with|REQUIRED|
 |password-secret|GCP Secret Manager ID holding the password for the user. Format: projects/PROJ/secrets/SECRET|REQUIRED|
 |output_bucket|GCS bucket where the output file will be stored|REQUIRED|
-|output_folder|Folder within the GCS bucket where the export output file will be stored|REQUIRED|
+|output_folder|Folder in the GCS bucket where the export output file will be stored|OPTIONAL|
 
 ### Running the connector
 There are three ways to run the connector:

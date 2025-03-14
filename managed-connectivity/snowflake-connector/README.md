@@ -21,7 +21,7 @@ The Snowflake connector takes the following parameters:
 |password-secret|GCP Secret Manager ID holding the password for the Snowflake user. Format: projects/[PROJ]/secrets/[SECRET]|REQUIRED|
 |database|Snowflake database to connect to|REQUIRED|
 |output_bucket|GCS bucket where the output file will be stored|REQUIRED|
-|output_folder|Folder in the GCS bucket where the export output file will be stored|REQUIRED|
+|output_folder|Folder in the GCS bucket where the export output file will be stored|OPTIONAL|
 
 ## Running the connector
 There are three ways to run the connector:
