@@ -33,36 +33,42 @@ There are three ways to run the connector:
 
 The metadata connector can be run ad-hoc from the command line for development or testing by directly executing the main.py script.
 
-#### Prepare the environment:I
+#### Prepare the environment:
 
-1. Download the following [Snowflake jars from Maven](https://repo1.maven.org/maven2/net/snowflake/)
+1. Download the following Jars [from Maven](https://repo1.maven.org/maven2/net/snowflake/)
     * [snowflake-jdbc-3.19.0.jar](https://repo1.maven.org/maven2/net/snowflake/snowflake-jdbc/3.19.0/)
     * [spark-snowflake_2.12-3.1.1.jar](https://repo1.maven.org/maven2/net/snowflake/spark-snowflake_2.12/3.1.1/)
 2. Edit the SPARK_JAR_PATH variable in [snowflake_connector.py](src/snowflake_connector.py) to match the location of the jar files
 3. Ensure a Java Runtime Environment (JRE) is installed in your environment
-4. Install PySpark
+4. If you don't have one set up already, create a Python virtual environment to isolate the connector.
+    See [here](https://www.freecodecamp.org/news/how-to-setup-virtual-environments-in-python/) for more details but the TL;DR instructions are to run the following in your home directory:
+```
+pip install virtualenv
+python -m venv myvenv
+source myvenv/bin/activate
+```
+5. Install PySpark in your local environment
 ```
 pip3 install pyspark==3.5.3
 ```
-5. Install all dependencies from the requirements.txt file 
+6. Install all remaining dependencies for the connector 
 ```
 pip3 install -r requirements.txt
 ```
-6. If you don't have one set up already, create a Python virtual environment to isolate the connector.
-    See [here](https://www.freecodecamp.org/news/how-to-setup-virtual-environments-in-python/) for more details but the TL;DR instructions are to run the following in your home directory:
-    ```
-    pip install virtualenv
-    python -m venv myvenv
-    source myvenv/bin/activate
-    ```
+7. Ensure you have a clear network path from the machine where you will run the script to the target database server
 
-#### Required IAM Roles
+Before you run the script ensure you session is authenticated as a user which has these roles at minimum 
 - roles/secretmanager.secretAccessor
 - roles/storage.objectUser
 
-Before you run the script ensure you session is authenticated as a user which has these roles at minimum (ie using ```gcloud auth application-default login```)
+You can authenticate as a user which has these roles using gcloud, or give them to a Service Account.
 
-To execute the metadata extraction run the following command (substituting appropriate values for your environment):
+```
+gcloud auth application-default login
+```
+
+### Run the connector
+To execute metadata extraction run the following command, substituting appropriate values for your environment:
 
 ```shell 
 python3 main.py \
@@ -77,7 +83,12 @@ python3 main.py \
 ```
 
 #### Output:
-The connector generates a metadata extract in JSONL format as described [in the documentation](https://cloud.google.com/dataplex/docs/import-metadata#metadata-import-file). A sample output from the Snowflake connector can be found [here](sample/)
+The connector generates a metadata extract in JSONL format as described [in the documentation](https://cloud.google.com/dataplex/docs/import-metadata#metadata-import-file) and stores it in the GCS output bucket and folder defined above. 
+A copy of the generated file will also be saved in the "output" folder in the local directory.
+
+A sample output from the Snowflake connector can be found [here](sample/)
+
+To import a metadata file run the Dataplex Import API as explained below in "Manually running a metadata import into Dataplex"
 
 ### Build a container and extract metadata with a Dataproc Serverless job:
 
@@ -88,14 +99,17 @@ To build a Docker container for the connector (one-time task) and run the extrac
 Ensure the user you run the script with has /artifactregistry.repositories.uploadArtifacts on the artficate registry in your project 
 
 1. Ensure you are authenticated to your Google Cloud account by running ```gcloud auth login```
-2. Run
+2. Run the following the make the script executable
 ```
 chmod a+x build_and_push_docker.sh
 ``` 
-to make the script executuable
-2. Edit [build_and_push_docker.sh](/build_and_push_docker.sh) and set PROJECT_ID and REGION_ID to the appropriate values for your project
-2. Run ```build_and_push_docker.sh``` to build the Docker container and store it in Artifact Registry. This process can take several minutes.
-3. Create a GCS bucket which will be used for Dataproc Serverless as a working directory (add to the **--deps-bucket** parameter below)
+
+3. Edit [build_and_push_docker.sh](/build_and_push_docker.sh) and set PROJECT_ID and REGION_ID to the appropriate values for your project
+4. Build the Docker container and store it in Artifact Registry 
+```
+./build_and_push_docker.sh
+```
+This process can take several minutes.
 
 #### Submitting a metadata extraction job to Dataproc serverless:
 Once the container is built you can run the metadata extract with the following command (substituting appropriate values for your environment). 
