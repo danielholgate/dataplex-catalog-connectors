@@ -1,5 +1,7 @@
 # MySQL Connector
 
+EXPERIMENTAL VERSION - ABSTRACT AWAY CORE LOGIC
+
 This custom connector extracts metadata from MySQL databases to create a [metadata import file](https://cloud.google.com/dataplex/docs/import-metadata#components) for Google Dataplex. 
 
 ### Target objects and schemas:

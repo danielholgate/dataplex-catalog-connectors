@@ -74,6 +74,7 @@ def run():
         file.writelines(top_entry_builder.create(config, EntryType.ACCOUNT))
         file.writelines("\n")
         file.writelines(top_entry_builder.create(config, EntryType.DATABASE))
+        file.writelines("\n")
 
         # Get schemas, write them and collect to the list
         df_raw_schemas = connector.get_db_schemas()
