@@ -1,4 +1,4 @@
-# MySQL Connector
+# MySQL Connector - Experimental restructure
 
 This custom connector extracts metadata from MySQL databases to create a [metadata import file](https://cloud.google.com/dataplex/docs/import-metadata#components) for Google Dataplex. 
 

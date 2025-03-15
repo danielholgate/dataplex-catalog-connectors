@@ -3,9 +3,10 @@ from typing import Dict
 from pyspark.sql import SparkSession, DataFrame
 
 from src.constants import EntryType
+from src.common.ExternalSourceConnector import ExternalSourceConnector
 from src.connection_jar import SPARK_JAR_PATH
 
-class MysqlConnector:
+class MysqlConnector(ExternalSourceConnector):
     """Reads data from Mysql and returns Spark Dataframes."""
 
     def __init__(self, config: Dict[str, str]):
@@ -51,3 +52,18 @@ class MysqlConnector:
         short_type =  'BASE TABLE' if entry_type.name == 'TABLE' else 'VIEW' # table or view, or the title of enum value
         query = self._get_columns(schema_name, short_type)
         return self._execute(query)
+    
+    # Convert MySQL data types to Dataplex Catalog
+    def metadata_type_converter(data_type: str):
+        """Returns Dataplex metadata type which maps to Mysql native type."""
+        if data_type.startswith("int") or data_type.startswith("tinyint") or data_type.startswith("smallint") or data_type.startswith("mediumint") or data_type.startswith("bigint") or data_type.startswith("decimal") or data_type.startswith("numeric") or data_type.startswith("float") or  data_type.startswith("double") :
+            return "NUMBER"
+        if data_type.startswith("varchar") or data_type.startswith("char") or data_type.startswith("text") or data_type.startswith("tinytext") or data_type.startswith("mediumtext") or data_type.startswith("longtext"):
+            return "STRING"
+        if data_type.startswith("binary") or data_type.startswith("varbinary") or data_type.startswith("blob") or data_type.startswith("tinyblob") or data_type.startswith("mediumblob") or data_type.startswith("longblob"):
+            return "BYTES"
+        if data_type.startswith("timestamp") or data_type.startswith("datetime"):
+            return "TIMESTAMP"
+        if data_type.startswith("date"):
+            return "DATETIME"
+        return "OTHER"

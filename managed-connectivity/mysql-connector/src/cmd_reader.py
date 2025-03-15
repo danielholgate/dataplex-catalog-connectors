@@ -22,10 +22,7 @@ def read_args():
     parser.add_argument("--target_location_id", type=str, required=True,
                         help="Target Google Cloud location metadata will be imported into. Generated Entries will use this location")
     parser.add_argument("--target_entry_group_id", type=str, required=True,
-                        help="The ID of the Dataplex Entry Group to import metadata into. "
-                             "Metadata will be imported into entry group with the following"
-                             "full resource name: projects/${target_project_id}/"
-                             "locations/${target_location_id}/entryGroups/${target_entry_group_id}.")
+                        help="The ID of the Dataplex Entry Group to import metadata into")
 
     # Mysql specific arguments
     parser.add_argument("--host", type=str, required=True,

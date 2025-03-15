@@ -7,7 +7,7 @@ import proto
 from google.cloud import dataplex_v1
 
 from src.constants import EntryType
-from src import name_builder as nb
+from src.common import name_builder as nb
 
 
 @dataclasses.dataclass(slots=True)

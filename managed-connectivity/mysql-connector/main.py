@@ -1,8 +1,7 @@
 import sys
-from src import bootstrap
-
-# Allow shared files to be found when running from command line
-sys.path.insert(1, '../src/shared')
+from src.common import bootstrap
+from src import mysql_connector
+from src import cmd_reader
 
 if __name__ == '__main__':
-    bootstrap.run()
+    bootstrap.run(cmd_reader.read_args())

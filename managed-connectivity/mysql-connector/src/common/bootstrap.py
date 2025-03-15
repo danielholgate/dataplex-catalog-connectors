@@ -1,17 +1,16 @@
 """The entrypoint of a pipeline."""
 from typing import Dict
 import sys,os
-
 from datetime import datetime
-
 from src.constants import EntryType
 from src.constants import SOURCE_TYPE
-from src import cmd_reader
-from src import secret_manager
-from src import entry_builder
-from src import gcs_uploader
-from src import top_entry_builder
-from src.mysql_connector import MysqlConnector
+from src.constants import CONNECTOR_MODULE, CONNECTOR_CLASS 
+from src.common import secret_manager
+from src.common import entry_builder
+from src.common import gcs_uploader
+from src.common import top_entry_builder
+from src.common import ExternalSourceConnector
+import importlib
 
 def write_jsonl(output_file, json_strings):
     """Writes a list of string to the file in JSONL format."""
@@ -25,7 +24,7 @@ def write_jsonl(output_file, json_strings):
 
 
 def process_dataset(
-    connector: MysqlConnector,
+    connector: ExternalSourceConnector,
     config: Dict[str, str],
     schema_name: str,
     entry_type: EntryType,
@@ -35,9 +34,9 @@ def process_dataset(
     df = entry_builder.build_dataset(config, df_raw, schema_name, entry_type)
     return df.toJSON().collect()
 
-def run():
+def run(connectorconfig):
     """Runs a pipeline."""
-    config = cmd_reader.read_args()
+    config = connectorconfig
 
     if not gcs_uploader.checkDestination(config['output_bucket']):
         print("Exiting")
@@ -61,7 +60,10 @@ def run():
         print("Exiting")
         sys.exit(1)
 
-    connector = MysqlConnector(config)
+    # Instantiate specific connector class 
+    MyClass = getattr(importlib.import_module(CONNECTOR_MODULE), CONNECTOR_CLASS)
+    connector = MyClass(config)
+
     schemas_count = 0
     entries_count = 0
 
