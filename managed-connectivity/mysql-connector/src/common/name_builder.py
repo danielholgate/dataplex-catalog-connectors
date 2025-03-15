@@ -2,8 +2,7 @@
 from typing import Dict
 from src.constants import EntryType, SOURCE_TYPE
 
-
-# In that case in names it is changed to C!!, and escaped with backticks in FQNs
+# Forbidden symbol for Dataplex Entry Names
 FORBIDDEN_SYMBOL = "#"
 ALLOWED_SYMBOL = "!"
 
@@ -13,27 +12,31 @@ def create_fqn(config: Dict[str, str], entry_type: EntryType,
     if FORBIDDEN_SYMBOL in schema_name:
         schema_name = f"`{schema_name}`"
 
-    if entry_type == EntryType.INSTANCE:
+    # INSTANCE
+    if entry_type == list(EntryType)[0]:
         # Requires backticks to escape column
         return f"{SOURCE_TYPE}:`{config['host']}`"
-    if entry_type == EntryType.DATABASE:
-        instance = create_fqn(config, EntryType.INSTANCE)
+    # DATABASE
+    if entry_type == list(EntryType)[1]:
+        instance = create_fqn(config, list(EntryType)[0])
         return f"{instance}.{config['database']}"
-    #if entry_type == EntryType.DB_SCHEMA:
-    #    instance = create_fqn(config, EntryType.INSTANCE)
-    #    return f"{instance}.{schema_name}"
-    if entry_type in [EntryType.TABLE, EntryType.VIEW]:
-        database = create_fqn(config, EntryType.INSTANCE)
+    # TABLE or VIEW
+    if entry_type in [list(EntryType)[2], list(EntryType)[3]]:
+        database = create_fqn(config, list(EntryType)[0])
+        print(f"Table or view FQN = {database}.{schema_name}.{table_name}")
         return f"{database}.{schema_name}.{table_name}"
     return ""
-
 
 def create_name(config: Dict[str, str], entry_type: EntryType,
                 schema_name: str = "", table_name: str = ""):
     """Creates a Dataplex v2 hierarchy name."""
     if FORBIDDEN_SYMBOL in schema_name:
         schema_name = schema_name.replace(FORBIDDEN_SYMBOL, ALLOWED_SYMBOL)
-    if entry_type == EntryType.INSTANCE:
+
+    ## EXPERIMENTAL
+
+    # INSTANCE   
+    if entry_type == list(EntryType)[0]:
         name_prefix = (
             f"projects/{config['target_project_id']}/"
             f"locations/{config['target_location_id']}/"
@@ -41,17 +44,17 @@ def create_name(config: Dict[str, str], entry_type: EntryType,
             f"entries/"
         )
         return name_prefix + config["host"].replace(":", "@")
-    if entry_type == EntryType.DATABASE:
-        instance = create_name(config, EntryType.INSTANCE)
+     # DATABASE   
+    if entry_type == list(EntryType)[1]:
+        instance = create_name(config, list(EntryType)[0])
         return f"{instance}/databases/{config['database']}"
-    #if entry_type == EntryType.DB_SCHEMA:
-    #    database = create_name(config, EntryType.INSTANCE)
-    #    return f"{database}/database_schemas/{schema_name}"
-    if entry_type == EntryType.TABLE:
-        db_schema = create_name(config, EntryType.DATABASE, schema_name)
+     # TABLE   
+    if entry_type == list(EntryType)[2]:
+        db_schema = create_name(config, list(EntryType)[1], schema_name)
         return f"{db_schema}/tables/{table_name}"
-    if entry_type == EntryType.VIEW:
-        db_schema = create_name(config, EntryType.DATABASE, schema_name)
+     # VIEW   
+    if entry_type == list(EntryType)[3]:
+        db_schema = create_name(config, list(EntryType)[1], schema_name)
         return f"{db_schema}/views/{table_name}"
     return ""
 
@@ -59,12 +62,11 @@ def create_name(config: Dict[str, str], entry_type: EntryType,
 def create_parent_name(config: Dict[str, str], entry_type: EntryType,
                        parent_name: str = ""):
     """Generates a Dataplex v2 name of the parent."""
-    if entry_type == EntryType.DATABASE:
-        return create_name(config, EntryType.INSTANCE)
-    #if entry_type == EntryType.DB_SCHEMA:
-    #    return create_name(config, EntryType.DATABASE)
+    # DATABASE
+    if entry_type == list(EntryType)[1]:
+        return create_name(config, list(EntryType)[0])
     if entry_type == EntryType.TABLE:
-        return create_name(config, EntryType.DATABASE, parent_name)
+        return create_name(config, list(EntryType)[1], parent_name)
     return ""
 
 

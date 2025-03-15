@@ -3,11 +3,7 @@ import enum
 
 SOURCE_TYPE = "mysql"
 
-# Symbols for replacement
-FORBIDDEN = "#"
-ALLOWED = "!"
-
-# Allows common library code to load the specific connector for MySQL
+# Allows common library code to load the connector for MySQL
 CONNECTOR_MODULE = "src.mysql_connector"
 CONNECTOR_CLASS = "MysqlConnector"
 

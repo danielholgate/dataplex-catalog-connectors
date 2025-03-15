@@ -2,7 +2,7 @@
 
 import argparse,sys
 
-# Validate GCE folder name
+# Validate GCS folder name
 class ValidateGCS(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         #if not re.match(r'^[A-Za-z0-9_-]+$', values):
