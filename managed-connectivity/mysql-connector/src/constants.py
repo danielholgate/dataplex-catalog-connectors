@@ -20,4 +20,4 @@ TOP_ENTRIES = 2
 DB_OBJECTS_TO_PROCESS = [EntryType.TABLE, EntryType.VIEW]
 
 def getOutputFileName(config):
-    return f"{SOURCE_TYPE}-{config['database']}-{config['database']}.jsonl"
+    return f"{SOURCE_TYPE}-{config['host']}-{config['database']}.jsonl"
