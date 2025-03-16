@@ -3,7 +3,7 @@ import pyspark.sql.functions as F
 from pyspark.sql.types import StringType
 
 from src.constants import EntryType, SOURCE_TYPE
-from src.common import name_builder as nb
+from src import name_builder as nb
 from src.dataype_mappings import metadata_type_converter
 
 @F.udf(returnType=StringType())
