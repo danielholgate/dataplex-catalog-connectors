@@ -23,7 +23,6 @@ def create_fqn(config: Dict[str, str], entry_type: EntryType,
     # TABLE or VIEW
     if entry_type in [list(EntryType)[2], list(EntryType)[3]]:
         database = create_fqn(config, list(EntryType)[0])
-        print(f"Table or view FQN = {database}.{schema_name}.{table_name}")
         return f"{database}.{schema_name}.{table_name}"
     return ""
 

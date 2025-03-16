@@ -1,4 +1,5 @@
-# Provides mapping between MySQL data types and Dataplex Catalog
+# Maps MySQL data types into Dataplex Catalog metadata types
+
 def metadata_type_converter(data_type: str):
     """Returns Dataplex metadata type which maps to Mysql native type."""
     if data_type.startswith("int") or data_type.startswith("tinyint") or data_type.startswith("smallint") or data_type.startswith("mediumint") or data_type.startswith("bigint") or data_type.startswith("decimal") or data_type.startswith("numeric") or data_type.startswith("float") or  data_type.startswith("double") :
@@ -12,14 +13,3 @@ def metadata_type_converter(data_type: str):
     if data_type.startswith("date"):
         return "DATETIME"
     return "OTHER"
-
-# builds the name for the Datplaex entry
-def build_name(data_type: str):
-    if entry_type == EntryType.DATABASE:
-        instance = create_name(config, EntryType.INSTANCE)
-    if entry_type == EntryType.TABLE:
-        db_schema = create_name(config, EntryType.DATABASE, schema_name)
-        return f"{db_schema}/tables/{table_name}"
-    if entry_type == EntryType.VIEW:
-        db_schema = create_name(config, EntryType.DATABASE, schema_name)
-        return f"{db_schema}/views/{table_name}"
