@@ -64,7 +64,7 @@ def build_schemas(config, df_raw_schemas):
     create_fqn_udf = F.udf(lambda x: nb.create_fqn(config, entry_type, x),
                            StringType())
 
-    # Fills the missed project and location into the entry type string
+    # Fills the project and location into the entry type string
     full_entry_type = entry_type.value.format(
         project=config["target_project_id"],
         location=config["target_location_id"])

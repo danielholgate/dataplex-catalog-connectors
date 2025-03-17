@@ -2,7 +2,6 @@
 from typing import Dict
 from src.constants import EntryType, SOURCE_TYPE
 
-
 # In that case in names it is changed to C!!, and escaped with backticks in FQNs
 FORBIDDEN_SYMBOL = "#"
 ALLOWED_SYMBOL = "!"
@@ -19,9 +18,6 @@ def create_fqn(config: Dict[str, str], entry_type: EntryType,
     if entry_type == EntryType.DATABASE:
         instance = create_fqn(config, EntryType.INSTANCE)
         return f"{instance}.{config['database']}"
-    #if entry_type == EntryType.DB_SCHEMA:
-    #    instance = create_fqn(config, EntryType.INSTANCE)
-    #    return f"{instance}.{schema_name}"
     if entry_type in [EntryType.TABLE, EntryType.VIEW]:
         database = create_fqn(config, EntryType.INSTANCE)
         return f"{database}.{schema_name}.{table_name}"
@@ -44,9 +40,6 @@ def create_name(config: Dict[str, str], entry_type: EntryType,
     if entry_type == EntryType.DATABASE:
         instance = create_name(config, EntryType.INSTANCE)
         return f"{instance}/databases/{config['database']}"
-    #if entry_type == EntryType.DB_SCHEMA:
-    #    database = create_name(config, EntryType.INSTANCE)
-    #    return f"{database}/database_schemas/{schema_name}"
     if entry_type == EntryType.TABLE:
         db_schema = create_name(config, EntryType.DATABASE, schema_name)
         return f"{db_schema}/tables/{table_name}"
@@ -61,8 +54,6 @@ def create_parent_name(config: Dict[str, str], entry_type: EntryType,
     """Generates a Dataplex v2 name of the parent."""
     if entry_type == EntryType.DATABASE:
         return create_name(config, EntryType.INSTANCE)
-    #if entry_type == EntryType.DB_SCHEMA:
-    #    return create_name(config, EntryType.DATABASE)
     if entry_type == EntryType.TABLE:
         return create_name(config, EntryType.DATABASE, parent_name)
     return ""

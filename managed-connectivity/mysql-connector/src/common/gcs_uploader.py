@@ -3,7 +3,7 @@ from typing import Dict
 from google.cloud import storage
 
 def upload(config: Dict[str, str], fileDirectory: str, filename: str, folder: str):
-    """Uploads a file to GCP bucket."""
+    """Uploads a file to GCS bucket."""
     client = storage.Client()
     bucket = client.get_bucket((config["output_bucket"]))
 
@@ -15,13 +15,13 @@ def checkDestination(bucketpath: str):
     client = storage.Client()
 
     if bucketpath.startswith("gs://"):
-        print(f"Please provide output cloud storage bucket {bucketpath} without gs:// prefix")
+        print(f"Please provide output GCS path {bucketpath} without gs:// prefix")
         return False
     
     bucket = client.bucket(bucketpath)
 
     if not bucket.exists():
-        print(f"Output cloud storage bucket {bucketpath} does not exist")
+        print(f"Output GCS path {bucketpath} does not exist")
         return False
     
     return True

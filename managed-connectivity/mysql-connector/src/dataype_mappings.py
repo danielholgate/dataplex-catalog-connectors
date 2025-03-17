@@ -1,4 +1,4 @@
-# Maps MySQL data types into Dataplex Catalog metadata types
+# Maps MySQL data types to Dataplex Catalog metadata types
 
 def metadata_type_converter(data_type: str):
     """Returns Dataplex metadata type which maps to Mysql native type."""

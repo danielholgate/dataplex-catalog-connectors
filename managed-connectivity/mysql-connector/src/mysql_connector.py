@@ -9,6 +9,8 @@ from src.connection_jar import SPARK_JAR_PATH
 class MysqlConnector(ExternalSourceConnector):
     """Reads data from Mysql and returns Spark Dataframes."""
 
+    JDBC_DRIVER_CLASS = "com.mysql.cj.jdbc.Driver"
+
     def __init__(self, config: Dict[str, str]):
         # PySpark entrypoint
         self._spark = SparkSession.builder.appName("MySQLIngestor") \
@@ -16,14 +18,17 @@ class MysqlConnector(ExternalSourceConnector):
             .getOrCreate()
 
         self._config = config
-        self._url = f"jdbc:mysql://{config['host']}:{config['port']}/{config['database']}?zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&allowPublicKeyRetrieval=true"
+        self._url = f"jdbc:mysql://{config['host']}:{config['port']}/{config['database']}"
 
     def _execute(self, query: str) -> DataFrame:
         """A generic method to execute any query."""
         return self._spark.read.format("jdbc") \
-            .option("driver", "com.mysql.cj.jdbc.Driver") \
+            .option("driver", self.JDBC_DRIVER_CLASS) \
             .option("url", self._url) \
             .option("query", query) \
+            .option("zeroDateTimeBehavior","CONVERT_TO_NULL") \
+            .option("useSSL",False) \
+            .option("allowPublicKeyRetrieval", True) \
             .option("user", self._config["user"]) \
             .option("password", self._config["password"]) \
             .load()
@@ -36,7 +41,6 @@ class MysqlConnector(ExternalSourceConnector):
     def _get_columns(self, schema_name: str, object_type: str) -> str:
         """Gets a list of columns in tables or views in a batch."""
         # Every line here is a column that belongs to the table or to the view.
-        # This SQL gets data from ALL the tables in a given schema.
         return(f"select tab.table_name,col.column_name,col.data_type,col.is_nullable "
                 f"from information_schema.tables as tab "
                 f"inner join information_schema.columns as col "

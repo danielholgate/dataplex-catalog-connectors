@@ -7,7 +7,7 @@ from src.constants import SOURCE_TYPE, CONNECTOR_MODULE, CONNECTOR_CLASS
 from src.constants import DB_OBJECTS_TO_PROCESS, TOP_ENTRIES
 from src.constants import getOutputFileName
 from src.common import secret_manager
-from src.common import entry_builder
+from src import entry_builder
 from src.common import gcs_uploader
 from src.common import top_entry_builder
 from src.common import ExternalSourceConnector
