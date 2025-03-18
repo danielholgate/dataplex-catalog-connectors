@@ -2,11 +2,116 @@ import json
 import sys
 import argparse
 from collections import Counter
+from jsonschema import validate, ValidationError
 
-## Dataplex Catalog Metadata Import file check
+## Validate Dataplex Catalog metadata import file
 
-def validate_value(propertyvalue : str) -> bool:
-    return len(str) > 0 and not " " in str
+dataplex_entry_schema = """
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "entry": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^projects/[a-z0-9-]+/locations/[a-z0-9-_]+/entryGroups/[a-z0-9-]+/entries/[a-zA-Z0-9_]+"
+        },
+        "fully_qualified_name": {
+          "type": "string"
+        },
+        "parent_entry": {
+          "type": "string",
+          "pattern": "^$|^projects/[a-z0-9-]+/locations/[a-z0-9-_]+/entryGroups/[a-z0-9-]+/entries/[a-zA-Z0-9_]+"
+        },
+        "entry_source": {
+          "type": "object",
+          "properties": {
+            "display_name": {
+              "type": "string"
+            },
+            "system": {
+              "type": "string"
+            }
+          },
+          "required": ["display_name", "system"]
+        },
+        "aspects": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "aspect_type": {
+                "type": "string"
+              },
+              "data": {
+                "type": ["object", "array"],
+                "properties":{
+                  "fields":{
+                    "type":"array",
+                    "items":{
+                      "type":"object",
+                      "properties":{
+                        "name":{"type":"string"},
+                        "mode":{"type":"string","pattern":"REQUIRED|NULLABLE"},
+                        "dataType":{"type":"string","pattern":"[a-zA-Z]+"},
+                        "metadataType":{"type":"string","pattern":"[A-Z]+"}
+                      },
+                      "required":["name","mode","dataType","metadataType"]
+                    }
+                  }
+                },
+                "required": [],
+                "if":{
+                  "properties":{
+                    "aspect_type":{
+                      "const":"dataplex-types.global.schema"
+                    }
+                  }
+                },
+                "else":{
+                  "type":"object"
+                }
+
+              },
+              "path": {
+                "type": "string"
+              }
+            },
+            "required": ["aspect_type", "data"]
+          }
+        },
+        "entry_type": {
+          "type": "string",
+          "pattern": "^projects/[a-z0-9-_]+/locations/[a-z0-9-_]+/entryTypes/[a-zA-Z0-9_]+"
+        }
+      },
+      "required": ["name", "fully_qualified_name", "entry_type", "aspects"]
+    },
+    "aspect_keys": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "update_mask": {
+      "oneOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        {
+          "type": "string"
+        }
+      ]
+    }
+  },
+  "required": ["entry", "aspect_keys", "update_mask"]
+}
+"""
 
 def validate_jsonl(file_path : str,isDebug : bool):
     """
@@ -26,7 +131,9 @@ def validate_jsonl(file_path : str,isDebug : bool):
     parents = []
     top_entry_count = 0
 
-    print(f"Checking dataplex metadata file: {file_path}")
+    print(f"Validating dataplex metadata import file: {file_path}")
+
+    dataplex_schama = json.loads(dataplex_entry_schema)
 
     try:
         with open(file_path, 'r', encoding='utf-8') as f:
@@ -37,11 +144,18 @@ def validate_jsonl(file_path : str,isDebug : bool):
                     print(f"Skipping empty line {line_count}")
                     continue
                 try:
-                    #Check it's a well formed JSON object
+                    #Basic check first to confirm it is well formed/valid JSON object
                     obj = json.loads(line)
-                    if isDebug:
-                        print(json.dumps(obj, indent=4))
-                    print("   Valid JSON")
+                    try:
+                        #Validate against schema definition
+                        print("JSON is well formed")
+                        validate(instance=obj, schema=dataplex_schama)
+                        print("Conforms to dataplex entry schema")
+                    except ValidationError as e:
+                        print("Failed validation against dataplex entry schema: ", e)
+                        is_valid = False
+                        if isDebug:
+                            print(json.dumps(obj, indent=4))
 
                     # Get the entry and parent entry
                     parent_entry = (obj['entry']['parent_entry'])
@@ -54,23 +168,7 @@ def validate_jsonl(file_path : str,isDebug : bool):
                     entry_types.append(entry_type)
                     fqn = obj['entry']['fully_qualified_name']
                     fqn_list.append(fqn)
-
-                    # Check table and view aspects
-                    if obj['entry']['aspects'] and 'dataplex-types.global.schema' in obj['entry']['aspects']:
-                        if 'data' in obj['entry']['aspects']['dataplex-types.global.schema']:
-                            if 'fields' in obj['entry']['aspects']['dataplex-types.global.schema']['data']:
-                                    print(f"   Checking fields data for {fqn}  ", end='')
-                                    for d in (obj['entry']['aspects']['dataplex-types.global.schema']['data']['fields']):
-                                        name = d['name']
-                                        mode = d['mode']
-                                        dt = d['dataType']
-                                        mdt = d['metadataType']
-                                        if not (validate_value(name) and validate_value(mode) and validate_value(dt) and validate_value(mdt)) :
-                                            print("   Problem in table or view attritbute: {d}")
-                                            is_valid = False 
-                                    print("OK")
-                                                                          
-                    
+                                                                
                 except json.JSONDecodeError as e:
                     print(f"Error: Invalid JSON on line {line_count}:\n {line}") #Print the offending line for debugging
                     json_errors_count+=1
@@ -84,7 +182,7 @@ def validate_jsonl(file_path : str,isDebug : bool):
             print(f"File has {json_errors_count} malformed lines")
             is_valid = False
         else:
-            print("1. All lines in file are well formed JSON")
+            print("\n1. All lines in file are well formed JSON")
 
         set_fqn = set(fqn_list)
         set_entrynames = set(entry_names)
