@@ -6,8 +6,9 @@ SOURCE_TYPE = "mysql"
 CONNECTOR_MODULE = "src.mysql_connector"
 CONNECTOR_CLASS = "MysqlConnector"
 
+# Enumeration representsting the hierarchy in MySQL
 class EntryType(enum.Enum):
-    """Types of Mysql entries. Instance, database, table/view"""
+    """Hierarchy of Mysql entries: Instance, database, table/view"""
     INSTANCE: str = "projects/{project}/locations/{location}/entryTypes/mysql-instance"
     DATABASE: str = "projects/{project}/locations/{location}/entryTypes/mysql-database"
     TABLE: str = "projects/{project}/locations/{location}/entryTypes/mysql-table"

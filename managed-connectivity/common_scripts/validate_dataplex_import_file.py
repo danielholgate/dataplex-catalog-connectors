@@ -5,6 +5,9 @@ from collections import Counter
 
 ## Dataplex Catalog Metadata Import file check
 
+def validate_value(propertyvalue : str) -> bool:
+    return len(str) > 0 and not " " in str
+
 def validate_jsonl(file_path : str,isDebug : bool):
     """
     Examines Dataplex Catalog JSONL metadata import file, iterates through each line, and checks if it's valid.
@@ -62,8 +65,8 @@ def validate_jsonl(file_path : str,isDebug : bool):
                                         mode = d['mode']
                                         dt = d['dataType']
                                         mdt = d['metadataType']
-                                        if len(mode) == 0 or len(name) == 0 or len(dt) == 0 or len(mdt) == 0:
-                                            print("   Required attritbute in entry was empty: {d}")
+                                        if not (validate_value(name) and validate_value(mode) and validate_value(dt) and validate_value(mdt)) :
+                                            print("   Problem in table or view attritbute: {d}")
                                             is_valid = False 
                                     print("OK")
                                                                           

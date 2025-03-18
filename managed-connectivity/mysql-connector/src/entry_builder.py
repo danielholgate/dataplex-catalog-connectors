@@ -46,7 +46,7 @@ def convert_to_import_items(df, aspect_keys):
 
 
 def build_schemas(config, df_raw_schemas):
-    """Create a dataframe with database schemas from the list of usernames.
+    """Create a dataframe with database schemas from the list of logical schemas.
     Args:
         df_raw_schemas - a dataframe with only one column called USERNAME
     Returns:
