@@ -38,7 +38,7 @@ The metadata connector can be run ad-hoc from the command line for development o
 1. Download the following Jars [from Maven](https://repo1.maven.org/maven2/net/snowflake/)
     * [snowflake-jdbc-3.19.0.jar](https://repo1.maven.org/maven2/net/snowflake/snowflake-jdbc/3.19.0/)
     * [spark-snowflake_2.12-3.1.1.jar](https://repo1.maven.org/maven2/net/snowflake/spark-snowflake_2.12/3.1.1/)
-2. Edit the SPARK_JAR_PATH variable in [snowflake_connector.py](src/snowflake_connector.py) to match the location of the jar files
+2. Edit the SPARK_JAR_PATH variable in [snowflake_connector.py](src/connection_jar.py) to match the location of the jar files
 3. Ensure a Java Runtime Environment (JRE) is installed in your environment
 4. If you don't have one set up already, create a Python virtual environment to isolate the connector.
     See [here](https://www.freecodecamp.org/news/how-to-setup-virtual-environments-in-python/) for more details but the TL;DR instructions are to run the following in your home directory:
