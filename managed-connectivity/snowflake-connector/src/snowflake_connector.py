@@ -24,6 +24,7 @@ class SnowflakeConnector:
             "sfUser": config['user'],
             "sfPassword": config['password'],
             "sfDatabase": config['database'],
+            "sfWarehouse" : config['warehouse'],
             "sfSchema": "",
             "sfRole": ""
             }
