@@ -33,9 +33,11 @@ def run(connectorconfig):
     """Runs a pipeline."""
     config = connectorconfig
 
-    if not gcs_uploader.checkDestination(config['output_bucket']):
-        print("Exiting")
-        sys.exit(1)
+# Local model writes output to local directory only, otherwise also to GCS bucket
+    if not config["local_mode"]:
+        if not gcs_uploader.checkDestination(config['output_bucket']):
+            print("Exiting")
+            sys.exit(1)
 
     """Build output folder name with timestamp"""
     currentDate = datetime.now()
@@ -44,7 +46,10 @@ def run(connectorconfig):
         folder = f"{config['output_folder']}/"
     FOLDERNAME = f"{folder}{currentDate.year}{'{:02d}'.format(currentDate.month)}{'{:02d}'.format(currentDate.day)}-{'{:02d}'.format(currentDate.hour)}{'{:02d}'.format(currentDate.minute)}{'{:02d}'.format(currentDate.second)}"
 
-    print(f"GCS output path is {config['output_bucket']}/{FOLDERNAME}")
+    if not config["local_mode"]:
+        print(f"GCS output path is {config['output_bucket']}/{FOLDERNAME}")
+    else:
+        print("Metadata file will be generated in local 'output' directory")
 
     try:
         config["password"] = secret_manager.get_password(config["password_secret"])
@@ -73,7 +78,7 @@ def run(connectorconfig):
             file.writelines(top_entry_builder.create(config, list(EntryType)[entry_enum_index]))
             file.writelines("\n")
 
-        # Get schemas, write them and collect to the list
+        # Get schemas, write them and collect into the list
         df_raw_schemas = connector.get_db_schemas()
         schemas = [schema.SCHEMA_NAME for schema in df_raw_schemas.select("SCHEMA_NAME").collect()]
         schemas_json = entry_builder.build_schemas(config, df_raw_schemas).toJSON().collect()
@@ -89,5 +94,7 @@ def run(connectorconfig):
                 entries_count += len(objects_json)
                 write_jsonl(file, objects_json)
 
-    print(f"{entries_count} rows written to file {FILENAME}") 
-    gcs_uploader.upload(config,output_path,FILENAME,FOLDERNAME)
+    print(f"{entries_count} rows written to file {FILENAME}")
+    if not config["local_mode"]: 
+        gcs_uploader.upload(config,output_path,FILENAME,FOLDERNAME)
+

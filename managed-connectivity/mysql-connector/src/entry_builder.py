@@ -2,7 +2,7 @@
 import pyspark.sql.functions as F
 from pyspark.sql.types import StringType
 
-from src.constants import EntryType, SOURCE_TYPE
+from src.constants import SOURCE_TYPE, ENTRY_PROCESSING_LEVEL
 from src import name_builder as nb
 from src.dataype_mappings import metadata_type_converter
 
@@ -52,7 +52,7 @@ def build_schemas(config, df_raw_schemas):
     Returns:
         A dataframe with Dataplex-readable schemas.
     """
-    entry_type = EntryType.DATABASE
+    entry_type = ENTRY_PROCESSING_LEVEL
     entry_aspect_name = nb.create_entry_aspect_name(config, entry_type)
 
     # For schema, parent name is the name of the database
