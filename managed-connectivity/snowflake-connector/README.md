@@ -4,9 +4,8 @@ This custom connector exports metadata for tables and views from Snowflake datab
 
 ### Prepare your Snowflake environment:
 
-<<<<<<< HEAD
 1. Best practise is to create a minimum-privilege user in Snowflake which will be used by Dataplex to connect and extract metadata about tables and views.
- The user for connecting should be granted a Security Role with the following privileges for the database and  schemas, tables, views, materialized views for which metadata needs to be extracted:
+ The user for connecting should be granted a Security Role with the following privileges for the database and schemas, tables, views, materialized views for which metadata needs to be extracted:
 * grant usage on warehouse <warehouse_name> to role <role_name>;
 * grant usage on database <database_name> to role <role_name>;
 * grant usage on all schemas in database <database_name> to role <role_name>;
@@ -15,14 +14,6 @@ This custom connector exports metadata for tables and views from Snowflake datab
 * grant references on all materialized views in schema <schema_name> to role <role_name>;
 
 2. Add the password for the snowflake user to the Google Cloud Secret Manager in your project and note the Secret ID (format is: projects/[project-number]/secrets/[secret-name])
-=======
-1. Best practise is to create a minimum-privilege user in Snowflake which will be used by Dataplex to connect and extract metadata about tables and views. The user requires at minimum the following privileges via a role: 
-    * USAGE privilege on the database and the following tables:
-    *    information_schema.columns
-    *    information_schema.tables
-    *    information_schema.schemata
-2. Add the password for the user to the Google Cloud Secret Manager in your project and note the Secret ID (format is: projects/[project-number]/secrets/[secret-name])
->>>>>>> 877852e4c018467516704ce96f72d137f76c8dc8
 
 ### Parameters
 The Snowflake connector takes the following parameters:
