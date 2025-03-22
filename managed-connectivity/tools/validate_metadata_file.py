@@ -20,7 +20,7 @@ dataplex_entry_schema = """
         },
         "fully_qualified_name": {
           "type": "string",
-          "pattern": "^[a-z]+:`[a-zA-Z0-9_-]+`([.][a-zA-Z0-9_-]+)*$"
+          "pattern": "^[a-z]+:`[a-zA-Z0-9_:.-]+`([.][a-zA-Z0-9_#-]+)*$"
         },
         "parent_entry": {
           "type": "string",
@@ -54,7 +54,7 @@ dataplex_entry_schema = """
                     "items":{
                       "type":"object",
                       "properties":{
-                        "name":{"type":"string"},
+                        "name":{"type":"string","pattern":"[a-zA-Z]+"},
                         "mode":{"type":"string","pattern":"REQUIRED|NULLABLE"},
                         "dataType":{"type":"string","pattern":"[a-zA-Z]+"},
                         "metadataType":{"type":"string","pattern":"[A-Z]+"}
@@ -116,7 +116,7 @@ dataplex_entry_schema = """
 
 def validate_jsonl(file_path : str,isDebug : bool, isList : bool):
     """
-    Examines Dataplex Catalog JSONL metadata import file, iterates through each line, and checks if it's valid.
+    Validates Dataplex Catalog JSONL metadata import file to confirm it is well-formed and values fulfill requirements for import
 
     Args:
         file_path (str): The path to the JSONL file.
@@ -142,7 +142,7 @@ def validate_jsonl(file_path : str,isDebug : bool, isList : bool):
                 print(f"Line {line_count} : ")
                 line = line.strip()
                 if not line: #skip empty lines
-                    print(f"File has an empty line: {line_count}")
+                    print(f"  File has an empty line: {line_count}")
                     continue
                 try:
                     #Basic check first to confirm well-formed/valid JSON object
@@ -153,11 +153,12 @@ def validate_jsonl(file_path : str,isDebug : bool, isList : bool):
                         continue;
                     try:
                         #Validate against schema definition
-                        print("JSON is well-formed")
+                        print("  JSON is well-formed")
                         validate(instance=obj, schema=dataplex_schama)
-                        print("JSON conforms to dataplex catalog entry schema")
+                        print("  JSON conforms to dataplex catalog entry schema")
                     except ValidationError as e:
-                        print("Failed validation against dataplex catalog entry schema: ", e)
+                        print("  Failed validation against dataplex catalog entry schema:")
+                        print(f"  {e}")
                         is_valid = False
                         if isDebug:
                             print(json.dumps(obj, indent=4))
@@ -173,9 +174,16 @@ def validate_jsonl(file_path : str,isDebug : bool, isList : bool):
                     entry_types.append(entry_type)
                     fqn = obj['entry']['fully_qualified_name']
                     fqn_list.append(fqn)
-                                                                
+
+                    if obj['entry']['aspects'] and 'dataplex-types.global.schema' in obj['entry']['aspects']:
+                        data_fields = obj['entry']['aspects']['dataplex-types.global.schema']['data']['fields']
+                        for x in data_fields:
+                           if x['metadataType'] == 'OTHER':
+                              print(f"  Entry with {fqn} has data which has been mapped to generic metadata type OTHER")
+                              print(f"  Connector code should be improved to map data type {x['dataType']}:    {x}")
+
                 except json.JSONDecodeError as e:
-                    print(f"Error: Invalid JSON on line {line_count}:\n {line}") #Print the offending line for debugging
+                    print(f"Error: Invalid JSON on line {line_count}:\n {line}") 
                     json_errors_count+=1
                 except Exception as e:
                     print(f"An unexpected error occured on line {line_count}: {e}")
@@ -222,10 +230,10 @@ def validate_jsonl(file_path : str,isDebug : bool, isList : bool):
                   print("2. All parent entries found")
 
         # FINAL SUMMARY
-                if is_valid:
-                  print("File is VALID")
-                else:
-                  print("File is NOT VALID")
+        if is_valid:
+            print("File is VALID")
+        else:
+            print("File is NOT VALID")
 
     except FileNotFoundError:
         print(f"Error: File not found: {file_path}")
