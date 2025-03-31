@@ -1,5 +1,3 @@
-# Tools
-
 This directory contains tools which can be used for working with metadata import files
 
 ### Metadata Validation Tool
