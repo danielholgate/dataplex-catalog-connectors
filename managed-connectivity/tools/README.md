@@ -15,7 +15,7 @@ Setup:
 
 To run:
 ```
- python validate_metadata_file.py file_path_to_metadata_file [ADDITIOANL OPTIONS see below]
+ python validate_metadata_file.py file_path_to_metadata_file [ADDITIONAL OPTIONS see below]
 ```
 
 Options:
