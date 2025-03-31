@@ -18,22 +18,35 @@ class SnowflakeConnector:
             .getOrCreate()
 
         self._url = f"{config['account']}.snowflakecomputing.com"
-
+        
         self._sfOptions = {
             "sfURL": self._url,
             "sfUser": config['user'],
-            "sfPassword": config['password'],
             "sfDatabase": config['database'],
-            "sfWarehouse" : config['warehouse'],
-            "sfSchema": "",
-            "sfRole": ""
             }
+        
+        if config.get('authenticaton') is not None:
+            match config['authenticaton']:
+                case 'oauth':
+                    self._sfOptions['sfAuthenticator'] = config['authenticaton']
+                    self._sfOptions['sfToken'] = config['token']
+                case 'password':
+                    self._sfOptions['sfPassword'] = config['password']
+        else:
+                self._sfOptions['sfPassword'] = config['password']
+        
+        if config.get('warehouse') is not None:
+            self._sfOptions['sfWarehouse'] = config['warehouse']
+
+        if config.get('schema') is not None:
+            self._sfOptions['sfSchema'] = config['schema']
+        
+        if config.get('role') is not None:
+            self._sfOptions['sfRole'] = config['role']
 
     def _execute(self, query: str) -> DataFrame:
-        """A generic method to execute any query."""
 
         sfOptions = self._sfOptions
-
         SNOWFLAKE_SOURCE_NAME = "net.snowflake.spark.snowflake"
 
         return self._spark.read.format(SNOWFLAKE_SOURCE_NAME) \
@@ -42,7 +55,6 @@ class SnowflakeConnector:
             .load()
 
     def get_db_schemas(self) -> DataFrame:
-        """Query schemas to collect metadata for"""
         query = f"""
         SELECT schema_name FROM information_schema.schemata 
         WHERE schema_name != 'INFORMATION_SCHEMA'
@@ -51,8 +63,8 @@ class SnowflakeConnector:
 
     def _get_columns(self, schema_name: str, object_type: str) -> str:
         """Gets a list of columns in tables or views in a batch."""
-        # Every line here is a column that belongs to the table or to the view.
-        # This SQL gets data from ALL the tables in a given schema.
+        # Every line here is a column that belongs to the table or view.
+        # This SQL gets data from all tables in a given schema.
         return (f"SELECT c.table_name, c.column_name,  "
                 f"c.data_type, c.is_nullable "
                 f"FROM information_schema.columns c "

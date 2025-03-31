@@ -6,6 +6,7 @@ from jsonschema import validate, ValidationError
 
 ## Validate Dataplex Catalog metadata import file
 
+# JSON schema validation
 dataplex_entry_schema = """
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
@@ -114,17 +115,14 @@ dataplex_entry_schema = """
 }
 """
 
-def validate_jsonl(file_path : str,isDebug : bool, isList : bool):
+def validate_jsonl(file_path : str,isDebug : bool, isList : bool, min_lines: int, exact_lines: int):
     """
-    Validates Dataplex Catalog JSONL metadata import file to confirm it is well-formed and values fulfill requirements for import
-
-    Args:
-        file_path (str): The path to the JSONL file.
-        --debug Y/N : Include details of lines
+    Validates Dataplex Catalog  metadata import file to confirm it is well-formed and values fulfill requirements for import
     """
     is_valid = True
 
     json_errors_count = 0
+    dataplex_entry_error_count = 0
     line_count = 1
     entry_names = []
     entry_types = []
@@ -132,14 +130,15 @@ def validate_jsonl(file_path : str,isDebug : bool, isList : bool):
     parents = []
     top_entry_count = 0
 
-    print(f"Validating dataplex metadata import file: {file_path}")
+    print(f"\nValidating dataplex metadata import file: {file_path}")
 
     dataplex_schama = json.loads(dataplex_entry_schema)
 
     try:
         with open(file_path, 'r', encoding='utf-8') as f:
             for line in f:
-                print(f"Line {line_count} : ")
+                if isDebug:
+                  print(f"Line {line_count} : ")
                 line = line.strip()
                 if not line: #skip empty lines
                     print(f"  File has an empty line: {line_count}")
@@ -147,18 +146,21 @@ def validate_jsonl(file_path : str,isDebug : bool, isList : bool):
                 try:
                     #Basic check first to confirm well-formed/valid JSON object
                     obj = json.loads(line)
+                    if isDebug:
+                       print("  JSON is well-formed")
                     if isList: 
                         print( json.dumps(obj, indent=4) )
                         line_count += 1
                         continue;
                     try:
                         #Validate against schema definition
-                        print("  JSON is well-formed")
                         validate(instance=obj, schema=dataplex_schama)
-                        print("  JSON conforms to dataplex catalog entry schema")
+                        if isDebug:
+                          print("  JSON conforms to dataplex catalog entry schema")
                     except ValidationError as e:
                         print("  Failed validation against dataplex catalog entry schema:")
                         print(f"  {e}")
+                        dataplex_entry_error_count += 1
                         is_valid = False
                         if isDebug:
                             print(json.dumps(obj, indent=4))
@@ -179,7 +181,7 @@ def validate_jsonl(file_path : str,isDebug : bool, isList : bool):
                         data_fields = obj['entry']['aspects']['dataplex-types.global.schema']['data']['fields']
                         for x in data_fields:
                            if x['metadataType'] == 'OTHER':
-                              print(f"  Entry with {fqn} has data which has been mapped to generic metadata type OTHER")
+                              print(f"  Entry with {fqn} has column which has been mapped to generic metadata type OTHER")
                               print(f"  Connector code should be improved to map data type {x['dataType']}:    {x}")
 
                 except json.JSONDecodeError as e:
@@ -195,10 +197,10 @@ def validate_jsonl(file_path : str,isDebug : bool, isList : bool):
             sys.exit;
         else:
           if json_errors_count > 0:
-              print(f"File has {json_errors_count} malformed lines")
+              print(f"**File has {json_errors_count} malformed lines")
               is_valid = False
           else:
-              print("\n1. All lines in file are well formed JSON")
+              print("\n==All lines in file are well-formed JSON")
 
               set_fqn = set(fqn_list)
               set_entrynames = set(entry_names)
@@ -215,21 +217,35 @@ def validate_jsonl(file_path : str,isDebug : bool, isList : bool):
                 for entry in set_entrytypes:
                   print(f"{entry}")
 
-                print(f"\nFQN:")
+                print(f"\nFully Qualified Names:")
                 for fqn in set_fqn:
                     print(f"{fqn}")
 
         # Find any rouge parent names
-                parent_error = 0
-                for parent in set_parents:
-                  if len(parent) > 0 and not parent in set_entrynames:
-                    print(f"Invalid File: Found unknown parent {parent}")
-                    parent_error += 1
-                    is_valid = False;
-                if parent_error == 0:
-                  print("2. All parent entries found")
-
+              parent_error = 0
+              for parent in set_parents:
+                if len(parent) > 0 and not parent in set_entrynames:
+                  print(f"**Found unknown parent {parent}")
+                  parent_error += 1
+                  is_valid = False;
+              if parent_error == 0:
+                print("==All parent entries found")
+    
         # FINAL SUMMARY
+        print(f"==File has {line_count} lines")
+        if dataplex_entry_error_count > 0:
+           print(f"**File has {dataplex_entry_error_count} invalid entries")
+        else:
+           print(f"==All entries passsed validation against dataplex entry schema")
+
+        if exact_lines is not False and line_count != exact_lines:
+          print(f"**File has different number of lines to exact_lines value {exact_lines}")
+          is_valid = False
+
+        if min_lines is not False and line_count < min_lines:
+          print(f"**File has less lines than mint_lines value {min_lines}")
+          is_valid = False
+
         if is_valid:
             print("File is VALID")
         else:
@@ -241,10 +257,12 @@ def validate_jsonl(file_path : str,isDebug : bool, isList : bool):
         print(f"An unexpected error occurred: {e}")
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Validates Dataplex Catalogs metadata import file (jsonl)")
-    parser.add_argument("file_path", help="Path to the metadata import file")
+    parser = argparse.ArgumentParser(description="Validates Dataplex Catalog metadata import file (jsonl)")
+    parser.add_argument("file_path", help="Path to metadata import file")
     parser.add_argument("--debug",default=False,help="prints details of JSON line validation",  action="store_true")
     parser.add_argument("--list",default=False,help="lists out the lines in the file", action="store_true")
+    parser.add_argument("--min_lines",type=int,default=False,help="minimum number of lines that must be in file")
+    parser.add_argument("--exact_lines",type=int,default=False,help="exact number of lines that must be in file")
     args = parser.parse_args()
 
-    validate_jsonl(args.file_path,args.debug,args.list)
+    validate_jsonl(args.file_path,args.debug,args.list,args.min_lines, args.exact_lines)

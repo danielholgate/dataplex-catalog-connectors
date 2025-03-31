@@ -6,12 +6,14 @@ This custom connector exports metadata for tables and views from Snowflake datab
 
 1. Best practise is to create a minimum-privilege user in Snowflake which will be used by Dataplex to connect and extract metadata about tables and views.
  The user for connecting should be granted a Security Role with the following privileges for the database and schemas, tables, views, materialized views for which metadata needs to be extracted:
-* grant usage on warehouse <warehouse_name> to role <role_name>;
-* grant usage on database <database_name> to role <role_name>;
-* grant usage on all schemas in database <database_name> to role <role_name>;
-* grant references on all tables in schema <schema_name> to role <role_name>;
-* grant references on all views in schema <schema_name> to role <role_name>;
-* grant references on all materialized views in schema <schema_name> to role <role_name>;
+```sql
+grant usage on warehouse <warehouse_name> to role <role_name>;
+grant usage on database <database_name> to role <role_name>;
+grant usage on all schemas in database <database_name> to role <role_name>;
+grant references on all tables in schema <schema_name> to role <role_name>;
+grant references on all views in schema <schema_name> to role <role_name>;
+grant references on all materialized views in schema <schema_name> to role <role_name>;
+```
 
 2. Add the password for the snowflake user to the Google Cloud Secret Manager in your project and note the Secret ID (format is: projects/[project-number]/secrets/[secret-name])
 
@@ -20,14 +22,16 @@ The Snowflake connector takes the following parameters:
 
 |Parameter|Description|Required/Optional|
 |---------|------------|-------------|
-|target_project_id|Value is GCP Project ID/Project Number, or 'global'. Used in the generated Dataplex Entry, Aspects and AspectTypes|REQUIRED|
+|target_project_id|GCP Project ID, or 'global'. Used in the generated Dataplex Entry, Aspects and AspectTypes|REQUIRED|
 |target_location_id|GCP Region ID, or 'global'. Used in the generated Dataplex Entry, Aspects and AspectTypes|REQUIRED|
-|target_entry_group_id|Dataplex Entry Group ID to use in the generated data|REQUIRED|
+|target_entry_group_id|Dataplex Entry Group ID to use in generated metadata|REQUIRED|
 |account|Snowflake account to connect to|REQUIRED|
 |user|Snowflake username to connect with|REQUIRED|
-|password-secret|GCP Secret Manager ID holding the password for the Snowflake user. Format: projects/[PROJ]/secrets/[SECRET]|REQUIRED|
+|authentication|Authentication method: password or oauth (default is 'password')|OPTIONAL
+|password_secret|GCP Secret Manager ID holding the password for the Snowflake user. Format: projects/[PROJ]/secrets/[SECRET]|REQUIRED if using password auth|
+|token|Token for oauth authentication.|REQUIRED if using oauth authentication|
 |database|Snowflake database to connect to|REQUIRED|
-|warehouse|Snowflake warehouse to connect to|REQUIRED|
+|warehouse|Snowflake warehouse to connect to|OPTIONAL|
 |output_bucket|GCS bucket where the output file will be stored|REQUIRED|
 |output_folder|Folder in the GCS bucket where the export output file will be stored|OPTIONAL|
 
@@ -39,11 +43,11 @@ There are three ways to run the connector:
 
 ### Running from the command line
 
-The metadata connector can be run ad-hoc from the command line for development or testing by directly executing the main.py script.
+The metadata connector can be run ad-hoc from the command line for development or testing by directly executing the [main.py](main.py) script.
 
 #### Prepare the environment:
 
-1. Download the following Jars [from Maven](https://repo1.maven.org/maven2/net/snowflake/)
+1. Download the following jars [from Maven](https://repo1.maven.org/maven2/net/snowflake/)
     * [snowflake-jdbc-3.19.0.jar](https://repo1.maven.org/maven2/net/snowflake/snowflake-jdbc/3.19.0/)
     * [spark-snowflake_2.12-3.1.1.jar](https://repo1.maven.org/maven2/net/snowflake/spark-snowflake_2.12/3.1.1/)
 2. Edit the SPARK_JAR_PATH variable in [snowflake_connector.py](src/connection_jar.py) to match the location of the jar files
@@ -84,9 +88,9 @@ python3 main.py \
 --target_location_id us-central1 \
 --target_entry_group_id snowflake \
 --account RXXXXXA-GX00020 \
---user snowflakeuser \
+--user dataplex_snowflake_user \
 --password-secret projects/499965349999/secrets/snowflake \
---database SNOWFLAKE_SAMPLE_DATA \
+--database my_snowflake_database \
 --warehouse COMPUTE_WH \
 --output_bucket my-gcs-bucket
 --output_folder snowflake
@@ -169,12 +173,6 @@ To run an end-to-end metadata extraction and import process, run the container v
 Follow the Dataplex documentation here: [Import metadata from a custom source using Workflows ](https://cloud.google.com/dataplex/docs/import-using-workflows-custom-source)
 
 
-## Manually initiating a metadata import file into Dataplex
+## Importing a metadata file into Dataplex
 
-To import a metadata import file into Dataplex call the Import API with the following:
-
-```http
-POST https://dataplex.googleapis.com/v1/projects/PROJECT_NUMBER/locations/LOCATION_ID/metadataJobs?metadataJobId=METADATA_JOB_ID
-```
-
-See the [Dataplex documetation](https://cloud.google.com/dataplex/docs/import-metadata#import-metadata) for full instructions about importing metadata.
+To import metadata import files into Dataplex Catalog use the Import API as detailed in the [Dataplex documetation](https://cloud.google.com/dataplex/docs/import-metadata#import-metadata).

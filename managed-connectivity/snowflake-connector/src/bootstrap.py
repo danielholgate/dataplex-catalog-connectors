@@ -47,21 +47,22 @@ def run():
     FOLDERNAME = f"{SOURCE_TYPE}/{currentDate.year}{currentDate.month}{currentDate.day}-{currentDate.hour}{currentDate.minute}{currentDate.second}"
     """Build the default output filename"""
 
-    print(f"output GCS folder is {config['output_bucket']}/{FOLDERNAME}")
+    print(f"Output GCS folder is {config['output_bucket']}/{FOLDERNAME}")
 
-    try:
-        config["password"] = secret_manager.get_password(config["password_secret"])
-    except Exception as ex:
-        print(ex)
-        print("Exiting")
-        sys.exit()
+    if config.get('password_secret') is not None:
+        try:
+            config["password"] = secret_manager.get_password(config["password_secret"])
+        except Exception as ex:
+            print(ex)
+            print("Exiting")
+            sys.exit(1)
 
     connector = SnowflakeConnector(config)
     schemas_count = 0
     entries_count = 0
 
     # Build the output file name from connection details
-    FILENAME = f"{SOURCE_TYPE}-output-{config['database']}.jsonl"
+    FILENAME = f"{SOURCE_TYPE}-{config['account']}-{config['database']}.jsonl"
 
     output_path = './output'
 
@@ -74,6 +75,7 @@ def run():
         file.writelines(top_entry_builder.create(config, EntryType.ACCOUNT))
         file.writelines("\n")
         file.writelines(top_entry_builder.create(config, EntryType.DATABASE))
+        file.writelines("\n")
 
         # Get schemas, write them and collect to the list
         df_raw_schemas = connector.get_db_schemas()
