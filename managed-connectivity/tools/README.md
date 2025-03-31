@@ -19,9 +19,9 @@ To run:
 ```
 
 Options:
-
-    * --debug. Prints additional detail about file validation
-    * --list. Lists out all JSON object lines in the file with pretty print for readability
-    * --min_lines INTEGER. Minimum number of lines that must be in file
-    * --exact_lines INTEGER. Exact number of lines that must be in file
+ 
+ * --debug. Prints additional detail about file validation
+ * --list. Lists out all JSON object lines in the file with pretty print for readability
+ * --min_lines INTEGER. Minimum number of lines that must be in file
+ * --exact_lines INTEGER. Exact number of lines that must be in file
 
