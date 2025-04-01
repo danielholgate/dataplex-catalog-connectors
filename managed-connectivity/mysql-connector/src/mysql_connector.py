@@ -19,6 +19,8 @@ class MysqlConnector(ExternalSourceConnector):
 
         self._config = config
         self._url = f"jdbc:mysql://{config['host']}:{config['port']}/{config['database']}"
+        self._allowPublicKeyRetrieval = config['allow_public_key_retrieval'] and config['allow_public_key_retrieval'] is not None 
+        self._sslMode = config['ssl_mode']
 
     def _execute(self, query: str) -> DataFrame:
         """A generic method to execute any query."""
@@ -27,14 +29,13 @@ class MysqlConnector(ExternalSourceConnector):
             .option("url", self._url) \
             .option("query", query) \
             .option("zeroDateTimeBehavior","CONVERT_TO_NULL") \
-            .option("useSSL",False) \
-            .option("allowPublicKeyRetrieval", True) \
+            .option("sslmode",self._sslMode) \
+            .option("allowPublicKeyRetrieval", self._allowPublicKeyRetrieval) \
             .option("user", self._config["user"]) \
             .option("password", self._config["password"]) \
             .load()
 
     def get_db_schemas(self) -> DataFrame:
-        """In Mysql, schemas are the databases."""
         query = f"SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA where SCHEMA_NAME = '{self._config['database']}'"
         return self._execute(query)
 
@@ -51,7 +52,7 @@ class MysqlConnector(ExternalSourceConnector):
                 f"order by tab.table_name,col.column_name") 
 
     def get_dataset(self, schema_name: str, entry_type: EntryType):
-        """Gets data for a table or a view."""
+        """Gets data for one table or view"""
         # Dataset means that these entities can contain end user data.
         short_type =  'BASE TABLE' if entry_type.name == 'TABLE' else 'VIEW' # table or view, or the title of enum value
         query = self._get_columns(schema_name, short_type)

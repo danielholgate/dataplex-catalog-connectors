@@ -6,6 +6,7 @@ from src.constants import EntryType
 from src.constants import SOURCE_TYPE, CONNECTOR_MODULE, CONNECTOR_CLASS
 from src.constants import DB_OBJECTS_TO_PROCESS, TOP_ENTRIES
 from src.constants import getOutputFileName
+from src.common.cmd_reader import loadReferencedFile
 from src.common import secret_manager
 from src import entry_builder
 from src.common import gcs_uploader
@@ -13,10 +14,18 @@ from src.common import top_entry_builder
 from src.common import ExternalSourceConnector
 import importlib
 
+
 def write_jsonl(output_file, json_strings):
     """Writes entries to file in JSONL format."""
     for string in json_strings:
         output_file.write(string + "\n")
+
+def createOutputFolderName(config: Dict[str, str]):
+    currentDate = datetime.now()
+    folder = ''
+    if config['output_folder'] and len(config['output_folder']) > 0:
+        folder = f"{config['output_folder']}/"
+    return f"{folder}{currentDate.year}{'{:02d}'.format(currentDate.month)}{'{:02d}'.format(currentDate.day)}-{'{:02d}'.format(currentDate.hour)}{'{:02d}'.format(currentDate.minute)}{'{:02d}'.format(currentDate.second)}"
 
 def process_dataset(
     connector: ExternalSourceConnector,
@@ -33,34 +42,33 @@ def run(connectorconfig):
     """Runs a pipeline."""
     config = connectorconfig
 
-# Local model writes output to local directory only, otherwise also to GCS bucket
-    if not config["local_mode"]:
-        if not gcs_uploader.checkDestination(config['output_bucket']):
-            print("Exiting")
+    FOLDERNAME = createOutputFolderName(config)
+
+# Local model writes output to local directory only, otherwise write also to GCS bucket
+    if config["local_mode"] is None:
+        if config['output_bucket'] is None:
+            print("output_bucket must be defined unless running in local_mode")
             sys.exit(1)
-
-    """Build output folder name with timestamp"""
-    currentDate = datetime.now()
-    folder = ''
-    if config['output_folder'] and len(config['output_folder']) > 0:
-        folder = f"{config['output_folder']}/"
-    FOLDERNAME = f"{folder}{currentDate.year}{'{:02d}'.format(currentDate.month)}{'{:02d}'.format(currentDate.day)}-{'{:02d}'.format(currentDate.hour)}{'{:02d}'.format(currentDate.minute)}{'{:02d}'.format(currentDate.second)}"
-
-    if not config["local_mode"]:
-        print(f"GCS output path is {config['output_bucket']}/{FOLDERNAME}")
+        elif not gcs_uploader.checkDestination(config['output_bucket']):
+            print(f"Exiting")
+            sys.exit(1)
+        print(f"GCS output path is {config['output_bucket']}/{FOLDERNAME}")    
     else:
         print("Metadata file will be generated in local 'output' directory")
 
-    try:
-        config["password"] = secret_manager.get_password(config["password_secret"])
-    except Exception as ex:
-        print(ex)
-        print("Exiting")
-        sys.exit(1)
+    # Load data from files if required
+    if config['ssl_ca'] is not None:
+        config['ssl_ca'] = loadReferencedFile(config['ssl_ca'])
+    if config['ssl_cert'] is not None:
+        config['ssl_cert'] = loadReferencedFile(config['ssl_cert'])
+    if config['ssl_key'] is not None:
+        config['ssl_key'] = loadReferencedFile(config['ssl_key'])
+
+    config["password"] = secret_manager.get_password(config["password_secret"])
 
     # Instantiate connector class 
-    MyClass = getattr(importlib.import_module(CONNECTOR_MODULE), CONNECTOR_CLASS)
-    connector = MyClass(config)
+    ConnectorClass = getattr(importlib.import_module(CONNECTOR_MODULE), CONNECTOR_CLASS)
+    connector = ConnectorClass(config)
 
     # Build output file name
     FILENAME = getOutputFileName(config)
@@ -97,4 +105,3 @@ def run(connectorconfig):
     print(f"{entries_count} rows written to file {FILENAME}")
     if not config["local_mode"]: 
         gcs_uploader.upload(config,output_path,FILENAME,FOLDERNAME)
-

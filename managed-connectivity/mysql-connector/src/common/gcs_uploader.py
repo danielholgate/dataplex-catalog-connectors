@@ -21,7 +21,7 @@ def checkDestination(bucketpath: str):
     bucket = client.bucket(bucketpath)
 
     if not bucket.exists():
-        print(f"Output GCS path {bucketpath} does not exist")
+        print(f"GCS bucket path does not exist: {bucketpath}")
         return False
     
     return True

@@ -29,7 +29,7 @@ def getOutputFileName(config):
 # Specific arguments for MySQL. Added to base common arguments
 CONNECTOR_SPECIFIC_ARGS = [
 ["--host",str,True,"MySQL host server"],
-["--port",str,True,"MySQL port number (usually 3306)"],
+["--port",int,True,"MySQL port number (usually 3306)"],
 ["--database",str,True,"Mysql database to connect to"],
-["--user",str,True,"MySQL user)"]
+["--user",str,True,"MySQL user"]
 ]
