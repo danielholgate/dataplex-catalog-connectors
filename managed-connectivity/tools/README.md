@@ -30,7 +30,7 @@ Options:
 ### Metadata Import API request generator tool
 [generate_metadata_import_request.py](generate_metadata_import_request.py)
 
-Convenience tool to generate a [Metadata Import API request](https://cloud.google.com/dataplex/docs/import-metadata#import-metadata) (.json) from an existing metadata import file. Adds the required entry types, aspect types, and entry groups. 
+Convenience tool to generate a [Metadata Import REST API request](https://cloud.google.com/dataplex/docs/import-metadata#import-metadata) (.json) from an existing metadata import file. Adds the required entry types, aspect types, and entry groups. 
 
 See [here](../oracle-connector/sample/metadata_import_request.json) for an example output. 
 
