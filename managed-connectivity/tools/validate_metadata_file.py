@@ -21,7 +21,7 @@ dataplex_entry_schema = """
         },
         "fully_qualified_name": {
           "type": "string",
-          "pattern": "^[a-z]+:`[a-zA-Z0-9_:.-]+`([.][a-zA-Z0-9_#-]+)*$"
+          "pattern": "^[a-z]+:`[a-zA-Z0-9_:.-]+`([.][`]*[a-zA-Z0-9_#-$]+[`]*)*$"
         },
         "parent_entry": {
           "type": "string",
@@ -181,8 +181,8 @@ def validate_jsonl(file_path : str,isDebug : bool, isList : bool, min_lines: int
                         data_fields = obj['entry']['aspects']['dataplex-types.global.schema']['data']['fields']
                         for x in data_fields:
                            if x['metadataType'] == 'OTHER':
-                              print(f"  Entry with {fqn} has column which has been mapped to generic metadata type OTHER")
-                              print(f"  Connector code should be improved to map data type {x['dataType']}:    {x}")
+                              print(f"  FYI: Line {line_count} Entry with {fqn} has column which has been mapped to generic metadata type OTHER")
+                              print(f"  {x}")
 
                 except json.JSONDecodeError as e:
                     print(f"Error: Invalid JSON on line {line_count}:\n {line}") 
