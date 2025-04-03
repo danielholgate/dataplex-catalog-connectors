@@ -1,6 +1,12 @@
-# Snowflake Connector
+# Oracle Connector
 
-This custom connector exports metadata for tables and views from Snowflake databases to create a [metadata import file](https://cloud.google.com/dataplex/docs/import-metadata#components) which can be imported into Google Dataplex. 
+This connector extracts metadata from Snowflake databases to Google Cloud Dataplex Catalog.
+
+### Target objects and schemas:
+
+The connector extracts metadata for the following database objects:
+* Tables
+* Views
 
 ### Prepare your Snowflake environment:
 

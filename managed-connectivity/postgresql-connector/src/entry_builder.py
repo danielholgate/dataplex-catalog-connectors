@@ -5,7 +5,6 @@ from pyspark.sql.types import StringType
 from src.constants import EntryType, SOURCE_TYPE
 from src import name_builder as nb
 
-
 @F.udf(returnType=StringType())
 def choose_metadata_type_udf(data_type: str):
     """Choose the metadata type based on Postgres native type."""

@@ -1,12 +1,11 @@
-"""Constants that are used in the different files."""
+## MySQL specific constants and functions
 import enum
 
 SOURCE_TYPE = "mysql"
 
-# Symbols for replacement
-FORBIDDEN = "#"
-ALLOWED = "!"
-
+# Expose to allow common code to load connector for MySQL
+CONNECTOR_MODULE = "src.mysql_connector"
+CONNECTOR_CLASS = "MysqlConnector"
 
 class EntryType(enum.Enum):
     """Types of Mysql entries. Instance, database, table/view"""
@@ -14,3 +13,9 @@ class EntryType(enum.Enum):
     DATABASE: str = "projects/{project}/locations/{location}/entryTypes/mysql-database"
     TABLE: str = "projects/{project}/locations/{location}/entryTypes/mysql-table"
     VIEW: str = "projects/{project}/locations/{location}/entryTypes/mysql-view"
+
+# DB objects to extract metadata for
+DB_OBJECT_TYPES_TO_PROCESS = [EntryType.TABLE, EntryType.VIEW]
+
+def generateFileName(config: dict[str:str]):
+    return f"{SOURCE_TYPE}-{config['host']}-{config['database']}.jsonl"

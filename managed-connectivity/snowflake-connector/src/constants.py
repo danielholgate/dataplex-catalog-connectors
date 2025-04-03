@@ -1,16 +1,18 @@
-"""Constants that are used in the different files."""
+## Snowflake specific constants and functions
 import enum
 
 SOURCE_TYPE = "snowflake"
 
-# Symbols for replacement
-FORBIDDEN = "#"
-ALLOWED = "!"
-
 class EntryType(enum.Enum):
-    """Types of Snowflake entries."""
+    """Hierarchy of Snowflake entries"""
     ACCOUNT: str = "projects/{project}/locations/{location}/entryTypes/snowflake-account"
     DATABASE: str = "projects/{project}/locations/{location}/entryTypes/snowflake-database"
     DB_SCHEMA: str = "projects/{project}/locations/{location}/entryTypes/snowflake-schema"
     TABLE: str = "projects/{project}/locations/{location}/entryTypes/snowflake-table"
     VIEW: str = "projects/{project}/locations/{location}/entryTypes/snowflake-view"
+
+# DB objects to extract metadata for
+DB_OBJECT_TYPES_TO_PROCESS = [EntryType.TABLE, EntryType.VIEW]
+
+def generateFileName(config: dict[str:str]):
+    return f"{SOURCE_TYPE}-{config['account']}-{config['database']}.jsonl"

@@ -3,10 +3,9 @@ import enum
 
 SOURCE_TYPE = "sqlserver"
 
-# Symbols for replacement
-FORBIDDEN = "#"
-ALLOWED = "!"
-
+# allow common bootstrap to load connector for specific datasource
+CONNECTOR_MODULE = "src.sqlserver_connector"
+CONNECTOR_CLASS = "SQLServerConnector"
 
 class EntryType(enum.Enum):
     """Types of SQL Server entries."""
@@ -15,3 +14,14 @@ class EntryType(enum.Enum):
     DB_SCHEMA: str = "projects/{project}/locations/{location}/entryTypes/sqlserver-schema"
     TABLE: str = "projects/{project}/locations/{location}/entryTypes/sqlserver-table"
     VIEW: str = "projects/{project}/locations/{location}/entryTypes/sqlserver-view"
+
+# DB objects to extract metadata for
+DB_OBJECT_TYPES_TO_PROCESS = [EntryType.TABLE, EntryType.VIEW]
+
+def generateFileName(config: dict[str:str]):
+    filename = ''
+    if config['instancename'] and len(config['instancename']) > 0:
+        filename = f"{SOURCE_TYPE}-{config['host']}-{config['instancename']}-{config['database']}.jsonl"
+    else:
+        filename = f"{SOURCE_TYPE}-{config['host']}-defaultinstance-{config['database']}.jsonl"
+    return filename

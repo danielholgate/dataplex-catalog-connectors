@@ -1,11 +1,12 @@
 """Reads SQL Server using PySpark."""
 from typing import Dict
 from pyspark.sql import SparkSession, DataFrame
+from src.common.ExternalSourceConnector import IExternalSourceConnector
 
 from src.constants import EntryType
 from src.connection_jar import SPARK_JAR_PATH
 
-class SQLServerConnector:
+class SQLServerConnector(IExternalSourceConnector):
     """Reads data from SQL Server and returns Spark Dataframes."""
 
     def __init__(self, config: Dict[str, str]):
@@ -21,16 +22,22 @@ class SQLServerConnector:
         else:
             self._url = f"jdbc:sqlserver://{config['host']}:{config['port']}"
 
+        self._connectOptions = {
+            "driver": "com.microsoft.sqlserver.jdbc.SQLServerDriver",
+            "url": self._url,
+            "user": config['user'],
+            "database": config['database'],
+            "password": config['password'],
+            "loginTimeout": config['login_timeout'],
+            "ssl": config['ssl'],
+            "sslmode": config['ssl_mode'],
+            }
+
     def _execute(self, query: str) -> DataFrame:
         """A generic method to execute any query."""
         return self._spark.read.format("jdbc") \
-            .option("driver", "com.microsoft.sqlserver.jdbc.SQLServerDriver") \
-            .option("url", self._url) \
+            .options(**self._connectOptions) \
             .option("query", query) \
-            .option("user", self._config["user"]) \
-            .option("database", self._config["database"]) \
-            .option("password", self._config["password"]) \
-            .option("loginTimeout",self._config["logintimeout"]) \
             .load()
 
     def get_db_schemas(self) -> DataFrame:

@@ -1,5 +1,5 @@
 import sys
-from src import bootstrap
+from src.common import bootstrap
 
 if __name__ == '__main__':
     bootstrap.run()

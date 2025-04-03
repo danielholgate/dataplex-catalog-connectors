@@ -1,11 +1,11 @@
 """Reads Oracle using PySpark."""
 from typing import Dict
 from pyspark.sql import SparkSession, DataFrame
-
+from src.common.ExternalSourceConnector import IExternalSourceConnector
 from src.constants import EntryType
 from src.connection_jar import SPARK_JAR_PATH
 
-class OracleConnector:
+class OracleConnector(IExternalSourceConnector):
     """Reads data from Oracle and returns Spark Dataframes."""
 
     def __init__(self, config: Dict[str, str]):
@@ -20,15 +20,19 @@ class OracleConnector:
             self._url = f"jdbc:oracle:thin:@{config['host']}:{config['port']}:{config['sid']}"
         else:
             self._url = f"jdbc:oracle:thin:@{config['host']}:{config['port']}/{config['service']}"
+        
+        self._connectOptions = {
+            "driver": "oracle.jdbc.OracleDriver",
+            "url": self._url,
+            "user": config['user'],
+            "password": config['password']
+            }
 
     def _execute(self, query: str) -> DataFrame:
         """A generic method to execute any query."""
         return self._spark.read.format("jdbc") \
-            .option("driver", "oracle.jdbc.OracleDriver") \
-            .option("url", self._url) \
+            .options(**self._connectOptions) \
             .option("query", query) \
-            .option("user", self._config["user"]) \
-            .option("password", self._config["password"]) \
             .load()
 
     def get_db_schemas(self) -> DataFrame:
@@ -50,9 +54,6 @@ class OracleConnector:
         return self._execute(query)
 
     def _get_columns(self, schema_name: str, object_type: str) -> str:
-        """Gets a list of columns in tables or views in a batch."""
-        # Every line here is a column that belongs to the table or to the view.
-        # This SQL gets data from ALL the tables in a given schema.
         return (f"SELECT col.TABLE_NAME, col.COLUMN_NAME, "
                 f"col.DATA_TYPE, col.NULLABLE "
                 f"FROM all_tab_columns col "

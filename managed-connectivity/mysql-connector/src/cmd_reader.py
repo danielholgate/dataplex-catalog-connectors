@@ -1,6 +1,19 @@
-"""Command line reader."""
+import argparse, sys
+from src.common.util import loadReferencedFile
+from src.common.gcs_uploader import checkDestination
+from src.common.secret_manager import get_password
 
-import argparse,sys
+# Returns string contenr from file at given path
+def loadReferencedFile(file_path) -> str:
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        return content
+    except Exception as e:
+        print(f"Error while reading file {file_path}: {e}")
+        print("Exiting")
+        sys.exit(1)
+    return None
 
 # Validate GCE folder name
 class ValidateGCS(argparse.Action):
@@ -16,16 +29,13 @@ def read_args():
     """Reads arguments from the command line."""
     parser = argparse.ArgumentParser()
 
-    # Project arguments
+    # Project arguments for basic generation of metadata entries
     parser.add_argument("--target_project_id", type=str, required=True,
-                        help="Name of the target Google Cloud project to import the metadata into. Generated Entries will use this project")
+                        help="GCP Project ID metadata entries will be import into")
     parser.add_argument("--target_location_id", type=str, required=True,
-                        help="Target Google Cloud location metadata will be imported into. Generated Entries will use this location")
+                        help="GCP region metadata will be imported into")
     parser.add_argument("--target_entry_group_id", type=str, required=True,
-                        help="The ID of the Dataplex Entry Group to import metadata into. "
-                             "Metadata will be imported into entry group with the following"
-                             "full resource name: projects/${target_project_id}/"
-                             "locations/${target_location_id}/entryGroups/${target_entry_group_id}.")
+                        help="Dataplex Entry Group ID to import metadata into")
 
     # Mysql specific arguments
     parser.add_argument("--host", type=str, required=True,
@@ -33,20 +43,53 @@ def read_args():
     parser.add_argument("--port", type=str, required=True,
                         help="The port number (usually 3306)")
     parser.add_argument("--database", type=str, required=True,
-                        help="Mysql database to connect to")
+                        help="MySQL database to connect to")
     parser.add_argument("--user", type=str, required=True, help="Mysql User")
-    parser.add_argument("--password-secret", type=str, required=True,
+    parser.add_argument("--password_secret", type=str, required=True,
                         help="Resource name in the Google Cloud Secret Manager for the Mysql password")
-
-    # Google Cloud Storage arguments
-    # It is assumed that the bucket is in the same region as the entry group
-    parser.add_argument("--output_bucket", type=str, required=True,
-                        help="The Cloud Storage bucket to write the generated metadata import file. Do not include gs:// ")
-    parser.add_argument("--output_folder", type=str, required=False,action=ValidateGCS,
-                        help="The folder within the Cloud Storage bucket, to write the generated metadata import files. Name only required")
-
-    # Development arguments
-    parser.add_argument("--testing", type=str, required=False,
-    help="Test mode")
     
-    return vars(parser.parse_known_args()[0])
+    parser.add_argument("--ssl_mode", type=str, required=False,choices=['prefer','require','allow','verify-ca','verify-full'],default='prefer',help="SSL mode requirement")
+    parser.add_argument("--ssl_cert", type=str, required=False,help="SSL cert file path")
+    parser.add_argument("--ssl_key", type=str, required=False,help="SSL key file path")
+    parser.add_argument("--ssl_rootcert", type=str, required=False,help="SSL root cert file path")
+    
+    # Output destination arguments. Generate local only, or local + to GCS bucket
+    output_option_group = parser.add_mutually_exclusive_group()
+    output_option_group.add_argument("--local_output_only",action="store_true",help="Output metadata file in local directory only" )
+    output_option_group.add_argument("--output_bucket", type=str,
+                        help="Output Cloud Storage bucket for generated metadata import file. Do not include gs:// prefix ")  
+    parser.add_argument("--output_folder", type=str, required=False,
+                        help="Folder within bucket where generated metadata import file will be written. Name only required")
+    
+    parsed_args = parser.parse_known_args()[0]
+
+    if not parsed_args.local_output_only and parsed_args.output_bucket is None:
+        print("--output_bucket must be supplied if not in --local_output_only mode")
+        sys.exit(1)
+
+    if parsed_args.local_output_only == True:
+        print("Generating metadata file in local 'output' directory")
+    else:
+        if not checkDestination(parsed_args.output_bucket):
+            print("Exiting")
+            sys.exit(1)     
+        else:
+            print(f"Generating metadata file in GCS bucket {parsed_args.output_bucket}")
+        
+    if parsed_args.password_secret is not None:
+        try:
+            parsed_args.password = get_password(parsed_args.password_secret)
+        except Exception as ex:
+            print(ex)
+            print("Exiting")
+            sys.exit(1)
+
+    if parsed_args.ssl_cert is not None:
+        try:
+            parsed_args.password = loadReferencedFile(parsed_args.ssl_cert)
+        except Exception as ex:
+            print(ex)
+            print("Exiting")
+            sys.exit(1)
+
+    return vars(parsed_args)

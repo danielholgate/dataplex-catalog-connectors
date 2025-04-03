@@ -2,13 +2,8 @@
 from typing import Dict
 from src.constants import EntryType, SOURCE_TYPE
 
-
-# Postgres cluster users start with C## prefix, but Dataplex doesn't accept #.
-# In that case in names it is changed to C!!, and escaped with backticks in FQNs
 FORBIDDEN_SYMBOL = "#"
 ALLOWED_SYMBOL = "!"
-
-
 
 def create_fqn(config: Dict[str, str], entry_type: EntryType,
                schema_name: str = "", table_name: str = ""):

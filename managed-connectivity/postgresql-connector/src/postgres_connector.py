@@ -1,11 +1,11 @@
 """Reads Postgres using PySpark."""
 from typing import Dict
 from pyspark.sql import SparkSession, DataFrame
-
 from src.constants import EntryType
 from src.connection_jar import SPARK_JAR_PATH
+from src.common.ExternalSourceConnector import IExternalSourceConnector
 
-class PostgresConnector:
+class PostgresConnector(IExternalSourceConnector):
     """Reads data from Postgres and returns Spark Dataframes."""
 
     def __init__(self, config: Dict[str, str]):
@@ -28,7 +28,6 @@ class PostgresConnector:
             .load()
 
     def get_db_schemas(self) -> DataFrame:
-        """In Postgres, schemas are schemas."""
         query = """
         SELECT DISTINCT schema_name 
         FROM information_schema.schemata

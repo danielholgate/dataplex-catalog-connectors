@@ -3,10 +3,9 @@ import enum
 
 SOURCE_TYPE = "oracle"
 
-# Symbols for replacement
-FORBIDDEN = "#"
-ALLOWED = "!"
-
+# allow common bootstrap to load connector for specific datasource
+CONNECTOR_MODULE = "src.oracle_connector"
+CONNECTOR_CLASS = "OracleConnector"
 
 class EntryType(enum.Enum):
     """Types of Oracle entries."""
@@ -15,3 +14,14 @@ class EntryType(enum.Enum):
     DB_SCHEMA: str = "projects/{project}/locations/{location}/entryTypes/oracle-schema"
     TABLE: str = "projects/{project}/locations/{location}/entryTypes/oracle-table"
     VIEW: str = "projects/{project}/locations/{location}/entryTypes/oracle-view"
+
+# DB objects to extract metadata for
+DB_OBJECT_TYPES_TO_PROCESS = [EntryType.TABLE, EntryType.VIEW]
+
+def generateFileName(config: dict[str:str]) -> str:
+    filename = ''
+    if config.get('sid'):
+        filename = f"{SOURCE_TYPE}-{config['host']}-{config['sid']}.jsonl"
+    elif config.get('service') and config.get('service') is not None:
+        filename = f"{SOURCE_TYPE}-{config['host']}-{config['service']}.jsonl"
+    return filename

@@ -1,11 +1,11 @@
 """Reads Mysql using PySpark."""
 from typing import Dict
 from pyspark.sql import SparkSession, DataFrame
-
+from src.common.ExternalSourceConnector import IExternalSourceConnector
 from src.constants import EntryType
 from src.connection_jar import SPARK_JAR_PATH
 
-class MysqlConnector:
+class MysqlConnector(IExternalSourceConnector):
     """Reads data from Mysql and returns Spark Dataframes."""
 
     def __init__(self, config: Dict[str, str]):
@@ -17,14 +17,18 @@ class MysqlConnector:
         self._config = config
         self._url = f"jdbc:mysql://{config['host']}:{config['port']}/{config['database']}?zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&allowPublicKeyRetrieval=true"
 
+        self._connectOptions = {
+            "driver": "com.mysql.cj.jdbc.Driver",
+            "uRL": self._url,
+            "user": config['user'],
+            "password": config['password']
+            }
+
     def _execute(self, query: str) -> DataFrame:
         """A generic method to execute any query."""
         return self._spark.read.format("jdbc") \
-            .option("driver", "com.mysql.cj.jdbc.Driver") \
-            .option("url", self._url) \
+            .options(**self._connectOptions) \
             .option("query", query) \
-            .option("user", self._config["user"]) \
-            .option("password", self._config["password"]) \
             .load()
 
     def get_db_schemas(self) -> DataFrame:

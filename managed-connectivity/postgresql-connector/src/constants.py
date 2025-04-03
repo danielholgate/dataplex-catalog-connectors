@@ -3,10 +3,9 @@ import enum
 
 SOURCE_TYPE = "postgresql"
 
-# Symbols for replacement
-FORBIDDEN = "#"
-ALLOWED = "!"
-
+# allow common bootstrap to load connector for specific datasource
+CONNECTOR_MODULE = "src.postgres_connector"
+CONNECTOR_CLASS = "PostgresConnector"
 
 class EntryType(enum.Enum):
     """Types of Postgres entries."""
@@ -15,3 +14,9 @@ class EntryType(enum.Enum):
     DB_SCHEMA: str = "projects/{project}/locations/{location}/entryTypes/postgresql-schema"
     TABLE: str = "projects/{project}/locations/{location}/entryTypes/postgresql-table"
     VIEW: str = "projects/{project}/locations/{location}/entryTypes/postgresql-view"
+
+# DB objects to extract metadata for
+DB_OBJECT_TYPES_TO_PROCESS = [EntryType.TABLE, EntryType.VIEW]
+
+def generateFileName(config: dict[str:str]) -> str:
+    return f"{SOURCE_TYPE}-{config['host']}-{config['database']}.jsonl"

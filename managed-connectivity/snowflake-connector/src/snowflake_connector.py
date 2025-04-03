@@ -1,15 +1,10 @@
-"""Reads Snowflake using PySpark."""
 from typing import Dict
 from pyspark.sql import SparkSession, DataFrame
 from src.constants import EntryType
 from src.connection_jar import SPARK_JAR_PATH
 
-localconfig = []
-
 class SnowflakeConnector:
     """Reads data from Snowflake and returns Spark Dataframes."""
-
-    sfOptions = {}
 
     def __init__(self, config: Dict[str, str]):
         # PySpark entrypoint
@@ -25,6 +20,7 @@ class SnowflakeConnector:
             "sfDatabase": config['database'],
             }
         
+        # Build connection parameters
         if config.get('authenticaton') is not None:
             match config['authenticaton']:
                 case 'oauth':
@@ -45,12 +41,11 @@ class SnowflakeConnector:
             self._sfOptions['sfRole'] = config['role']
 
     def _execute(self, query: str) -> DataFrame:
-
         sfOptions = self._sfOptions
         SNOWFLAKE_SOURCE_NAME = "net.snowflake.spark.snowflake"
 
         return self._spark.read.format(SNOWFLAKE_SOURCE_NAME) \
-            .options(**sfOptions) \
+            .options(**self._sfOptions) \
             .option("query", query) \
             .load()
 
@@ -62,9 +57,7 @@ class SnowflakeConnector:
         return self._execute(query)
 
     def _get_columns(self, schema_name: str, object_type: str) -> str:
-        """Gets a list of columns in tables or views in a batch."""
-        # Every line here is a column that belongs to the table or view.
-        # This SQL gets data from all tables in a given schema.
+        """Returns list of columns a tables or view"""
         return (f"SELECT c.table_name, c.column_name,  "
                 f"c.data_type, c.is_nullable "
                 f"FROM information_schema.columns c "
@@ -77,7 +70,6 @@ class SnowflakeConnector:
 
     def get_dataset(self, schema_name: str, entry_type: EntryType):
         """Gets data for a table or a view."""
-        # Dataset means that these entities can contain end user data.
         short_type = entry_type.name  # table or view, or the title of enum value
         if ( short_type == "TABLE" ):
             object_type = "BASE TABLE"
