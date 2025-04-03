@@ -10,8 +10,14 @@ class MysqlConnector(IExternalSourceConnector):
 
     def __init__(self, config: Dict[str, str]):
         # PySpark entrypoint
+
+        # Allow override for local jar file (different version / name)
+        jar_path = SPARK_JAR_PATH
+        if config['jar']:
+            jar_path = config['jar']
+
         self._spark = SparkSession.builder.appName("MySQLIngestor") \
-            .config("spark.jars", SPARK_JAR_PATH) \
+            .config("spark.jars", jar_path) \
             .getOrCreate()
 
         self._config = config

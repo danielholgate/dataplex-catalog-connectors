@@ -11,10 +11,11 @@ class SQLServerConnector(IExternalSourceConnector):
 
     def __init__(self, config: Dict[str, str]):
 
+        # Allow override for local jar file (different version / name)
         jar_path = SPARK_JAR_PATH
         if config['jar']:
             jar_path = config['jar']
-            
+
         # PySpark entrypoint
         self._spark = SparkSession.builder.appName("SQLServerIngestor") \
             .config("spark.jars", jar_path) \
