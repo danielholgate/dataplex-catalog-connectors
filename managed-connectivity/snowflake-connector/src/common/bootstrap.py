@@ -20,7 +20,7 @@ def write_jsonl(output_file, json_strings):
         output_file.write(string + "\n")
 
 def process_dataset(
-    connector: SnowflakeConnector,
+    connector: IExternalSourceConnector,
     config: Dict[str, str],
     schema_name: str,
     entry_type: EntryType,
