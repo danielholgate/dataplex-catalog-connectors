@@ -8,9 +8,6 @@ from src.constants import EntryType, SOURCE_TYPE
 FORBIDDEN_SYMBOL = "#"
 ALLOWED_SYMBOL = "!"
 
-## Oracle table and views can contain $ symbols (typically system table and views)
-## BigQuery does not allow tables with $
-
 # Allow for using SID or Service name to connect
 def get_database(config: Dict[str, str]):
  if config['sid'] and len(config['sid']) > 0:
@@ -32,10 +29,10 @@ def create_fqn(config: Dict[str, str], entry_type: EntryType,
         return f"{instance}.{config['service']}"
     if entry_type == EntryType.DB_SCHEMA:
         database = create_fqn(config, EntryType.DATABASE)
-        return f"{get_database(config)}.{schema_name}"
+        return f"{database}.{schema_name}"
     if entry_type in [EntryType.TABLE, EntryType.VIEW]:
         database = create_fqn(config, EntryType.DATABASE)
-        return f"{get_database(config)}.{schema_name}.{table_name}"
+        return f"{database}.{schema_name}.{table_name}"
     return ""
 
 

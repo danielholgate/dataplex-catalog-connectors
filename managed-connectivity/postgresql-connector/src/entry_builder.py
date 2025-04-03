@@ -15,7 +15,7 @@ def choose_metadata_type_udf(data_type: str):
     if data_type.startswith("bytea"):
         return "BYTES"
     if data_type == "boolean":
-        return "BOOL"
+        return "BOOLEAN"
     if data_type.startswith("timestamp"):
         return "TIMESTAMP"
     if data_type.startswith("date"):
