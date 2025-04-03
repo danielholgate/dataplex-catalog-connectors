@@ -3,6 +3,10 @@ import enum
 
 SOURCE_TYPE = "snowflake"
 
+# allow common bootstrap to load connector for specific datasource
+CONNECTOR_MODULE = "src.snowflake_connector"
+CONNECTOR_CLASS = "SnowflakeConnector"
+
 class EntryType(enum.Enum):
     """Hierarchy of Snowflake entries"""
     ACCOUNT: str = "projects/{project}/locations/{location}/entryTypes/snowflake-account"
