@@ -3,28 +3,6 @@ from src.common.util import loadReferencedFile
 from src.common.gcs_uploader import checkDestination
 from src.common.secret_manager import get_password
 
-# Returns string contenr from file at given path
-def loadReferencedFile(file_path) -> str:
-    try:
-        with open(file_path, 'r', encoding='utf-8') as f:
-            content = f.read()
-        return content
-    except Exception as e:
-        print(f"Error while reading file {file_path}: {e}")
-        print("Exiting")
-        sys.exit(1)
-    return None
-
-# Validate GCE folder name
-class ValidateGCS(argparse.Action):
-    def __call__(self, parser, namespace, values, option_string=None):
-        #if not re.match(r'^[A-Za-z0-9_-]+$', values):
-        if values in ['.','..']:
-            print(f"Invalid GCS output_folder: {values}")
-            print(f"Exiting")
-            sys.exit(1)
-        setattr(namespace, self.dest, values)
-
 def read_args():
     """Reads arguments from the command line."""
     parser = argparse.ArgumentParser()
@@ -47,6 +25,8 @@ def read_args():
     parser.add_argument("--user", type=str, required=True, help="Mysql User")
     parser.add_argument("--password_secret", type=str, required=True,
                         help="Resource name in the Google Cloud Secret Manager for the Mysql password")
+    
+    parser.add_argument("--jar", type=str, required=False, help="path to jar file")
     
     parser.add_argument("--ssl_mode", type=str, required=False,choices=['prefer','require','allow','verify-ca','verify-full'],default='prefer',help="SSL mode requirement")
     parser.add_argument("--ssl_cert", type=str, required=False,help="SSL cert file path")

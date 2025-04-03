@@ -14,6 +14,8 @@ def read_args():
     parser.add_argument("--target_entry_group_id", type=str, required=True,
                         help="Dataplex Entry Group ID to import metadata into")
     
+    parser.add_argument("--jar", type=str, required=False, help="path to jar file")
+    
     # Snowflake specific arguments
     parser.add_argument("--account", type=str, required=True,help="Snowflake account to connect to")
     parser.add_argument("--user", type=str, required=True, help="Snowflake User")

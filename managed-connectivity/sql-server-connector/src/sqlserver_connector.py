@@ -10,9 +10,14 @@ class SQLServerConnector(IExternalSourceConnector):
     """Reads data from SQL Server and returns Spark Dataframes."""
 
     def __init__(self, config: Dict[str, str]):
+
+        jar_path = SPARK_JAR_PATH
+        if config['jar']:
+            jar_path = config['jar']
+            
         # PySpark entrypoint
         self._spark = SparkSession.builder.appName("SQLServerIngestor") \
-            .config("spark.jars", SPARK_JAR_PATH) \
+            .config("spark.jars", jar_path) \
             .getOrCreate()
 
         self._config = config

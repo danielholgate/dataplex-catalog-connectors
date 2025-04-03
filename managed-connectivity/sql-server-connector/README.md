@@ -55,7 +55,7 @@ There are three ways to run the connector:
 The metadata connector can be run ad-hoc from the command line for development or testing by directly executing the main.py script.
 
 ### Prepare the environment:
-1. Download the **mssql-jdbc** jar file [from Microsoft](https://docs.microsoft.com/en-us/sql/connect/jdbc/download-microsoft-jdbc-driver-for-sql-server?view=sql-server-2022)
+1. Download the mssql-jdbc-12.10.0.jre11.jar file [from Microsoft](https://docs.microsoft.com/en-us/sql/connect/jdbc/download-microsoft-jdbc-driver-for-sql-server?view=sql-server-2022)
 2. Edit JAR_FILE and SPARK_JAR_PATH in [connection_jar.py](src/connection_jar.py) to match the name and location of the jar file
 3. Ensure a Java Runtime Environment (JRE) is installed in your environment
 4. If you don't have one set up already, create a Python virtual environment to isolate the connector.

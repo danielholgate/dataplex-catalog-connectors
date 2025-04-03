@@ -22,6 +22,8 @@ def read_args():
         help="The port number (usually 1433)")
     parser.add_argument("--user", type=str, required=True, help="SQL Server User")
 
+    parser.add_argument("--jar", type=str, required=False, help="path to jar JDBC file")
+
     password_option_group = parser.add_mutually_exclusive_group()
     password_option_group.add_argument("--password_secret", type=str,help="Google Cloud Secret Manager ID of the password")
     password_option_group.add_argument("--password",type=str,help="password. Recommended only for development or testing. Use password_secret instead")

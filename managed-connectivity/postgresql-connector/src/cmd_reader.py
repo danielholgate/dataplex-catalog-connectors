@@ -27,6 +27,8 @@ def read_args():
     parser.add_argument("--database", type=str, required=True,
         help="Nname of the Postgres database to extract metadata from")
     
+    parser.add_argument("--jar", type=str, required=False, help="path to jar file")
+    
     parser.add_argument("--ssl_mode", type=str,required=False,choices=['prefer','require','allow','verify-ca','verify-full'],help="SSL mode requirement")
     parser.add_argument("--ssl_cert", type=str,required=False,help="SSL cert file path")
     parser.add_argument("--ssl_key", type=str, required=False,help="SSL key file path")

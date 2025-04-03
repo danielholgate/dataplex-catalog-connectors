@@ -14,6 +14,8 @@ def read_args():
                         help="GCP region metadata will be imported into")
     parser.add_argument("--target_entry_group_id", type=str, required=True,
                         help="Dataplex Entry Group ID to import metadata into")
+    
+    parser.add_argument("--jar", type=str, required=False, help="path to jar file")
 
     # Oracle specific arguments
     parser.add_argument("--host", type=str, required=True,

@@ -8,8 +8,13 @@ class SnowflakeConnector:
 
     def __init__(self, config: Dict[str, str]):
         # PySpark entrypoint
+
+        jar_path = SPARK_JAR_PATH
+        if config['jar']:
+            jar_path = config['jar']
+
         self._spark = SparkSession.builder.appName("SnowflakeIngestor") \
-            .config("spark.jars", SPARK_JAR_PATH) \
+            .config("spark.jars",jar_path) \
             .getOrCreate()
 
         self._url = f"{config['account']}.snowflakecomputing.com"
