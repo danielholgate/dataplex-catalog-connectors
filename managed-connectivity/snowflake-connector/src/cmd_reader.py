@@ -58,8 +58,6 @@ def read_args():
             sys.exit(1)     
         else:
             print(f"Generating metadata file in GCS bucket {parsed_args.output_bucket}")
-
-    print(f"\n{parsed_args}\n")
         
     if parsed_args.password_secret is not None:
         try:
