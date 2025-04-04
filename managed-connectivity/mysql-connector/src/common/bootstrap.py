@@ -5,6 +5,7 @@ import importlib
 from src.constants import EntryType
 from src.constants import SOURCE_TYPE
 from src.constants import DB_OBJECT_TYPES_TO_PROCESS
+from src.constants import TOP_ENTRY_HIERARCHY
 from src.constants import generateFileName
 from src.constants import CONNECTOR_MODULE
 from src.constants import CONNECTOR_CLASS
@@ -12,9 +13,8 @@ from src import cmd_reader
 from src import entry_builder
 from src.common import gcs_uploader
 from src import top_entry_builder
-from src.mysql_connector import MysqlConnector
-from src.common.util import generateFolderName
 from src.common.ExternalSourceConnector import IExternalSourceConnector
+from src.common.util import generateFolderName
 
 def write_jsonl(output_file, json_strings):
     """Writes a list of string to the file in JSONL format."""
@@ -35,6 +35,8 @@ def process_dataset(
 def run():
     """Runs a pipeline."""
     config = cmd_reader.read_args()
+
+    print(f"\nExtracting metadata from {SOURCE_TYPE}")
     
     # Build output file name from connection details
     FILENAME = generateFileName(config)
@@ -45,26 +47,25 @@ def run():
     # Instantiate connector class 
     ConnectorClass = getattr(importlib.import_module(CONNECTOR_MODULE), CONNECTOR_CLASS)
     connector = ConnectorClass(config)
-
+    
     schemas_count = 0
     entries_count = 0
 
     # Build the output file name from connection details
-    FILENAME = generateFileName(config)
-    output_path = './output'
+    FILENAME = generateFileName(config) 
+    print(f"Filename is {FILENAME}")
 
-    # check whether directory already exists
+    output_path = './output'
     if not os.path.exists(output_path):
         os.mkdir(output_path)
 
     with open(f"{output_path}/{FILENAME}", "w", encoding="utf-8") as file:
-        # Write top entries that don't require connection to the database
-        file.writelines(top_entry_builder.create(config, EntryType.INSTANCE))
-        file.writelines("\n")
-        file.writelines(top_entry_builder.create(config, EntryType.DATABASE))
-        file.writelines("\n")
+        # Write first the top level entry types to the file which can be generated before processing of the schemas
+        for entry in TOP_ENTRY_HIERARCHY:
+            file.writelines(top_entry_builder.create(config, entry))
+            file.writelines("\n")
 
-        # Get schemas, write them and collect to the list
+        # Get schemas, collect in list
         df_raw_schemas = connector.get_db_schemas()
         schemas = [schema.SCHEMA_NAME for schema in df_raw_schemas.select("SCHEMA_NAME").collect()]
         schemas_json = entry_builder.build_schemas(config, df_raw_schemas).toJSON().collect()

@@ -22,7 +22,7 @@ class OracleConnector(IExternalSourceConnector):
 
         self._config = config
         # Use correct JDBC connection string depending on Service vs SID
-        if ( config['sid'] ):
+        if (config['sid']):
             self._url = f"jdbc:oracle:thin:@{config['host']}:{config['port']}:{config['sid']}"
         else:
             self._url = f"jdbc:oracle:thin:@{config['host']}:{config['port']}/{config['service']}"
@@ -43,7 +43,7 @@ class OracleConnector(IExternalSourceConnector):
 
     def get_db_schemas(self) -> DataFrame:
         """In Oracle, schemas are usernames."""
-        """Query schemas to collect metadata for, excluding Oracle system schemas"""
+        """Gather schemas to collect metadata from. Exclude Oracle system schemas"""
         query = """
         SELECT username FROM dba_users WHERE username not in 
         ('SYS','SYSTEM','XS$NULL',

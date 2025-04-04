@@ -15,6 +15,9 @@ class EntryType(enum.Enum):
     TABLE: str = "projects/{project}/locations/{location}/entryTypes/sqlserver-table"
     VIEW: str = "projects/{project}/locations/{location}/entryTypes/sqlserver-view"
 
+# List of the top level entries from the above hierarchy which will be written to file before schema processing starts
+TOP_ENTRY_HIERARCHY = [EntryType.INSTANCE, EntryType.DATABASE]
+
 # DB objects to extract metadata for
 DB_OBJECT_TYPES_TO_PROCESS = [EntryType.TABLE, EntryType.VIEW]
 

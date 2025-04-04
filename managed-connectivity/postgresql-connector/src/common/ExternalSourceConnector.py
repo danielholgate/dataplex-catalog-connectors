@@ -1,4 +1,3 @@
-from typing import Dict
 from src.constants import EntryType
 from pyspark.sql import DataFrame
 from abc import ABC, abstractmethod

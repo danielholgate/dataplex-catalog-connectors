@@ -1,5 +1,6 @@
 """Command line reader."""
-import argparse, sys
+import argparse
+import sys
 from src.common.util import loadReferencedFile
 from src.common.gcs_uploader import checkDestination
 from src.common.secret_manager import get_password

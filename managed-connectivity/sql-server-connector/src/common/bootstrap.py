@@ -5,6 +5,7 @@ import importlib
 from src.constants import EntryType
 from src.constants import SOURCE_TYPE
 from src.constants import DB_OBJECT_TYPES_TO_PROCESS
+from src.constants import TOP_ENTRY_HIERARCHY
 from src.constants import generateFileName
 from src.constants import CONNECTOR_MODULE
 from src.constants import CONNECTOR_CLASS
@@ -34,6 +35,8 @@ def process_dataset(
 def run():
     """Runs a pipeline."""
     config = cmd_reader.read_args()
+
+    print(f"\nExtracting metadata from {SOURCE_TYPE}")
     
     # Build output file name from connection details
     FILENAME = generateFileName(config)
@@ -57,11 +60,10 @@ def run():
         os.mkdir(output_path)
 
     with open(f"{output_path}/{FILENAME}", "w", encoding="utf-8") as file:
-        # Write top entries that don't require connection to the database
-        file.writelines(top_entry_builder.create(config, EntryType.INSTANCE))
-        file.writelines("\n")
-        file.writelines(top_entry_builder.create(config, EntryType.DATABASE))
-        file.writelines("\n")
+        # Write first the top level entry types to the file which can be generated before processing of the schemas
+        for entry in TOP_ENTRY_HIERARCHY:
+            file.writelines(top_entry_builder.create(config, entry))
+            file.writelines("\n")
 
         # Get schemas, collect in list
         df_raw_schemas = connector.get_db_schemas()

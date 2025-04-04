@@ -15,8 +15,12 @@ class EntryType(enum.Enum):
     TABLE: str = "projects/{project}/locations/{location}/entryTypes/snowflake-table"
     VIEW: str = "projects/{project}/locations/{location}/entryTypes/snowflake-view"
 
+# Top-level entries from above hierarchy which will be written to file before schema processing starts
+TOP_ENTRY_HIERARCHY = [EntryType.ACCOUNT, EntryType.DATABASE]
+
 # DB objects to extract metadata for
 DB_OBJECT_TYPES_TO_PROCESS = [EntryType.TABLE, EntryType.VIEW]
+
 
 def generateFileName(config: dict[str:str]):
     return f"{SOURCE_TYPE}-{config['account']}-{config['database']}.jsonl"
