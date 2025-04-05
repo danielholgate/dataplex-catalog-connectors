@@ -1,25 +1,17 @@
 """Creates entries with PySpark."""
 import pyspark.sql.functions as F
 from pyspark.sql.types import StringType
+from src.datatype_mapping import get_catalog_metadata_type
 
-from src.constants import EntryType, SOURCE_TYPE
+from src.constants import EntryType
+from src.constants import SOURCE_TYPE
 from src import name_builder as nb
 
 
 @F.udf(returnType=StringType())
 def choose_metadata_type_udf(data_type: str):
-    """Choose the metadata type based on Oracle native type."""
-    if data_type.startswith("NUMBER") or data_type in ["INTEGER","SHORTINTEGER","LONGINTEGER","BINARY_FLOAT","BINARY_DOUBLE","FLOAT", "LONG"]:
-        return "NUMBER"
-    if data_type.startswith("VARCHAR") or data_type in ["NVARCHAR2","CHAR","NCHAR","CLOB","NCLOB"]:
-        return "STRING"
-    if data_type in ["LONG","BLOB","RAW","LONG RAW"]:
-        return "BYTES"
-    if data_type.startswith("TIMESTAMP"):
-        return "TIMESTAMP"
-    if data_type == "DATE":
-        return "DATETIME"
-    return "OTHER"
+    """Choose the dataplex metadata type based on native source type."""
+    return get_catalog_metadata_type(data_type)
 
 
 def create_entry_source(column):
@@ -81,7 +73,7 @@ def build_schemas(config, df_raw_schemas):
         location=config["target_location_id"])
 
     # Converts a list of schema names to the Dataplex-compatible form
-    column = F.col("USERNAME")
+    column = F.col("SCHEMA_NAME")
     df = df_raw_schemas.withColumn("name", create_name_udf(column)) \
       .withColumn("fully_qualified_name", create_fqn_udf(column)) \
       .withColumn("parent_entry", F.lit(parent_name)) \
