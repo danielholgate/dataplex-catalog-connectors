@@ -21,6 +21,6 @@ TOP_ENTRY_HIERARCHY = [EntryType.ACCOUNT, EntryType.DATABASE]
 # DB objects to extract metadata for
 DB_OBJECT_TYPES_TO_PROCESS = [EntryType.TABLE, EntryType.VIEW]
 
-
+# metadata file name 
 def generateFileName(config: dict[str:str]):
     return f"{SOURCE_TYPE}-{config['account']}-{config['database']}.jsonl"

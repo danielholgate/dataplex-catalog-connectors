@@ -1,4 +1,4 @@
-"""Constants that are used in the different files."""
+# Snowflake specific constants and functions
 import enum
 
 SOURCE_TYPE = "sqlserver"
@@ -15,12 +15,13 @@ class EntryType(enum.Enum):
     TABLE: str = "projects/{project}/locations/{location}/entryTypes/sqlserver-table"
     VIEW: str = "projects/{project}/locations/{location}/entryTypes/sqlserver-view"
 
-# List of the top level entries from the above hierarchy which will be written to file before schema processing starts
+# Top-level entries from above hierarchy which will be written to file before schema processing starts
 TOP_ENTRY_HIERARCHY = [EntryType.INSTANCE, EntryType.DATABASE]
 
 # DB objects to extract metadata for
 DB_OBJECT_TYPES_TO_PROCESS = [EntryType.TABLE, EntryType.VIEW]
 
+# metadata file name
 def generateFileName(config: dict[str:str]):
     filename = ''
     if config['instancename'] and len(config['instancename']) > 0:

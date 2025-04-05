@@ -14,7 +14,7 @@ class EntryType(enum.Enum):
     TABLE: str = "projects/{project}/locations/{location}/entryTypes/mysql-table"
     VIEW: str = "projects/{project}/locations/{location}/entryTypes/mysql-view"
 
-# Top-level entries from above hierarchy which will be written to file before schema processing starts
+# Top-level entries in EntryType hierarchy which will be written to file before schema processing starts
 TOP_ENTRY_HIERARCHY = [EntryType.INSTANCE, EntryType.DATABASE]
 
 # DB objects to extract metadata for
