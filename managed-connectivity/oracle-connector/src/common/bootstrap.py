@@ -39,7 +39,7 @@ def run():
     print(f"\nExtracting metadata from {SOURCE_TYPE}")
 
     if config['local_output_only']:
-        print("Generating file in local 'output' directory only")
+        print("File will be generated in local 'output' directory only")
     
     # Build output file name from connection details
     FILENAME = generateFileName(config)

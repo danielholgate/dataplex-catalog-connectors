@@ -1,7 +1,8 @@
 """The entrypoint of a pipeline."""
 from typing import Dict
-import sys, os
+import os
 import importlib
+from src import cmd_reader
 from src.constants import EntryType
 from src.constants import SOURCE_TYPE
 from src.constants import DB_OBJECT_TYPES_TO_PROCESS
@@ -9,10 +10,9 @@ from src.constants import TOP_ENTRY_HIERARCHY
 from src.constants import generateFileName
 from src.constants import CONNECTOR_MODULE
 from src.constants import CONNECTOR_CLASS
-from src import cmd_reader
-from src import entry_builder
+from src.common import entry_builder
 from src.common import gcs_uploader
-from src import top_entry_builder
+from src.common import top_entry_builder
 from src.common.ExternalSourceConnector import IExternalSourceConnector
 from src.common.util import generateFolderName
 
@@ -37,35 +37,36 @@ def run():
     config = cmd_reader.read_args()
 
     print(f"\nExtracting metadata from {SOURCE_TYPE}")
+
+    if config['local_output_only']:
+        print("File will be generated in local 'output' directory only")
     
     # Build output file name from connection details
     FILENAME = generateFileName(config)
     FOLDERNAME = ''
-    if config['local_output_only'] == False:
+    if not config['local_output_only']:
         FOLDERNAME = generateFolderName(SOURCE_TYPE)
 
     # Instantiate connector class 
     ConnectorClass = getattr(importlib.import_module(CONNECTOR_MODULE), CONNECTOR_CLASS)
     connector = ConnectorClass(config)
     
-    schemas_count = 0
     entries_count = 0
 
     # Build the output file name from connection details
     FILENAME = generateFileName(config) 
-    print(f"Filename is {FILENAME}")
 
     output_path = './output'
     if not os.path.exists(output_path):
         os.mkdir(output_path)
 
     with open(f"{output_path}/{FILENAME}", "w", encoding="utf-8") as file:
-        # Write first the top level entry types to the file which can be generated before processing of the schemas
+        # First write the top level entry types to file which can be generated without processing the schemas
         for entry in TOP_ENTRY_HIERARCHY:
             file.writelines(top_entry_builder.create(config, entry))
             file.writelines("\n")
 
-        # Get schemas, collect in list
+        # Collect list of schemas for extract
         df_raw_schemas = connector.get_db_schemas()
         schemas = [schema.SCHEMA_NAME for schema in df_raw_schemas.select("SCHEMA_NAME").collect()]
         schemas_json = entry_builder.build_schemas(config, df_raw_schemas).toJSON().collect()
@@ -81,7 +82,9 @@ def run():
                 entries_count += len(objects_json)
                 write_jsonl(file, objects_json)
 
-    print(f"{schemas_count + entries_count} rows written to file {FILENAME}") 
-    if config['local_output_only'] == False:
+    print(f"{entries_count} rows written to file {FILENAME}") 
+    if entries_count < config['min_expected_entries']:
+        print(f"{entries_count} rows is less then min_entries value of {config['min_expected_entries']} - Deleting file")
+    elif config['local_output_only'] == False:
         print(f"Uploading to GCS bucket: {config['output_bucket']}/{FOLDERNAME}")
         gcs_uploader.upload(config,output_path,FILENAME,FOLDERNAME)
