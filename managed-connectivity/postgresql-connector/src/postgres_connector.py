@@ -23,14 +23,19 @@ class PostgresConnector(IExternalSourceConnector):
         self._config = config
         self._url = f"jdbc:postgresql://{config['host']}:{config['port']}/{config['database']}"
 
+        self._connectOptions = {
+            "driver": "org.postgresql.Driver",
+            "url": self._url,
+            "user": config['user'],
+            "password": config['password'],
+            "sslmode": config['ssl_mode'],
+            } 
+
     def _execute(self, query: str) -> DataFrame:
         """A generic method to execute any query."""
         return self._spark.read.format("jdbc") \
-            .option("driver", "org.postgresql.Driver") \
-            .option("url", self._url) \
+            .options(**self._connectOptions) \
             .option("query", query) \
-            .option("user", self._config["user"]) \
-            .option("password", self._config["password"]) \
             .load()
 
     def get_db_schemas(self) -> DataFrame:
