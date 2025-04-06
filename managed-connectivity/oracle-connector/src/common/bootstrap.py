@@ -1,7 +1,9 @@
 """The entrypoint of a pipeline."""
 from typing import Dict
-import sys, os
+import sys
+import os
 import importlib
+from src import cmd_reader
 from src.constants import EntryType
 from src.constants import SOURCE_TYPE
 from src.constants import DB_OBJECT_TYPES_TO_PROCESS
@@ -9,8 +11,7 @@ from src.constants import TOP_ENTRY_HIERARCHY
 from src.constants import generateFileName
 from src.constants import CONNECTOR_MODULE
 from src.constants import CONNECTOR_CLASS
-from src import cmd_reader
-from src import entry_builder
+from src.common import entry_builder
 from src.common import gcs_uploader
 from src.common import top_entry_builder
 from src.common.ExternalSourceConnector import IExternalSourceConnector

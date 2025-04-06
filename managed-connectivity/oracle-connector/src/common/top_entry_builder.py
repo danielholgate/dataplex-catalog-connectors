@@ -2,7 +2,6 @@
 import dataclasses
 import json
 from typing import List, Dict
-
 import proto
 from google.cloud import dataplex_v1
 

@@ -2,8 +2,6 @@
 import pyspark.sql.functions as F
 from pyspark.sql.types import StringType
 from src.datatype_mapping import get_catalog_metadata_type
-
-from src.constants import EntryType
 from src.constants import SOURCE_TYPE
 from src.constants import COLLECTION_ENTRY
 from src import name_builder as nb
@@ -52,7 +50,7 @@ def convert_to_import_items(df, aspect_keys):
 def build_schemas(config, df_raw_schemas):
     """Create a dataframe with database schemas from the list of usernames.
     Args:
-        df_raw_schemas - a dataframe with only one column called USERNAME
+        df_raw_schemas - dataframe with only one column : the schema names to process
     Returns:
         A dataframe with Dataplex-readable schemas.
     """
@@ -121,7 +119,7 @@ def build_dataset(config, df_raw, db_schema, entry_type):
       .agg(F.collect_list("columns").alias("fields"))
 
     # Create nested structured called aspects.
-    # Fields are becoming a part of a `schema` struct
+    # Fields become part of a `schema` struct
     # There is also an entry_aspect that is repeats entry_type as aspect_type
     entry_aspect_name = nb.create_entry_aspect_name(config, entry_type)
     df = df.withColumn("schema",
