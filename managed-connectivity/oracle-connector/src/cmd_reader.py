@@ -39,6 +39,9 @@ def read_args():
     parser.add_argument("--output_folder", type=str, required=False,
                         help="Folder within bucket where generated metadata import file will be written. Name only required")
     
+    parser.add_argument("--min_expected_entries", type=int, required=False,default=-1,
+                        help="Minimum number of entries expected in metadata file, if less entries then file gets deleted. Saftey mechanism for when using Full Entry Sync metadata jobs")
+    
     parsed_args = parser.parse_known_args()[0]
 
     # Argument Validation
@@ -46,14 +49,9 @@ def read_args():
         print("--output_bucket must be supplied if not in --local_output_only mode")
         sys.exit(1)
 
-    if parsed_args.local_output_only == True:
-        print("Generating metadata file in local 'output' directory")
-    else:
-        if not checkDestination(parsed_args.output_bucket):
+    if not parsed_args.local_output_only and not checkDestination(parsed_args.output_bucket):
             print("Exiting")
             sys.exit(1)     
-        else:
-            print(f"Generating metadata file in GCS bucket {parsed_args.output_bucket}")
         
     if parsed_args.password_secret is not None:
         try:

@@ -73,7 +73,6 @@ class OracleConnector(IExternalSourceConnector):
 
     def get_dataset(self, schema_name: str, entry_type: EntryType):
         """Gets data for a table or a view."""
-        # Dataset means that these entities can contain end user data.
         short_type = entry_type.name  # table or view, or the title of enum value
         query = self._get_columns(schema_name, short_type)
         return self._execute(query)
