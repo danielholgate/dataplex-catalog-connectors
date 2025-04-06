@@ -42,10 +42,10 @@ class OracleConnector(IExternalSourceConnector):
             .load()
 
     def get_db_schemas(self) -> DataFrame:
-        """In Oracle, schemas are usernames."""
+        """In Oracle, schemas are usernames. Exclude system schemas"""
         query = """
         SELECT username as SCHEMA_NAME FROM dba_users WHERE username not in 
-        ('SYS','SYSTEM','XS$NULL',
+        ('SYS','SYSTEM','XS$NULL','XDB','PDBADMIN',
         'OJVMSYS','LBACSYS','OUTLN',
         'DBSNMP','APPQOSSYS','DBSFWUSER',
         'GGSYS','ANONYMOUS','CTXSYS',
