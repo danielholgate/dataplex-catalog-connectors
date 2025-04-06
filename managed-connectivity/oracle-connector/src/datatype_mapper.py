@@ -1,4 +1,5 @@
 # Maps datatypes from Oracle to Dataplex Catalog
+
 def get_catalog_metadata_type(data_type: str) -> str:
     if data_type.startswith("NUMBER") or data_type in ["INTEGER","SHORTINTEGER","LONGINTEGER","BINARY_FLOAT","BINARY_DOUBLE","FLOAT", "LONG"]:
         return "NUMBER"

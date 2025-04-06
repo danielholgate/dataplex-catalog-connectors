@@ -1,7 +1,7 @@
 """Creates entries with PySpark."""
 import pyspark.sql.functions as F
 from pyspark.sql.types import StringType
-from src.datatype_mapping import get_catalog_metadata_type
+from src.datatype_mapper import get_catalog_metadata_type
 from src.constants import SOURCE_TYPE
 from src.constants import COLLECTION_ENTRY
 from src import name_builder as nb

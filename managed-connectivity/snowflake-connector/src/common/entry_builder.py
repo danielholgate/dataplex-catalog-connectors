@@ -1,23 +1,16 @@
 """Creates entries with PySpark."""
 import pyspark.sql.functions as F
 from pyspark.sql.types import StringType
-
-from src.constants import EntryType, SOURCE_TYPE
+from src.datatype_mapper import get_catalog_metadata_type
+from src.constants import SOURCE_TYPE
+from src.constants import COLLECTION_ENTRY
 from src import name_builder as nb
 
 
 @F.udf(returnType=StringType())
 def choose_metadata_type_udf(data_type: str):
-    """Choose the metadata type based on Snowflake native type."""
-    if data_type.startswith("NUMBER") or data_type in ["INT", "INTEGER", "BIGINT", "SMALLINT", "TINYINT", "BYTEINT", "FLOAT", "FLOAT4", "FLOAT8", "DOUBLE", "DOUBLE PRECISION", "REAL", "DECIMAL", "NUMERIC"]:
-        return "NUMBER"
-    if data_type.startswith("VARCHAR") or data_type in ["TEXT", "STRING", "CHAR", "CHARACTER", "BINARY", "VARBINARY"]:
-        return "STRING"
-    if data_type.startswith("TIMESTAMP") or data_type in ["TIME", "DATETIME", "DATE"]:
-        return "TIMESTAMP"
-    if data_type == "BOOLEAN":
-        return "BOOLEAN"
-    return "OTHER"
+    """Choose the dataplex metadata type based on native source type."""
+    return get_catalog_metadata_type(data_type)
 
 
 def create_entry_source(column):
@@ -61,7 +54,7 @@ def build_schemas(config, df_raw_schemas):
     Returns:
         A dataframe with Dataplex-readable schemas.
     """
-    entry_type = EntryType.DB_SCHEMA
+    entry_type = COLLECTION_ENTRY
     entry_aspect_name = nb.create_entry_aspect_name(config, entry_type)
 
     # For schema, parent name is the name of the database

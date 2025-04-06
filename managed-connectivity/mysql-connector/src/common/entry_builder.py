@@ -1,25 +1,16 @@
 """Creates entries with PySpark."""
 import pyspark.sql.functions as F
 from pyspark.sql.types import StringType
-
-from src.constants import EntryType, SOURCE_TYPE
+from src.datatype_mapper import get_catalog_metadata_type
+from src.constants import SOURCE_TYPE
+from src.constants import COLLECTION_ENTRY
 from src import name_builder as nb
 
 
 @F.udf(returnType=StringType())
 def choose_metadata_type_udf(data_type: str):
-    """Choose the metadata type based on Mysql native type."""
-    if data_type.startswith("int") or data_type.startswith("tinyint") or data_type.startswith("smallint") or data_type.startswith("mediumint") or data_type.startswith("bigint") or data_type.startswith("decimal") or data_type.startswith("numeric") or data_type.startswith("float") or  data_type.startswith("double") :
-        return "NUMBER"
-    if data_type.startswith("varchar") or data_type.startswith("char") or data_type.startswith("text") or data_type.startswith("tinytext") or data_type.startswith("mediumtext") or data_type.startswith("longtext"):
-        return "STRING"
-    if data_type.startswith("binary") or data_type.startswith("varbinary") or data_type.startswith("blob") or data_type.startswith("tinyblob") or data_type.startswith("mediumblob") or data_type.startswith("longblob"):
-        return "BYTES"
-    if data_type.startswith("timestamp") or data_type.startswith("datetime"):
-        return "TIMESTAMP"
-    if data_type.startswith("date"):
-        return "DATETIME"
-    return "OTHER"
+    """Choose the dataplex metadata type based on native source type."""
+    return get_catalog_metadata_type(data_type)
 
 
 def create_entry_source(column):
@@ -63,7 +54,7 @@ def build_schemas(config, df_raw_schemas):
     Returns:
         A dataframe with Dataplex-readable schemas.
     """
-    entry_type = EntryType.DATABASE
+    entry_type = COLLECTION_ENTRY
     entry_aspect_name = nb.create_entry_aspect_name(config, entry_type)
 
     # For schema, parent name is the name of the database
