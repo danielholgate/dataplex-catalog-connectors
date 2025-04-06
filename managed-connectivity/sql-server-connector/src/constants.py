@@ -18,6 +18,9 @@ class EntryType(enum.Enum):
 # Top-level entries from above hierarchy which will be written to file before schema processing starts
 TOP_ENTRY_HIERARCHY = [EntryType.INSTANCE, EntryType.DATABASE]
 
+# EntryType in hierarchy under which database objects like tables, views are organised and processed
+COLLECTION_ENTRY = EntryType.DB_SCHEMA
+
 # DB objects to extract metadata for
 DB_OBJECT_TYPES_TO_PROCESS = [EntryType.TABLE, EntryType.VIEW]
 

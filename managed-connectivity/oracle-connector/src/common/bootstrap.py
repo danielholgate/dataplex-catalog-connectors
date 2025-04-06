@@ -12,7 +12,7 @@ from src.constants import CONNECTOR_CLASS
 from src import cmd_reader
 from src import entry_builder
 from src.common import gcs_uploader
-from src import top_entry_builder
+from src.common import top_entry_builder
 from src.common.ExternalSourceConnector import IExternalSourceConnector
 from src.common.util import generateFolderName
 

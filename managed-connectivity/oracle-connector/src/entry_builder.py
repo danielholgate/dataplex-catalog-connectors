@@ -5,6 +5,7 @@ from src.datatype_mapping import get_catalog_metadata_type
 
 from src.constants import EntryType
 from src.constants import SOURCE_TYPE
+from src.constants import COLLECTION_ENTRY
 from src import name_builder as nb
 
 
@@ -55,7 +56,7 @@ def build_schemas(config, df_raw_schemas):
     Returns:
         A dataframe with Dataplex-readable schemas.
     """
-    entry_type = EntryType.DB_SCHEMA
+    entry_type = COLLECTION_ENTRY
     entry_aspect_name = nb.create_entry_aspect_name(config, entry_type)
 
     # For schema, parent name is the name of the database

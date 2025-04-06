@@ -15,8 +15,11 @@ class EntryType(enum.Enum):
     TABLE: str = "projects/{project}/locations/{location}/entryTypes/snowflake-table"
     VIEW: str = "projects/{project}/locations/{location}/entryTypes/snowflake-view"
 
-# Top-level entries from above hierarchy which will be written to file before schema processing starts
+# Top-level types in EntryType hierarchy which will be written to file before schema processing starts
 TOP_ENTRY_HIERARCHY = [EntryType.ACCOUNT, EntryType.DATABASE]
+
+# EntryType in hierarchy under which database objects like tables, views are organised and processed ( = schema-level)
+COLLECTION_ENTRY = EntryType.DB_SCHEMA
 
 # DB objects to extract metadata for
 DB_OBJECT_TYPES_TO_PROCESS = [EntryType.TABLE, EntryType.VIEW]

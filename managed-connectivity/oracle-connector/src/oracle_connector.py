@@ -1,6 +1,7 @@
 """Reads Oracle using PySpark."""
 from typing import Dict
-from pyspark.sql import SparkSession, DataFrame
+from pyspark.sql import SparkSession
+from pyspark.sql import DataFrame
 from src.common.ExternalSourceConnector import IExternalSourceConnector
 from src.constants import EntryType
 from src.connection_jar import SPARK_JAR_PATH
@@ -44,7 +45,9 @@ class OracleConnector(IExternalSourceConnector):
     def get_db_schemas(self) -> DataFrame:
         """In Oracle, schemas are usernames. Exclude system schemas"""
         query = """
-        SELECT username as SCHEMA_NAME FROM dba_users WHERE username not in 
+        SELECT username as SCHEMA_NAME 
+        FROM dba_users 
+        WHERE username not in 
         ('SYS','SYSTEM','XS$NULL','XDB','PDBADMIN',
         'OJVMSYS','LBACSYS','OUTLN',
         'DBSNMP','APPQOSSYS','DBSFWUSER',
