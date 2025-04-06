@@ -43,7 +43,8 @@ class OracleConnector(IExternalSourceConnector):
             .load()
 
     def get_db_schemas(self) -> DataFrame:
-        """In Oracle, schemas are usernames. Exclude system schemas"""
+        """Select db schemas to process. Exclude system schemas"""
+        """Column must be called SCHEMA_NAME for common code to process dataframe"""
         query = """
         SELECT username as SCHEMA_NAME 
         FROM dba_users 

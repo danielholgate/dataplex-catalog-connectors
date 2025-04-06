@@ -54,7 +54,6 @@ def run():
 
     # Build the output file name from connection details
     FILENAME = generateFileName(config) 
-    print(f"Filename is {FILENAME}")
 
     output_path = './output'
     if not os.path.exists(output_path):
