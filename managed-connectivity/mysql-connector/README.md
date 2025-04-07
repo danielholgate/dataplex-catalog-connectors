@@ -23,9 +23,9 @@ The MySQL connector takes the following parameters:
 |output_bucket|GCS bucket where the output file will be stored (do not include gs:// prefix)|REQUIRED|
 |output_folder|Folder in the GCS bucket where the export output file will be stored|OPTIONAL|
 
-### Prepare your database environment:
+### Prepare your MySQL environment:
 
-Best practise is to connect to the database using a dedicated user with the minimum privileges required to extract metadata. 
+Best practise is to connect to the database with a dedicated user with the minimum privileges required to extract metadata. 
 1. Create a user in the MySQL instance(s) with the following privileges: 
     * SELECT on information_schema.tables
     * SELECT on information_schema.columns

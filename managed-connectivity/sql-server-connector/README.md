@@ -8,22 +8,6 @@ The connector extracts metadata for the following database objects:
 * Tables
 * Views
 
-It will not extract metadata for the following schemas:
-* INFORMATION_SCHEMA
-* db_accessadmin,db_backupoperator,db_datareader,db_datawriter,db_ddladmin,db_denydatareader,db_denydatawriter,db_owner,db_security,admin,guest,sys
-
-## Prepare your SQL Server environment:
-
-Best practise is to connect to SQL Server using a dedicated user which has the minimum required privileges to extract metadata. 
-
-1. Create a user in SQL Server with at minmum the following privileges:
-    * CONNECT to database
-    * SELECT on sys.columns
-    * SELECT on sys.tables
-    * SELECT on sys.types
-
-2. Add the password for the user to the Google Cloud Secret Manager in your project and note the Secret ID (format is: projects/[project-number]/secrets/[secret-name])
-
 ## Parameters
 The SQL Server connector takes the following parameters:
 |Parameter|Description|Required/Optional|
@@ -43,6 +27,18 @@ The SQL Server connector takes the following parameters:
 |password-secret|GCP Secret Manager ID holding the password for the user. Format: projects/PROJ/secrets/SECRET|REQUIRED|
 |output_bucket|GCS bucket where the output file will be stored|REQUIRED|
 |output_folder|Folder in the GCS bucket where the export output file will be stored|OPTIONAL|
+
+## Prepare your SQL Server environment:
+
+Best practise is to connect to the database using a dedicated user with the minimum privileges required to extract metadata. 
+
+1. Create a user in SQL Server with at minmum the following privileges:
+    * CONNECT to database
+    * SELECT on sys.columns
+    * SELECT on sys.tables
+    * SELECT on sys.types
+
+2. Add the password for the user to the Google Cloud Secret Manager in your project and note the Secret ID (format is: projects/[project-number]/secrets/[secret-name])
 
 ### Running the connector
 There are three ways to run the connector:

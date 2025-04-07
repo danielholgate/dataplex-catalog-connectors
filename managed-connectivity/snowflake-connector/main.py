@@ -1,4 +1,3 @@
-import sys
 from src.common import bootstrap
 
 if __name__ == '__main__':

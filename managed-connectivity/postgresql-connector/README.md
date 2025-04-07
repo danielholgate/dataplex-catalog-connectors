@@ -4,12 +4,11 @@ This connector extracts metadata from PostgreSQL to Google Cloud Dataplex Catalo
 
 ### Target objects and schemas:
 
-The connector extracts metadata for the following database objects:
+Metadata for the following database objects will be extracted:
 * Tables
 * Views
 
 ### Parameters
-
 The PostgreSQL connector takes the following parameters:
 |Parameter|Description|Required/Optional|
 |---------|------------|-------------|
@@ -25,7 +24,7 @@ The PostgreSQL connector takes the following parameters:
 |output_folder|Folder in the GCS bucket where the export output file will be stored|OPTIONAL|
 
 
-## Prepare your database environment:
+## Prepare your PostgreSQL environment:
 
 Best practise is to connect to the database using a dedicated user with minimum privileges required to extract metadata. 
 1. Create a user in the PostgreSQL instance(s) and grant it the following privileges and roles: 

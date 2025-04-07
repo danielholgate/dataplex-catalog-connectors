@@ -1,6 +1,6 @@
 # Oracle Connector
 
-This connector extracts metadata from Snowflake databases to Google Cloud Dataplex Catalog.
+This connector extracts metadata from Snowflake to Google Cloud Dataplex Catalog.
 
 ### Target objects and schemas:
 
@@ -8,24 +8,8 @@ The connector extracts metadata for the following database objects:
 * Tables
 * Views
 
-### Prepare your Snowflake environment:
-
-1. Best practise is to create a minimum-privilege user in Snowflake which will be used by Dataplex to connect and extract metadata about tables and views.
- The user for connecting should be granted a Security Role with the following privileges for the database and schemas, tables, views, materialized views for which metadata needs to be extracted:
-```sql
-grant usage on warehouse <warehouse_name> to role <role_name>;
-grant usage on database <database_name> to role <role_name>;
-grant usage on all schemas in database <database_name> to role <role_name>;
-grant references on all tables in schema <schema_name> to role <role_name>;
-grant references on all views in schema <schema_name> to role <role_name>;
-grant references on all materialized views in schema <schema_name> to role <role_name>;
-```
-
-2. Add the password for the snowflake user to the Google Cloud Secret Manager in your project and note the Secret ID (format is: projects/[project-number]/secrets/[secret-name])
-
 ### Parameters
 The Snowflake connector takes the following parameters:
-
 |Parameter|Description|Required/Optional|
 |---------|------------|-------------|
 |target_project_id|GCP Project ID, or 'global'. Used in the generated Dataplex Entry, Aspects and AspectTypes|REQUIRED|
@@ -40,6 +24,21 @@ The Snowflake connector takes the following parameters:
 |warehouse|Snowflake warehouse to connect to|OPTIONAL|
 |output_bucket|GCS bucket where the output file will be stored|REQUIRED|
 |output_folder|Folder in the GCS bucket where the export output file will be stored|OPTIONAL|
+
+### Prepare your Snowflake environment:
+
+Best practise is to connect to the database using a dedicated user with the minimum privileges required to extract metadata. 
+ The user for connecting should be granted a Security Role with the following privileges for the database and schemas, tables, views, materialized views for which metadata needs to be extracted:
+```sql
+grant usage on warehouse <warehouse_name> to role <role_name>;
+grant usage on database <database_name> to role <role_name>;
+grant usage on all schemas in database <database_name> to role <role_name>;
+grant references on all tables in schema <schema_name> to role <role_name>;
+grant references on all views in schema <schema_name> to role <role_name>;
+grant references on all materialized views in schema <schema_name> to role <role_name>;
+```
+
+2. Add the password for the snowflake user to the Google Cloud Secret Manager in your project and note the Secret ID (format is: projects/[project-number]/secrets/[secret-name])
 
 ## Running the connector
 There are three ways to run the connector:
