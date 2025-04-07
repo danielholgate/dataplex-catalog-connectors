@@ -27,8 +27,7 @@ class PostgresConnector(IExternalSourceConnector):
             "driver": "org.postgresql.Driver",
             "url": self._url,
             "user": config['user'],
-            "password": config['password'],
-            "sslmode": config['ssl_mode'],
+            "password": config['password']
             } 
 
     def _execute(self, query: str) -> DataFrame:
