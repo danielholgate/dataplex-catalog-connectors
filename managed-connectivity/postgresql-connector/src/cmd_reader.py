@@ -30,7 +30,7 @@ def read_args():
     
     parser.add_argument("--jar", type=str, required=False, help="path to jar file")
     
-    parser.add_argument("--ssl_mode", type=str,required=False,const='prefered',choices=['prefer','require','allow','verify-ca','verify-full'],help="SSL mode requirement")
+    parser.add_argument("--ssl_mode", type=str,required=False,choices=['prefer','require','allow','verify-ca','verify-full'],help="SSL mode requirement")
     parser.add_argument("--ssl_cert", type=str,required=False,help="SSL cert file path")
     parser.add_argument("--ssl_key", type=str, required=False,help="SSL key file path")
     parser.add_argument("--ssl_rootcert", type=str, required=False,help="SSL root cert file path")
