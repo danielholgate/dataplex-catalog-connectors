@@ -64,14 +64,9 @@ def read_args():
         print("--output_bucket must be supplied if not in --local_output_only mode")
         sys.exit(1)
 
-    if parsed_args.local_output_only == True:
-        print("Generating metadata file in local 'output' directory")
-    else:
-        if not checkDestination(parsed_args.output_bucket):
+    if not parsed_args.local_output_only and not checkDestination(parsed_args.output_bucket):
             print("Exiting")
             sys.exit(1)     
-        else:
-            print(f"Generating metadata file in GCS bucket {parsed_args.output_bucket}")
 
     if parsed_args.password_secret is not None:
         try:
