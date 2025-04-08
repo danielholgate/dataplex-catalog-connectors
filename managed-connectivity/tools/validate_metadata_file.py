@@ -207,6 +207,15 @@ def validate_jsonl(file_path : str,isDebug : bool, isList : bool, min_lines: int
               set_entrytypes = set(entry_types)
               set_parents = set(parents)
 
+              # Check for duplicate EntryNames
+              count_entry_names = dict(Counter(entry_names))
+              for ename in count_entry_names:
+                 if not ename is None:
+                  c = count_entry_names[ename]
+                  if c > 1:
+                     print(f"!!!{c} entries in file have the same entry name '{ename}'. Must be unique.")
+                     is_valid = False
+
               if isDebug:
 
                 print(f"\nEntity Names:")
