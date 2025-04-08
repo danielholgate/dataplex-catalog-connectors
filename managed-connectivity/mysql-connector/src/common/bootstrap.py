@@ -45,7 +45,7 @@ def run():
     FILENAME = generateFileName(config)
     
     if not config['local_output_only']:
-        FOLDERNAME = config['output_bucket']
+        FOLDERNAME = config['output_folder']
         #FOLDERNAME = generateFolderName(SOURCE_TYPE)
 
     # Instantiate connector class 
