@@ -38,7 +38,7 @@ def read_args():
     output_option_group = parser.add_mutually_exclusive_group()
     output_option_group.add_argument("--local_output_only",action="store_true",help="Output metadata file in local directory only" )
     output_option_group.add_argument("--output_bucket", type=str,
-                        help="Output Cloud Storage bucket for generated metadata import file. Do not include gs:// prefix ")  
+                        help="Destination Google Cloud Storage bucket for generated metadata import file. Do not include gs:// prefix ")  
     parser.add_argument("--output_folder", type=str, required=False,
                         help="Folder within bucket where generated metadata import file will be written. Name only required")
     
@@ -48,8 +48,8 @@ def read_args():
     
     parsed_args = parser.parse_known_args()[0]
 
-    if not parsed_args.local_output_only and parsed_args.output_bucket is None:
-        print("--output_bucket must be supplied if not in --local_output_only mode")
+    if not parsed_args.local_output_only and (parsed_args.output_bucket is None and parsed_args.output_bucket is None):
+        print("both --output_bucket and --output_folder must be supplied if not using --local_output_only")
         sys.exit(1)
 
     if not parsed_args.local_output_only and not checkDestination(parsed_args.output_bucket):
