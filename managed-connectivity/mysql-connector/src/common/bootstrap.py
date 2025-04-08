@@ -43,9 +43,10 @@ def run():
     
     # Build output file name from connection details
     FILENAME = generateFileName(config)
-    FOLDERNAME = ''
+    
     if not config['local_output_only']:
-        FOLDERNAME = generateFolderName(SOURCE_TYPE)
+        FOLDERNAME = config['output_bucket']
+        #FOLDERNAME = generateFolderName(SOURCE_TYPE)
 
     # Instantiate connector class 
     ConnectorClass = getattr(importlib.import_module(CONNECTOR_MODULE), CONNECTOR_CLASS)
