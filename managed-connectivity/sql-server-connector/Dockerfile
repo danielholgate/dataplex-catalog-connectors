@@ -8,20 +8,12 @@ RUN apt install -y wget
 ENV SPARK_EXTRA_JARS_DIR=/opt/spark/jars/
 RUN mkdir -p "${SPARK_EXTRA_JARS_DIR}"
 
-# Install system dependencies for SQL Server driver
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    unixodbc \
-    libgssapi-krb5-2 \
-    && rm -rf /var/lib/apt/lists/*
-
-#COPY mssql-jdbc-9.4.1.jre8.jar "${SPARK_EXTRA_JARS_DIR}"
-
 ENV CONDA_HOME=/opt/miniconda3
 ENV PYSPARK_PYTHON=${CONDA_HOME}/bin/python
 ENV PATH=${CONDA_HOME}/bin:${PATH}
-RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+RUN wget https://repo.anaconda.com/miniconda/Miniconda3-py311_24.9.2-0-Linux-x86_64.sh
 
-RUN bash Miniconda3-py310_23.3.1-0-Linux-x86_64.sh -b -p /opt/miniconda3 \
+RUN bash Miniconda3-py311_24.9.2-0-Linux-x86_64.sh -b -p /opt/miniconda3 \
   && ${CONDA_HOME}/bin/conda config --system --set always_yes True \
   && ${CONDA_HOME}/bin/conda config --system --set auto_update_conda False \
   && ${CONDA_HOME}/bin/conda config --system --prepend channels conda-forge \
