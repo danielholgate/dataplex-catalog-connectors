@@ -1,8 +1,7 @@
 import argparse
 import sys
 from src.common.util import loadReferencedFile
-from src.common.gcs_uploader import checkDestination
-from src.common.secret_manager import get_password
+from src.common.argument_validator import validateArguments
 
 def read_args():
     parser = argparse.ArgumentParser()
@@ -40,11 +39,10 @@ def read_args():
     
     parsed_args = parser.parse_known_args()[0]
 
-    # Argument Validation
-    if not parsed_args.local_output_only and (parsed_args.output_bucket is None and parsed_args.output_bucket is None):
-        print("both --output_bucket and --output_folder must be supplied if not using --local_output_only")
-        sys.exit(1)
+    # Apply common argument validation checks first
+    parsed_args = validateArguments(parsed_args)
 
+    # Snowflake specific authentication validation checks
     if parsed_args.authentication == 'oauth' and parsed_args.token is None:
         print("--token must also be supplied if using -- authentication oauth")
         sys.exit(1)
@@ -52,17 +50,5 @@ def read_args():
     if (parsed_args.authentication is None or parsed_args.authentication == 'password') and parsed_args.password_secret is None:
         print("--password_secret must also be supplied if using --authentication password")
         sys.exit(1)
-
-    if not parsed_args.local_output_only and not checkDestination(parsed_args.output_bucket):
-            print("Exiting")
-            sys.exit(1)     
-        
-    if parsed_args.password_secret is not None:
-        try:
-            parsed_args.password = get_password(parsed_args.password_secret)
-        except Exception as ex:
-            print(ex)
-            print("Exiting")
-            sys.exit(1)
     
     return vars(parsed_args)

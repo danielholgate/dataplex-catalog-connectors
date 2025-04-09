@@ -1,8 +1,6 @@
 import argparse
 import sys
-from src.common.util import loadReferencedFile
-from src.common.gcs_uploader import checkDestination
-from src.common.secret_manager import get_password
+from src.common.argument_validator import validateArguments
 
 def read_args():
     """Reads arguments from the command line."""
@@ -44,21 +42,7 @@ def read_args():
     
     parsed_args = parser.parse_known_args()[0]
 
-    # Argument Validation
-    if not parsed_args.local_output_only and (parsed_args.output_bucket is None and parsed_args.output_bucket is None):
-        print("both --output_bucket and --output_folder must be supplied if not using --local_output_only")
-        sys.exit(1)
-
-    if not parsed_args.local_output_only and not checkDestination(parsed_args.output_bucket):
-            print("Exiting")
-            sys.exit(1)     
-        
-    if parsed_args.password_secret is not None:
-        try:
-            parsed_args.password = get_password(parsed_args.password_secret)
-        except Exception as ex:
-            print(ex)
-            print("Exiting")
-            sys.exit(1)
+    # Apply common arguement validation checks first
+    parsed_args = validateArguments(parsed_args)
     
     return vars(parsed_args)

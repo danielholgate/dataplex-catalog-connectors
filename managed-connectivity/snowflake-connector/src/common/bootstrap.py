@@ -43,9 +43,10 @@ def run():
     
     # Build output file name from connection details
     FILENAME = generateFileName(config)
-    FOLDERNAME = ''
+    
     if not config['local_output_only']:
-        FOLDERNAME = generateFolderName(SOURCE_TYPE)
+        FOLDERNAME = config['output_folder']
+        #FOLDERNAME = generateFolderName(SOURCE_TYPE)
 
     # Instantiate connector class 
     ConnectorClass = getattr(importlib.import_module(CONNECTOR_MODULE), CONNECTOR_CLASS)
@@ -90,4 +91,3 @@ def run():
     elif not config['local_output_only']:
         print(f"Uploading to GCS bucket: {config['output_bucket']}/{FOLDERNAME}")
         gcs_uploader.upload(config,output_path,FILENAME,FOLDERNAME)
-
