@@ -1,0 +1,37 @@
+{
+    "ADDITIONAL_CONNECTOR_ARGS": [
+        "--target_project_id=daniel-dataplex",
+        "--target_location_id=us-central1",
+        "--target_entry_group_id=mysql",
+        "--host=mysql",
+        "--port=3306",
+        "--user=dataplex_agent",
+        "--password_secret=projects/440165342669/secrets/mysql",
+        "--database=classicmodels"
+    ],
+    "CLOUD_REGION": "us-central1",
+    "CLOUD_STORAGE_BUCKET_ID": "workflows-dataplex-metadata2",
+    "CREATE_TARGET_ENTRY_GROUP": false,
+    "CUSTOM_CONTAINER_IMAGE": "us-central1-docker.pkg.dev/daniel-dataplex/docker-repo/dataplex-mysql-pyspark:latest",
+    "IMPORT_JOB_LOG_LEVEL": "INFO",
+    "IMPORT_JOB_SCOPE_ASPECT_TYPES": [
+        "projects/daniel-dataplex/locations/us-central1/aspectTypes/mysql-instance",
+        "projects/daniel-dataplex/locations/us-central1/aspectTypes/mysql-table",
+        "projects/daniel-dataplex/locations/us-central1/aspectTypes/mysql-database",
+        "projects/daniel-dataplex/locations/us-central1/aspectTypes/mysql-view",
+        "projects/dataplex-types/locations/global/aspectTypes/schema"
+    ],
+    "IMPORT_JOB_SCOPE_ENTRY_TYPES": [
+        "projects/daniel-dataplex/locations/us-central1/entryTypes/mysql-instance",
+        "projects/daniel-dataplex/locations/us-central1/entryTypes/mysql-table",
+        "projects/daniel-dataplex/locations/us-central1/entryTypes/mysql-database",
+        "projects/daniel-dataplex/locations/us-central1/entryTypes/mysql-view"
+    ],
+    "JAR_FILE_GCS_PATH": "gs://dataplex-metadata-collection-usc1/jar-files/mysql-connector-j-9.2.0.jar",
+    "NETWORK_TAGS": [],
+    "NETWORK_URI": "projects/daniel-dataplex/global/networks/default-auto",
+    "SERVICE_ACCOUNT": "440165342669-compute@developer.gserviceaccount.com",
+    "SUBNETWORK_URI": "",
+    "TARGET_ENTRY_GROUP_ID": "mysql",
+    "TARGET_PROJECT_ID": "daniel-dataplex"
+}
