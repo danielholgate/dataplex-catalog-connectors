@@ -19,33 +19,33 @@ def read_args():
     # SQL Server specific arguments
     parser.add_argument("--host", type=str, required=True,
         help="The SQL Server host server")
-    parser.add_argument("--port", type=str, required=True,
-        help="The port number (usually 1433)")
+    parser.add_argument("--port", type=int, required=True,const=1433
+        help="SQL Server port number ")
     parser.add_argument("--user", type=str, required=True, help="SQL Server User")
 
-    parser.add_argument("--jar", type=str, required=False, help="path to jar JDBC file")
+    parser.add_argument("--jar", type=str, required=False, help="path to JDBC jar file")
 
     password_option_group = parser.add_mutually_exclusive_group()
     password_option_group.add_argument("--password_secret", type=str,help="Google Cloud Secret Manager ID of the password")
     password_option_group.add_argument("--password",type=str,help="password. Recommended only for development or testing. Use password_secret instead")
     
     parser.add_argument("--instancename", type=str,required=False,
-        help="The name of the SQL Server database to extract metadata from")
+        help="SQL Server instance to connect to")
     parser.add_argument("--database", type=str,required=True,
         help="SQL Server database")
     parser.add_argument("--login_timeout", type=int,required=False,default=0,
         help="Allowed timeout in seconds to establish connection")
-    parser.add_argument("--encrypt", type=str,required=False,
+    parser.add_argument("--encrypt", type=bool,required=False,
         help="Encrypt connection to database")
-    parser.add_argument("--trustservercertificate", type=str,required=False,
-        help="Trust SQL Server TLS certificate or not for connection")
-    parser.add_argument("--hostnameincertificate", type=str,required=False,
-        help="domain of host certificate")
+    parser.add_argument("--trust_server_certificate", type=bool,required=False,
+        help="Trust the server TLS certificate for connection")
+    parser.add_argument("--hostname_in_certificate", type=str,required=False,
+        help="Domain of the host certificate")
     
-    parser.add_argument("--ssl", type=bool,required=False,default=True,help="SSL key file path")
+    parser.add_argument("--ssl", type=bool,required=False,default=True,help="SSL key file path",default=True)
     parser.add_argument("--ssl_mode",type=str,required=False,default='prefer',choices=['prefer','require','allow','verify-ca','verify-full'],help="SSL mode requirement")
 
-    # Output destination arguments. Generate local only, or local + to GCS bucket
+    # Output destination arguments. Generate metadata file in local directory only, or local + to GCS bucket
     output_option_group = parser.add_mutually_exclusive_group()
     output_option_group.add_argument("--local_output_only",action="store_true",help="Output metadata file in local directory only" )
     output_option_group.add_argument("--output_bucket", type=str,
@@ -56,12 +56,11 @@ def read_args():
     parser.add_argument("--min_expected_entries", type=int, required=False,default=-1,
                         help="Minimum number of entries expected in metadata file, if less then file gets deleted. Saftey mechanism for when using Full Entry Sync metadata jobs")
     
-    
     parsed_args = parser.parse_known_args()[0]
 
     # Argument Validation
-    if not parsed_args.local_output_only and parsed_args.output_bucket is None:
-        print("--output_bucket must be supplied if not in --local_output_only mode")
+    if not parsed_args.local_output_only and (parsed_args.output_bucket is None and parsed_args.output_bucket is None):
+        print("both --output_bucket and --output_folder must be supplied if not using --local_output_only")
         sys.exit(1)
 
     if not parsed_args.local_output_only and not checkDestination(parsed_args.output_bucket):

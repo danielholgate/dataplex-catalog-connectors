@@ -26,7 +26,7 @@ def read_args():
     parser.add_argument("--password_secret", type=str, required=True,
         help=" Google Cloud Secret Manager ID for the Postgres password")
     parser.add_argument("--database", type=str, required=True,
-        help="Nname of the Postgres database to extract metadata from")
+        help="Name of the Postgres database to extract metadata from")
     
     parser.add_argument("--jar", type=str, required=False, help="path to jar file")
     
@@ -50,8 +50,8 @@ def read_args():
     parsed_args = parser.parse_known_args()[0]
 
     # Argument Validation
-    if not parsed_args.local_output_only and parsed_args.output_bucket is None:
-        print("--output_bucket must be supplied if not in --local_output_only mode")
+    if not parsed_args.local_output_only and (parsed_args.output_bucket is None and parsed_args.output_bucket is None):
+        print("both --output_bucket and --output_folder must be supplied if not using --local_output_only")
         sys.exit(1)
 
     if not parsed_args.local_output_only and not checkDestination(parsed_args.output_bucket):
