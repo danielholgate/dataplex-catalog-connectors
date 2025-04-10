@@ -1,7 +1,7 @@
 {
 type: "IMPORT",
 import_spec: {
-  source_storage_uri: 'gs://dataplex-metadata-collector/postgresql/202543-14837/',
+  source_storage_uri: "gs://dataplex-metadata-collector/postgresql/202543-14837/",
 scope: {
   entryGroups: [
     "projects/daniel-dataplex/locations/us-central1/entryGroups/postgres"

@@ -1,5 +1,20 @@
+# Copyright 2025 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 from src.common.gcs_uploader import checkDestination
 from src.common.secret_manager import get_password
+import argparse
 import sys
 
 # Standard validation checks and value replacements. Additional checks can be applied in cmd_reader for specific data sources
@@ -21,5 +36,23 @@ def validateArguments(parsed_args):
             print("Exiting")
             sys.exit(1)
 
-    return parsed_args
-            
+# Validates that at least one of given arguments has been supplied
+def oneOptionRequired(args : argparse.Namespace, checkParams : list):
+    checkargs = vars(args)
+    provided = False
+    for arg in checkParams:
+        if checkargs.get(arg) is not None:
+            return True
+    return False
+
+# true/false argument type
+def true_or_false(arg):
+    ua = str(arg).upper()
+    if 'TRUE'.startswith(ua):
+       return True
+    elif 'FALSE'.startswith(ua):
+       return False
+    else:
+       print(f"Received parameter value '{arg}' but expected true or false")
+       print("Exiting")
+       sys.exit(1)

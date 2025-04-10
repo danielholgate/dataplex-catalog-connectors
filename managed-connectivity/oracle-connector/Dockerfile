@@ -1,3 +1,17 @@
+# Copyright 2025 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 FROM debian:11-slim
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -7,7 +21,6 @@ RUN apt install -y wget
 
 ENV SPARK_EXTRA_JARS_DIR=/opt/spark/jars/
 RUN mkdir -p "${SPARK_EXTRA_JARS_DIR}"
-COPY ojdbc11.jar "${SPARK_EXTRA_JARS_DIR}"
 
 ENV CONDA_HOME=/opt/miniconda3
 ENV PYSPARK_PYTHON=${CONDA_HOME}/bin/python
