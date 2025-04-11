@@ -17,7 +17,7 @@
 PROJECT_ID=PROJECTID
 REGION=us-central1
 
-IMAGE_NAME="dataplex-snowflake-pyspark"
+IMAGE_NAME="bq-catalog-snowflake-pyspark"
 IMAGE_VERSION="0.0.1"
 IMAGE=${IMAGE_NAME}:${IMAGE_VERSION}
 

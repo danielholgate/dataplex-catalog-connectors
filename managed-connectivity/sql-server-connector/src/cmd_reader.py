@@ -16,7 +16,7 @@ import argparse
 import sys
 from src.common.argument_validator import validateArguments
 from src.common.argument_validator import true_or_false
-from src.common.argument_validator import oneOptionRequired
+from src.common.argument_validator import checkOptionProvided
 
 def read_args():
     """Reads arguments from the command line."""
@@ -72,14 +72,11 @@ def read_args():
     
     parsed_args = parser.parse_known_args()[0]
 
-    if not oneOptionRequired(parsed_args, ["password_secret", "password"]):
-        print("Error: Either --password_secret or --password must be provided. Exiting")
-        sys.exit(1)
-
-    print(f"\nParsed ARGS: {parsed_args}\n")
-
-    # Apply common argument validation checks first
+     # Apply common argument validation checks first
     parsed_args = validateArguments(parsed_args)
 
+    if not checkOptionProvided(parsed_args, ["password_secret", "password"]):
+        print("Error: Either --password_secret or --password must be provided. Exiting")
+        sys.exit(1)
 
     return vars(parsed_args)

@@ -1,6 +1,6 @@
 # MySQL Connector
 
-This connector extracts metadata from MySQL to Google Cloud Dataplex Catalog.
+This connector extracts metadata from MySQL to BigQuery Universal Catalog.
 
 ### Target objects and schemas:
 
@@ -36,7 +36,7 @@ Best practise is to connect to the database with a dedicated user with the minim
 There are three ways to run the connector:
 1) [Run the script directly from the command line](###running-from-the-command-line) (extract metadata to GCS only)
 2) [Run as a container via a Dataproc Serverless job](###build-a-container-and-extract-metadata-with-a-dataproc-serverless-job) (extract metadata to GCS only)
-3) [Schedule and run as a container via Workflows](###schedule-end-to-end-metadata-extraction-and-import-using-google-cloud-workflows) (End-to-end. Extracts metadata into GCS + imports into Dataplex)
+3) [Schedule and run as a container via Workflows](###schedule-end-to-end-metadata-extraction-and-import-using-google-cloud-workflows) (End-to-end. Extracts metadata into GCS + imports into BigQuery Universal Catalog)
 
 ### 1. Running from the command line
 
@@ -155,10 +155,10 @@ See the documentatrion for [gcloud dataproc batches submit pyspark](https://clou
 
 To run an end-to-end metadata extraction and import process, run the container via Google Cloud Workflows. 
 
-Follow the Dataplex documentation here [Import metadata from a custom source using Workflows](https://cloud.google.com/dataplex/docs/import-using-workflows-custom-source) and use [this yaml file](https://github.com/GoogleCloudPlatform/cloud-dataplex/blob/main/managed-connectivity/cloud-workflows/byo-connector/templates/byo-connector.yaml) as a template.
+Follow the documentation here [Import metadata from a custom source using Workflows](https://cloud.google.com/dataplex/docs/import-using-workflows-custom-source) and use [this yaml file](https://github.com/GoogleCloudPlatform/cloud-dataplex/blob/main/managed-connectivity/cloud-workflows/byo-connector/templates/byo-connector.yaml) as a template.
 
 
-## Manually running a metadata import into Dataplex
+## Manually running a metadata import into BigQuery Universal Catalog
 
-To import a metadata import file into Dataplex, see the [Dataplex documetation](https://cloud.google.com/dataplex/docs/import-metadata#import-metadata) for full instructions about calling the API.
+To import a metadata import file into BigQuery Universal Catalog, see the [documetation](https://cloud.google.com/dataplex/docs/import-metadata#import-metadata) for full instructions about calling the API.
 The [samples](/samples) directory contains an examples metadata import file and request file for callng the API

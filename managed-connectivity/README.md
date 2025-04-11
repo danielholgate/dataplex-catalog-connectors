@@ -1,6 +1,8 @@
-# Google Cloud Dataplex - Managed Connectivity Connectors for External Systems
+# BigQuery Universal Catalog - Managed Connectivity Metadata Connectors
 
-This repo contains connectors for importing metadata from external systems to Google Dataplex, based on the [Managed connectivity framework](https://cloud.google.com/dataplex/docs/managed-connectivity-overview) 
+These connectors extrcact from the following external systems into BigQuery Universal Catalog, based on the [Managed connectivity framework](https://cloud.google.com/dataplex/docs/managed-connectivity-overview) 
+
+Disclaimer: These connectors are not official Google products and are provided on an as-is basis
 
 ## Connector List
 

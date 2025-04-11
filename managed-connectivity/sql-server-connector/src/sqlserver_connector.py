@@ -48,6 +48,7 @@ class SQLServerConnector(IExternalSourceConnector):
             "database": config['database'],
             "password": config['password'],
             "loginTimeout": config['login_timeout'],
+            "encrypt" : config['encrypt'],
             "ssl": config['ssl'],
             "sslmode": config['ssl_mode'],
             "trustServerCertificate": config['trust_server_certificate']

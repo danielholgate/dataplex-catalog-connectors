@@ -56,7 +56,7 @@ def read_args():
     
     parsed_args = parser.parse_known_args()[0]
 
-    # Apply common arguement validation checks first
+    # Apply common argument validation checks first
     parsed_args = validateArguments(parsed_args)
     
     return vars(parsed_args)

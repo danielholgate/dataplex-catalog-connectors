@@ -38,7 +38,7 @@ def read_args():
                         help="MySQL database to connect to")
     parser.add_argument("--user", type=str, required=True, help="Mysql User")
     parser.add_argument("--password_secret", type=str, required=True,
-                        help="Resource name in the Google Cloud Secret Manager for the Mysql password")
+                        help="Google Secrets Manager ID for MySQL password")
     
     parser.add_argument("--jar", type=str, required=False, help="path to jar file")
     

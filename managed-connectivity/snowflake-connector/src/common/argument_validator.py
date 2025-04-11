@@ -35,14 +35,14 @@ def validateArguments(parsed_args):
             print(ex)
             print("Exiting")
             sys.exit(1)
+    return parsed_args
 
-# Validates that at least one of given arguments has been supplied
-def oneOptionRequired(args : argparse.Namespace, checkParams : list):
-    checkargs = vars(args)
+# Validates that a value for least one of given list arguments has been supplied
+def checkOptionProvided(args : argparse.Namespace, checkParams : list):
     provided = False
     for arg in checkParams:
-        if checkargs.get(arg) is not None:
-            return True
+            if args.__contains__(arg) and getattr(args, arg) is not None:
+                return True
     return False
 
 # true/false argument type

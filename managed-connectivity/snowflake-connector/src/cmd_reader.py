@@ -58,7 +58,7 @@ def read_args():
 
     # Snowflake specific authentication validation checks
     if parsed_args.authentication == 'oauth' and parsed_args.token is None:
-        print("--token must also be supplied if using -- authentication oauth")
+        print("--token must also be supplied if using --authentication oauth")
         sys.exit(1)
     
     if (parsed_args.authentication is None or parsed_args.authentication == 'password') and parsed_args.password_secret is None:

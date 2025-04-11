@@ -1,39 +1,36 @@
-# How to become a contributor and submit your own code
+# How to Contribute
 
-## Contributor License Agreements
+We would love to accept your patches and contributions to this project.
 
-We'd love to accept your patches! Before we can take them, we
-have to jump a couple of legal hurdles.
+## Before you begin
 
-Please fill out either the individual or corporate Contributor License Agreement
-(CLA).
+### Sign our Contributor License Agreement
 
-  * If you are an individual writing original source code and you're sure you
-    own the intellectual property, then you'll need to sign an [individual CLA]
-    (https://developers.google.com/open-source/cla/individual).
-  * If you work for a company that wants to allow you to contribute your work,
-    then you'll need to sign a [corporate CLA]
-    (https://developers.google.com/open-source/cla/corporate).
+Contributions to this project must be accompanied by a
+[Contributor License Agreement](https://cla.developers.google.com/about) (CLA).
+You (or your employer) retain the copyright to your contribution; this simply
+gives us permission to use and redistribute your contributions as part of the
+project.
 
-Follow either of the two links above to access the appropriate CLA and
-instructions for how to sign and return it. Once we receive it, we'll be able to
-accept your pull requests.
+If you or your current employer have already signed the Google CLA (even if it
+was for a different project), you probably don't need to do it again.
 
-## Contributing A Patch
+Visit <https://cla.developers.google.com/> to see your current agreements or to
+sign a new one.
 
-1. Submit an issue describing your proposed change to the repo in question.
-1. The repo owner will respond to your issue promptly.
-1. If your proposed change is accepted, and you haven't already done so, sign a
-   Contributor License Agreement (see details above).
-1. Fork the desired repo, develop and test your code changes.
-1. Ensure that your code adheres to the existing style in the sample to which
-   you are contributing. Refer to the
-   [Google Cloud Platform Samples Style Guide]
-   (https://github.com/GoogleCloudPlatform/Template/wiki/style.html) for the
-   recommended coding standards for this organization.
-1. Ensure that your code has an appropriate set of unit tests which all pass.
-1. Submit a pull request.
+### Review our Community Guidelines
 
-## Style
+This project follows [Google's Open Source Community
+Guidelines](https://opensource.google/conduct/).
 
-All code should follow the [Sample Format Guidelines](https://googlecloudplatform.github.io/samples-style-guide/)
+## Contribution process
+
+### Code Reviews
+
+All submissions, including submissions by project members, require review. We
+use [GitHub pull requests](https://docs.github.com/articles/about-pull-requests)
+for this purpose.
+
+### Dev Guide
+Please refer to the developer guidelines 
+[here](https://github.com/GoogleCloudPlatform/gcsfuse/blob/master/docs/dev_guide.md).
