@@ -14,5 +14,12 @@
 
 # Jar files and paths for when connector is containerised
 
-JAR_FILE = "mssql-jdbc-12.8.1.jre11.jar"
-SPARK_JAR_PATH = f'/opt/spark/jars/{JAR_FILE}'
+from src.sqlserver_connector import JDBC_JAR
+
+SPARK_JAR_PATH = f"/opt/spark/jars"
+
+def getJarPath():
+    return f"{SPARK_JAR_PATH}/{JDBC_JAR}"
+
+def getUserJarPath(userJar : str):
+    return f"{SPARK_JAR_PATH}/{userJar}"

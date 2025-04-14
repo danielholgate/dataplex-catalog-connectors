@@ -130,19 +130,19 @@ Note: The service account you submit for the job using **--service-account** bel
 gcloud dataproc batches submit pyspark \
     --project=my-gcp-project-id \
     --region=us-central1 \
-    --batch=0001 \
+    --batch=mysql-metadata-0001 \
     --deps-bucket=dataplex-metadata-collection-bucket  \
-    --container-image=us-central1-docker.pkg.dev/my-gcp-project-id/docker-repo/mysql-pyspark@sha256:dab02ca02f60a9e12769999191b06d859b947d89490d636a34fc734d4a0b6d08 \
-    --service-account=440165342669-compute@developer.gserviceaccount.com \
+    --container-image=us-central1-docker.pkg.dev/my-gcp-project-id/docker-repo/unified-catalog-mysql-pyspark:latest \
+    --service-account=440992669-compute@developer.gserviceaccount.com \
     --jars=gs://gcs/path/to/mysql-connector-j-9.2.0.jar  \
-    --network=Your-Network-Name \
+    --network=Your-Network-ID \
     main.py \
 --  --target_project_id my-gcp-project-id \
       --target_location_id us-central1	\
       --target_entry_group_id mysql \
       --host the-mysql-server \
       --port 3306 \
-      --user dataplexagent \
+      --user dataplexagent_mysql \
       --password-secret projects/73819994526/secrets/dataplexagent_mysql \
       --database employees \
       --output_bucket gcs_output_bucket_path \

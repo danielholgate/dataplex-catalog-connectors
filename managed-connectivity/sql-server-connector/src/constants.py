@@ -17,6 +17,8 @@ import enum
 
 SOURCE_TYPE = "sqlserver"
 
+JDBC_JAR = "mssql-jdbc-12.10.0.jre11.jar"
+
 # allow common bootstrap to load connector for specific datasource
 CONNECTOR_MODULE = "src.sqlserver_connector"
 CONNECTOR_CLASS = "SQLServerConnector"

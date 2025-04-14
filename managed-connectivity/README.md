@@ -1,8 +1,8 @@
-# BigQuery Universal Catalog - Managed Connectivity Metadata Connectors
+# Connectors for BigQuery Universal Catalog 
 
-These connectors extrcact from the following external systems into BigQuery Universal Catalog, based on the [Managed connectivity framework](https://cloud.google.com/dataplex/docs/managed-connectivity-overview) 
+These connectors extract metadata from external systems into [BigQuery Universal Catalog](https://cloud.google.com/dataplex/docs/catalog-overview) in order to enhance the collection of metadata which occurs for services on Google Cloud.
 
-Disclaimer: These connectors are not official Google products and are provided on an as-is basis
+Disclaimer: These connectors are not official Google products and are provided on an as-is basis.
 
 ## Connector List
 

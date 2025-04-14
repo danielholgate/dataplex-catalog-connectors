@@ -17,7 +17,8 @@ from typing import Dict
 from pyspark.sql import SparkSession, DataFrame
 from src.common.ExternalSourceConnector import IExternalSourceConnector
 from src.constants import EntryType
-from src.connection_jar import SPARK_JAR_PATH
+from src.connection_jar import getJarPath
+from src.connection_jar import getUserJarPath
 
 class SQLServerConnector(IExternalSourceConnector):
     """Reads data from SQL Server and returns Spark Dataframes."""
@@ -25,9 +26,9 @@ class SQLServerConnector(IExternalSourceConnector):
     def __init__(self, config: Dict[str, str]):
 
         # Allow override for local jar file (different version / name)
-        jar_path = SPARK_JAR_PATH
+        jar_path = getJarPath()
         if config['jar']:
-            jar_path = config['jar']
+            jar_path = getJarPath(config['jar'])
 
         # PySpark entrypoint
         self._spark = SparkSession.builder.appName("SQLServerIngestor") \
