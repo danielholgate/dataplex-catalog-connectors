@@ -25,7 +25,7 @@ The SQL Server connector takes the following parameters:
 |ssl_mode|'prefer','require','allow','verify-ca', or 'verify-full|prefer|OPTIONAL
 |trust_server_certificate|Trust SQL Server TLS certificate or not|True|OPTIONAL
 |hostname_in_certificate|domain of host certificate||OPTIONAL
-|user|User to connect with||REQUIRED|
+|user|User name to connect with||REQUIRED|
 |password_secret|GCP Secret Manager ID holding the password for the user||REQUIRED|
 |password|Plain text password for the user. Only use for dev or testing, for production use --password_secret||REQUIRED|
 |output_bucket|GCS bucket where the output file will be stored||REQUIRED|
@@ -49,7 +49,9 @@ Best practise is to connect to the database using a dedicated user with the mini
 
 The metadata connector can be run from the command line by executing the main.py script.
 
-#### Prerequisites:
+#### Prerequisites
+
+The following tools must be installed in order to run the connector:
 
 * Python 3.x. [See here for installation instructions](https://cloud.google.com/python/docs/setup#installing_python)
 * Java Runtime Environment (JRE)
@@ -61,27 +63,28 @@ The metadata connector can be run from the command line by executing the main.py
     ```bash
     pip3 install pyspark
     ```
+* You must run the script with a user that is authenticated to Google Cloud in order to access services there.  You can use [Application Default Credentials](https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login) for the connector to access Google APIs. 
 
-#### Installation
+(To use gcloud you may need to [install the Google Cloud SDK](https://cloud.google.com/sdk/docs/install):
+
+```bash
+    gcloud auth application-default login
+```
+The authenticated user must have the following roles for the project: roles/secretmanager.secretAccessor, roles/storage.objectUser
+
+Note: 
+
+#### Set up
 * Ensure you are in the root directory of the connector
     ```bash
     cd sql-server-connector
     ```
-* Download the mssql-jdbc-12.10.0.jre11.jar file from the [Microsoft Github repo](https://github.com/microsoft/mssql-jdbc/releases/tag/v12.10.0) and save it in the directory
+* Download the [mssql-jdbc-12.10.0.jre11.jar](https://github.com/microsoft/mssql-jdbc/releases/download/v12.10.0/mssql-jdbc-12.10.0.jre11.jar) file from the [Microsoft Github repo](https://github.com/microsoft/mssql-jdbc/releases/tag/v12.10.0) and save it in the directory
     * **Note** If you use a different version of the jdbc jar then use the --jar parameter in commands below ie. --jar mssql-jdbc-12.10.2.jre11.jar
 * Install all python dependencies 
     ```bash
     pip3 install -r requirements.txt
     ```
-* Set the [Application Default Credentials](https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login) for the connector to access Google APIs:
-    ```bash
-    gcloud auth application-default login
-    ```
-Note: To use gcloud you may need to [install the Google Cloud SDK](https://cloud.google.com/sdk/docs/install)
-
-Note the GCP identity running the connector requires the following IAM Roles in the target project:
-- roles/secretmanager.secretAccessor
-- roles/storage.objectUser
 
 #### Run the connector
 To execute the metadata extraction run the following command (substituting appropriate values for your environment):
@@ -115,7 +118,7 @@ The [samples](/samples) directory contains a sample metadata file and request fi
 See below for the section on using Google Workflows to create an end-to-end integration which both extracts metadata and imports it on a regular schedule.
 
 
-## Build a container and run the connector using Dataproc Serverless
+## Build a container and running the connector using Dataproc Serverless
 
 Building a Docker container for the connector allows it to be run from a variety of Google Cloud services including [Dataproc Serverless](https://cloud.google.com/dataproc-serverless/docs).
 
@@ -166,7 +169,7 @@ gcloud dataproc batches submit pyspark \
 ```
 See [the documentation](https://cloud.google.com/sdk/gcloud/reference/dataproc/batches/submit/pyspark) for more information about Dataproc Serverless pyspark jobs
 
-## Schedule end-to-end metadata extraction and import into BigQuery Universal Catalog using Google Cloud Workflows
+## Scheduling end-to-end metadata extraction and import into BigQuery Universal Catalog with Google Cloud Workflows
 
 An an end-to-end metadata extraction and import process can run via Google Cloud Workflows. 
 
