@@ -25,7 +25,7 @@ The SQL Server connector takes the following parameters:
 |ssl_mode|'prefer','require','allow','verify-ca', or 'verify-full|prefer|OPTIONAL
 |trust_server_certificate|Trust SQL Server TLS certificate or not|True|OPTIONAL
 |hostname_in_certificate|domain of host certificate||OPTIONAL
-|user|Username to connect with||REQUIRED|
+|user|User to connect with||REQUIRED|
 |password_secret|GCP Secret Manager ID holding the password for the user||REQUIRED|
 |password|Plain text password for the user. Only use for dev or testing, for production use --password_secret||REQUIRED|
 |output_bucket|GCS bucket where the output file will be stored||REQUIRED|
