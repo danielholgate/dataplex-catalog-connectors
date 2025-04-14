@@ -109,7 +109,7 @@ A sample output from the SQL Server connector can be found [here](sample/sqlserv
 
 ## Importing metadata into BigQuery Universal Catalog
 
-To manually import a metadata import file into BigQuery Universal Catalog, see the [documetation](https://cloud.google.com/dataplex/docs/import-metadata#import-metadata) for full instructions about calling the API.
+To manually import a metadata import file into BigQuery Universal Catalog see the [documetation](https://cloud.google.com/dataplex/docs/import-metadata#import-metadata) for full instructions about calling the API.
 The [samples](/samples) directory contains a sample metadata file and request file you can use to import into the catalog.
 
 See below for the section on using Google Workflows to create an end-to-end integration which both extracts metadata and imports it on a regular schedule.
@@ -123,7 +123,7 @@ Building a Docker container for the connector allows it to be run from a variety
 
 1. Ensure docker is installed in your environment.
 2. Edit [build_and_push_docker.sh](build_and_push_docker.sh) and set the PROJECT_ID AND REGION_ID
-3. Ensure the user that runs the script has artifactregistry.repositories.uploadArtifacts privilege on the Artfiact Registry in your project in order to create the new container image.
+3. Ensure the user that runs the script is authenticated with a Google Cloud identify which has (Artifact Registry Writer)[https://cloud.google.com/artifact-registry/docs/access-control#roles] role on the Artfiact Registry in your project.
 4. Make the script executable and run:
     ```bash
     chmod a+x build_and_push_docker.sh
@@ -136,7 +136,7 @@ Building a Docker container for the connector allows it to be run from a variety
 ### Submitting a metadata extraction job to Dataproc Serverless:
 
 Before you run please ensure:
-1. You upload the **mssql-jdbc** jar file to a Google Cloud Storage location and use the path to this in the **--jars** parameter below.
+1. You upload the jdbc jar file to a Google Cloud Storage location and use the path to this in the **--jars** parameter below.
 2. Create a GCS bucket which will be used for Dataproc Serverless as a working directory (add to the **--deps-bucket** parameter below.
 3. The service account you run the job with using **--service-account** below has the IAM roles described [here](https://cloud.google.com/dataplex/docs/import-using-workflows-custom-source#required-roles).
 You can use this [script](../common_scripts/grant_SA_dataproc_roles.sh) to grant the required roles to your service account.
@@ -172,4 +172,4 @@ An an end-to-end metadata extraction and import process can run via Google Cloud
 
 Follow the documentation here: [Import metadata from a custom source using Workflows](https://cloud.google.com/dataplex/docs/import-using-workflows-custom-source) and use [this yaml file](https://github.com/GoogleCloudPlatform/cloud-dataplex/blob/main/managed-connectivity/cloud-workflows/byo-connector/templates/byo-connector.yaml) as a template.
 
-A sample input for SQL Server import via Google Workflows is included in the [workflows](/workflows) directory
+A sample input for SQL Server import via Google Workflows is included in the [workflows](workflows) directory
