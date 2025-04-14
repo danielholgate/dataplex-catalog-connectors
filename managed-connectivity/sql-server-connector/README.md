@@ -72,8 +72,6 @@ The following tools must be installed in order to run the connector:
 ```
 The authenticated user must have the following roles for the project: roles/secretmanager.secretAccessor, roles/storage.objectUser
 
-Note: 
-
 #### Set up
 * Ensure you are in the root directory of the connector
     ```bash
@@ -87,7 +85,7 @@ Note:
     ```
 
 #### Run the connector
-To execute the metadata extraction run the following command (substituting appropriate values for your environment):
+To execute the metadata extraction run the following, substituting appropriate values for your environment as needed:
 
 ```shell 
 python3 main.py \
@@ -153,7 +151,7 @@ gcloud dataproc batches submit pyspark \
     --deps-bucket=dataplex-metadata-collection-usc1 \  
     --container-image=us-central1-docker.pkg.dev/the-project-id/docker-repo/bq-catalog-sqlserver-pyspark:latest \
     --service-account=499995342669-compute@developer.gserviceaccount.com \
-    --jars=gs://path/to/mssql-jdbc-9.4.1.jre8.jar  \
+    --jars=gs://path/to/mssql-jdbc-12.10.0.jre11.jar  \
     --network=[Your-Network-Name] \
     main.py \
 --  --target_project_id my-gcp-project-id \
