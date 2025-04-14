@@ -12,6 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Jar files and paths for when connector is running as local script
-JAR_FILE = "mysql-connector-j-9.2.0.jar"
-SPARK_JAR_PATH = f'./{JAR_FILE}'
+# Jar path for when connector is running as local script
+
+from src.constants import JDBC_JAR
+
+SPARK_JAR_PATH = f"."
+
+def getJarPath():
+    return f"{SPARK_JAR_PATH}/{JDBC_JAR}"
+
+def getUserJarPath(userJar : str):
+    return f"{SPARK_JAR_PATH}/{userJar}"

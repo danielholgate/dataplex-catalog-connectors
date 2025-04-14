@@ -13,8 +13,12 @@
 # limitations under the License.
 
 # Jar files and paths for when connector is containerised
+from src.sqlserver_connector import JDBC_JAR
 
-JDBC_JAR_FILE = "snowflake-jdbc-3.19.0.jar"
-SF_SPARK_JAR_FILE = "spark-snowflake_2.12-3.1.1.jar"
+SPARK_JAR_PATH = f"/opt/spark/jars"
 
-SPARK_JAR_PATH = f'/opt/spark/jars/{JDBC_JAR_FILE}'
+def getJarPath():
+    return f"{SPARK_JAR_PATH}/{JDBC_JAR}"
+
+def getUserJarPath(userJar : str):
+    return f"{SPARK_JAR_PATH}/{userJar}"

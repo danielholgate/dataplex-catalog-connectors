@@ -17,6 +17,9 @@ import enum
 
 SOURCE_TYPE = "oracle"
 
+# Default JDBC jar file. Can override with --jar
+JDBC_JAR = "ojdbc11.jar"
+
 # allow common bootstrap to load connector for specific datasource
 CONNECTOR_MODULE = "src.oracle_connector"
 CONNECTOR_CLASS = "OracleConnector"

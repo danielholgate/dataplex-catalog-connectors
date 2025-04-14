@@ -17,12 +17,14 @@ import enum
 
 SOURCE_TYPE = "postgresql"
 
+JAR_FILE = "postgresql-42.7.5.jar"
+
 # allow common bootstrap to load connector for specific datasource
 CONNECTOR_MODULE = "src.postgres_connector"
 CONNECTOR_CLASS = "PostgresConnector"
 
 class EntryType(enum.Enum):
-    """Types of Postgres entries."""
+    """Hierarchy of Postgres entries"""
     INSTANCE: str = "projects/{project}/locations/{location}/entryTypes/postgresql-instance"
     DATABASE: str = "projects/{project}/locations/{location}/entryTypes/postgresql-database"
     DB_SCHEMA: str = "projects/{project}/locations/{location}/entryTypes/postgresql-schema"

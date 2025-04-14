@@ -17,6 +17,7 @@ import enum
 
 SOURCE_TYPE = "sqlserver"
 
+# Default JDBC jar file. Can override with --jar
 JDBC_JAR = "mssql-jdbc-12.10.0.jre11.jar"
 
 # allow common bootstrap to load connector for specific datasource

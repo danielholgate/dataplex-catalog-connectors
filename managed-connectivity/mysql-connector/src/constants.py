@@ -17,6 +17,9 @@ import enum
 
 SOURCE_TYPE = "mysql"
 
+# Default JDBC jar file. Can override with --jar
+JDBC_JAR = "mysql-connector-j-9.2.0.jar"
+
 # Expose to allow common code to load connector for MySQL
 CONNECTOR_MODULE = "src.mysql_connector"
 CONNECTOR_CLASS = "MysqlConnector"

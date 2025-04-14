@@ -12,8 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""jar file used for connecting to data source"""
+# Jar files and paths for when connector is running as local script
 
-# Jar file to connect to ORACLE
-JAR_FILE = "ojdbc11.jar"
-SPARK_JAR_PATH = f'./{JAR_FILE}'
+from src.constants import JDBC_JAR
+
+SPARK_JAR_PATH = f"."
+
+def getJarPath():
+    return f"{SPARK_JAR_PATH}/{JDBC_JAR}"
+
+def getUserJarPath(userJar : str):
+    return f"{SPARK_JAR_PATH}/{userJar}"

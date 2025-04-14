@@ -13,8 +13,13 @@
 # limitations under the License.
 
 # Jar files and paths for when connector is running as local script
+from src.constants import JDBC_JAR
+from src.constants import SNOWFLAKE_SPARK_JAR_FILE
 
-JDBC_JAR_FILE = "snowflake-jdbc-3.19.0.jar"
-SF_SPARK_JAR_FILE = "spark-snowflake_2.12-3.1.1.jar"
+SPARK_JAR_PATH = f"."
 
-SPARK_JAR_PATH = f"{JDBC_JAR_FILE},{SF_SPARK_JAR_FILE}"
+def getJarPath():
+    return f"{SPARK_JAR_PATH}/{JDBC_JAR},{SPARK_JAR_PATH}/{SNOWFLAKE_SPARK_JAR_FILE}"
+
+def getUserJarPath(userJar : str):
+    return f"{SPARK_JAR_PATH}/{userJar}"

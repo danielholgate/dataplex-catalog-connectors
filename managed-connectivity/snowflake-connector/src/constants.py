@@ -17,6 +17,10 @@ import enum
 
 SOURCE_TYPE = "snowflake"
 
+# Default JDBC and Snowflake Spark JAR file. These versions + the Scala version in Spark must be aligned/compatible.
+JDBC_JAR = "snowflake-jdbc-3.19.0.jar"
+SNOWFLAKE_SPARK_JAR = "spark-snowflake_2.12-3.1.1.jar"
+
 # allow common bootstrap to load connector for specific datasource
 CONNECTOR_MODULE = "src.snowflake_connector"
 CONNECTOR_CLASS = "SnowflakeConnector"
