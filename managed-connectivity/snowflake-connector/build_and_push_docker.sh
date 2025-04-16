@@ -14,10 +14,11 @@
 # limitations under the License.
 
 
+# Edit PROJECT_ID and REGION to match your environment
 PROJECT_ID=PROJECTID
 REGION=us-central1
 
-IMAGE_NAME="bq-catalog-snowflake-pyspark"
+IMAGE_NAME="universal-catalog-snowflake-pyspark"
 IMAGE_VERSION="0.0.1"
 IMAGE=${IMAGE_NAME}:${IMAGE_VERSION}
 

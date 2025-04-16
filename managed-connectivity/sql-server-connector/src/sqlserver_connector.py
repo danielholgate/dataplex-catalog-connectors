@@ -17,20 +17,17 @@ from typing import Dict
 from pyspark.sql import SparkSession, DataFrame
 from src.common.ExternalSourceConnector import IExternalSourceConnector
 from src.constants import EntryType
-from src.connection_jar import getJarPath
-from src.connection_jar import getUserJarPath
+from src.common.connection_jar import getJarPath
 
 class SQLServerConnector(IExternalSourceConnector):
     """Reads data from SQL Server and returns Spark Dataframes."""
 
     def __init__(self, config: Dict[str, str]):
 
-        # Allow override for local jar file (different version / name)
-        jar_path = getJarPath()
-        if config['jar']:
-            jar_path = getJarPath(config['jar'])
+        # Get jar file, allowing override for local jar file (different version / name)
+        jar_path = getJarPath(config)
+        print(f"Using jar path {jar_path}")
 
-        # PySpark entrypoint
         self._spark = SparkSession.builder.appName("SQLServerIngestor") \
             .config("spark.jars", jar_path) \
             .getOrCreate()
@@ -50,7 +47,7 @@ class SQLServerConnector(IExternalSourceConnector):
             "password": config['password'],
             "loginTimeout": config['login_timeout'],
             "encrypt" : config['encrypt'],
-            "ssl": config['ssl'],
+            "ssl": config['use_ssl'],
             "sslmode": config['ssl_mode'],
             "trustServerCertificate": config['trust_server_certificate']
             }

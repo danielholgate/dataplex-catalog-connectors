@@ -14,12 +14,23 @@
 
 # Jar files and paths for when connector is running as local script
 
+from pathlib import Path
 from src.constants import JDBC_JAR
 
-SPARK_JAR_PATH = f"."
+# Default assumes jar file is in root of the project
+JAR_PATH = "."
 
-def getJarPath():
-    return f"{SPARK_JAR_PATH}/{JDBC_JAR}"
-
-def getUserJarPath(userJar : str):
-    return f"{SPARK_JAR_PATH}/{userJar}"
+# Returns jar path allowing override with --jar option
+def getJarPath(config : dict[str:str]):
+    jar_path = '' 
+    user_jar = config.get('jar')
+    if user_jar is not None:
+        # If given file path to jar, use full path. Otherwise just jar name
+        if (user_jar.startswith(".") or user_jar.startswith("/")):
+                jar_path = user_jar
+        else:
+                jar_path = Path(JAR_PATH).joinpath(user_jar)
+    else:
+        jar_path = Path(JAR_PATH).joinpath(JDBC_JAR)
+    
+    return jar_path

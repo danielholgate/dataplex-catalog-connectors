@@ -14,12 +14,18 @@
 
 # Jar files and paths for when connector is containerised
 
-from src.sqlserver_connector import JDBC_JAR
+from pathlib import Path
+from src.constants import JDBC_JAR
 
-SPARK_JAR_PATH = f"/opt/spark/jars"
+# Standard location for spark jars
+JAR_PATH = "/opt/spark/jars"
 
-def getJarPath():
-    return f"{SPARK_JAR_PATH}/{JDBC_JAR}"
-
-def getUserJarPath(userJar : str):
-    return f"{SPARK_JAR_PATH}/{userJar}"
+def getJarPath(config : dict[str:str]) -> str:
+    jar_path = '' 
+    user_jar = config.get('jar')
+    if user_jar is not None:  
+        jar_path = Path(JAR_PATH).joinpath(user_jar)
+    else:
+        jar_path = Path(JAR_PATH).joinpath(JDBC_JAR)
+    
+    return jar_path
