@@ -48,7 +48,7 @@ RUN python -m pip install -r requirements.txt
 ENV PYTHONPATH=/opt/python/packages
 RUN mkdir -p "${PYTHONPATH}/src/"
 COPY src/ "${PYTHONPATH}/src/"
-COPY src/ "${PYTHONPATH}/spark_jar_path/"
+COPY "${PYTHONPATH}/spark_jar_path/" $src/common/
 COPY main.py .
 
 RUN groupadd -g 1099 spark
