@@ -16,8 +16,8 @@
 from typing import Dict
 from pyspark.sql import SparkSession, DataFrame
 from src.constants import EntryType
-from src.connection_jar import SPARK_JAR_PATH
 from src.common.ExternalSourceConnector import IExternalSourceConnector
+from src.common.connection_jar import getJarPath
 
 class PostgresConnector(IExternalSourceConnector):
     """Reads data from Postgres and returns Spark Dataframes."""
