@@ -23,6 +23,9 @@ JAR_FILE = "postgresql-42.7.5.jar"
 CONNECTOR_MODULE = "src.postgres_connector"
 CONNECTOR_CLASS = "PostgresConnector"
 
+# Value to test for if column is nullable. SQL Server specific. Matches _get_dataset  
+IS_NULLABLE_TRUE = "YES"
+
 class EntryType(enum.Enum):
     """Hierarchy of Postgres entries"""
     INSTANCE: str = "projects/{project}/locations/{location}/entryTypes/postgresql-instance"

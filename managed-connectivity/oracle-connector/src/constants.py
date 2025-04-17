@@ -24,6 +24,9 @@ JDBC_JAR = "ojdbc11.jar"
 CONNECTOR_MODULE = "src.oracle_connector"
 CONNECTOR_CLASS = "OracleConnector"
 
+# Value to test for if column is nullable. SQL Server specific. Matches _get_dataset  
+IS_NULLABLE_TRUE = "Y"
+
 class EntryType(enum.Enum):
     """Types of Oracle entries."""
     INSTANCE: str = "projects/{project}/locations/{location}/entryTypes/oracle-instance"

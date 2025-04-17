@@ -25,8 +25,8 @@ JDBC_JAR = "mssql-jdbc-12.10.0.jre11.jar"
 CONNECTOR_MODULE = "src.sqlserver_connector"
 CONNECTOR_CLASS = "SQLServerConnector"
 
-# Value to test for if column is nullable 
-IS_NULLABLE_VALUE = 1
+# Value to test for if column is nullable. SQL Server specific. Matches _get_dataset  
+IS_NULLABLE_TRUE = "Y"
 
 class EntryType(enum.Enum):
     """Hierarchy of SQL Server entries."""

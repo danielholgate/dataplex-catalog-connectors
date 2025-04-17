@@ -21,14 +21,14 @@ from src.constants import COLLECTION_ENTRY
 from src import name_builder as nb
 
 # DB-specific value which indicates true
-from src.constants import IS_NULLABLE_VALUE
+from src.constants import IS_NULLABLE_TRUE
 
 # Property names from Dataplex_v1.Entry object in Camel Case
 KEY_NAME = "name"
 KEY_MODE = "mode"
 KEY_ENTRY = "entry"
-KEY_ENTRY_TYPE = "entrType"
-KEY_ENTRY_SOURCE = "entrySouce"
+KEY_ENTRY_TYPE = "entryType"
+KEY_ENTRY_SOURCE = "entrySource"
 KEY_ASPECT_KEYS = "aspectKeys"
 KEY_ASPECT_TYPE = "aspectType"
 KEY_DISPLAY_NAME = "displayName"
@@ -45,6 +45,16 @@ KEY_ENTRY_ASPECT = "entry_aspect"
 KEY_FIELDS = "fields"
 KEY_SYSTEM = "system"
 KEY_SCHEMA = "schema"
+
+KEY_COLUMNS = "columns"
+
+COLUMN_TABLE_NAME = "TABLE_NAME"
+COLUMN_DATA_TYPE = "DATA_TYPE"
+COLUMN_COLUMN_NAME = "COLUMN_NAME"
+COLUMN_IS_NULLABLE = "IS_NULLABLE"
+
+VALUE_NULLABLE = "NULLABLE"
+VALUE_REQUIRED = "REQUIRED"
 
 
 @F.udf(returnType=StringType())
@@ -143,25 +153,25 @@ def build_dataset(config, df_raw, db_schema, entry_type):
     # 3. Creates metadataType column based on dataType column
     # 4. Renames COLUMN_NAME to name
     df = df_raw \
-      .withColumn(KEY_MODE, F.when(F.col("IS_NULLABLE") == IS_NULLABLE_VALUE, "NULLABLE").otherwise("REQUIRED")) \
-        .drop("IS_NULLABLE") \
-        .withColumnRenamed("DATA_TYPE", KEY_DATA_TYPE) \
+      .withColumn(KEY_MODE, F.when(F.col(COLUMN_IS_NULLABLE) == IS_NULLABLE_TRUE, VALUE_NULLABLE).otherwise(VALUE_REQUIRED)) \
+        .drop(COLUMN_IS_NULLABLE) \
+        .withColumnRenamed(COLUMN_DATA_TYPE, KEY_DATA_TYPE) \
         .withColumn(KEY_METADATA_TYPE, choose_metadata_type_udf(KEY_DATA_TYPE)) \
-        .withColumnRenamed("COLUMN_NAME", KEY_NAME)
+        .withColumnRenamed(COLUMN_COLUMN_NAME, KEY_NAME)
 
     # The transformation below aggregate fields, denormalizing the table
     # TABLE_NAME becomes top-level filed, and the rest is put into
     # the array type called "fields"
     aspect_columns = [KEY_NAME, KEY_MODE, KEY_DATA_TYPE, KEY_METADATA_TYPE]
-    df = df.withColumn("columns", F.struct(aspect_columns)) \
-      .groupby('TABLE_NAME') \
-      .agg(F.collect_list("columns").alias(KEY_FIELDS))
+    df = df.withColumn(KEY_COLUMNS, F.struct(aspect_columns)) \
+      .groupby(COLUMN_TABLE_NAME) \
+      .agg(F.collect_list(KEY_COLUMNS).alias(KEY_FIELDS))
 
     # Create nested structured called aspects.
     # Fields are becoming a part of a `schema` struct
     # There is also an entry_aspect that is repeats entry_type as aspect_type
     entry_aspect_name = nb.create_entry_aspect_name(config, entry_type)
-    df = df.withColumn("schema",
+    df = df.withColumn(KEY_SCHEMA,
                        F.create_map(F.lit(schema_key),
                                     F.named_struct(
                                         F.lit(KEY_ASPECT_TYPE),
@@ -172,10 +182,10 @@ def build_dataset(config, df_raw, db_schema, entry_type):
                                     )\
                        )\
       .withColumn(KEY_ENTRY_ASPECT, create_entry_aspect(entry_aspect_name)) \
-    .drop("fields")
+    .drop(KEY_FIELDS)
 
     # Merge separate aspect columns into the one map called 'aspects'
-    df = df.select(F.col("TABLE_NAME"),
+    df = df.select(F.col(COLUMN_TABLE_NAME),
                    F.map_concat(KEY_SCHEMA, KEY_ENTRY_ASPECT).alias(KEY_ASPECTS))
 
     # Define user-defined functions to fill the general information
@@ -194,7 +204,7 @@ def build_dataset(config, df_raw, db_schema, entry_type):
         location=config["target_location_id"])
 
     # Fill the top-level fields
-    column = F.col("TABLE_NAME")
+    column = F.col(COLUMN_TABLE_NAME)
 
     df = df.withColumn(KEY_NAME, create_name_udf(column)) \
       .withColumn(KEY_FQN, create_fqn_udf(column)) \

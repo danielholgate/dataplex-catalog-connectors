@@ -25,6 +25,9 @@ SNOWFLAKE_SPARK_JAR = "spark-snowflake_2.12-3.1.1.jar"
 CONNECTOR_MODULE = "src.snowflake_connector"
 CONNECTOR_CLASS = "SnowflakeConnector"
 
+# Value to test for if column is nullable. SQL Server specific. Matches _get_dataset  
+IS_NULLABLE_TRUE = "Y"
+
 class EntryType(enum.Enum):
     """Hierarchy of Snowflake entries"""
     ACCOUNT: str = "projects/{project}/locations/{location}/entryTypes/snowflake-account"
