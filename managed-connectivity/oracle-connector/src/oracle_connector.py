@@ -19,6 +19,7 @@ from pyspark.sql import DataFrame
 from src.common.ExternalSourceConnector import IExternalSourceConnector
 from src.constants import EntryType
 from src.common.connection_jar import getJarPath
+from src.common.entry_builder import COLUMN_IS_NULLABLE
 
 class OracleConnector(IExternalSourceConnector):
     """Reads data from Oracle and returns Spark Dataframes."""
@@ -76,7 +77,7 @@ class OracleConnector(IExternalSourceConnector):
 
     def _get_columns(self, schema_name: str, object_type: str) -> str:
         return (f"SELECT col.TABLE_NAME, col.COLUMN_NAME, "
-                f"col.DATA_TYPE, col.NULLABLE "
+                f"col.DATA_TYPE, col.NULLABLE as {COLUMN_IS_NULLABLE} "
                 f"FROM all_tab_columns col "
                 f"INNER JOIN DBA_OBJECTS tab "
                 f"ON tab.OBJECT_NAME = col.TABLE_NAME "
