@@ -18,18 +18,16 @@ from pyspark.sql import SparkSession
 from pyspark.sql import DataFrame
 from src.common.ExternalSourceConnector import IExternalSourceConnector
 from src.constants import EntryType
-from src.connection_jar import SPARK_JAR_PATH
+from src.common.connection_jar import getJarPath
 
 class OracleConnector(IExternalSourceConnector):
     """Reads data from Oracle and returns Spark Dataframes."""
 
     def __init__(self, config: Dict[str, str]):
-        # PySpark entrypoint
 
-        # Allow override for local jar file (different version / name)
-        jar_path = SPARK_JAR_PATH
-        if config['jar']:
-            jar_path = config['jar']
+        # Get jar file. allow override for local jar file (different version / name)
+        jar_path = getJarPath(config)
+        print(f"Using jar path {jar_path}")
 
         self._spark = SparkSession.builder.appName("OracleIngestor") \
             .config("spark.jars", jar_path) \

@@ -17,7 +17,7 @@ from typing import Dict
 from pyspark.sql import SparkSession, DataFrame
 from src.common.ExternalSourceConnector import IExternalSourceConnector
 from src.constants import EntryType
-from src.connection_jar import SPARK_JAR_PATH
+from src.common.connection_jar import getJarPath
 
 class MysqlConnector(IExternalSourceConnector):
     """Reads data from Mysql and returns Spark Dataframes."""
@@ -25,10 +25,9 @@ class MysqlConnector(IExternalSourceConnector):
     def __init__(self, config: Dict[str, str]):
         # PySpark entrypoint
 
-        # Allow override for local jar file (different version / name)
-        jar_path = SPARK_JAR_PATH
-        if config['jar']:
-            jar_path = config['jar']
+        # Get jar file, allowing override for local jar file (different version / name)
+        jar_path = getJarPath(config)
+        print(f"Using jar path {jar_path}")
 
         self._spark = SparkSession.builder.appName("MySQLIngestor") \
             .config("spark.jars", jar_path) \

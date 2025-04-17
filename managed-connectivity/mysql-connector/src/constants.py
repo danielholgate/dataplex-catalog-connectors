@@ -24,6 +24,9 @@ JDBC_JAR = "mysql-connector-j-9.2.0.jar"
 CONNECTOR_MODULE = "src.mysql_connector"
 CONNECTOR_CLASS = "MysqlConnector"
 
+# Value to test for if column is nullable. SQL Server specific. Matches _get_dataset  
+IS_NULLABLE_TRUE = "YES"
+
 class EntryType(enum.Enum):
     """Types of Mysql entries. Instance, database, table/view"""
     INSTANCE: str = "projects/{project}/locations/{location}/entryTypes/mysql-instance"

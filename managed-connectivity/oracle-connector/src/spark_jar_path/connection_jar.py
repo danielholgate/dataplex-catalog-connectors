@@ -14,5 +14,18 @@
 
 # Jar files and paths for when connector is containerised
 
-JAR_FILE = "ojdbc11.jar"
-SPARK_JAR_PATH = f'/opt/spark/jars/{JAR_FILE}'
+from pathlib import Path
+from src.constants import JDBC_JAR
+
+# Standard location for spark jars
+JAR_PATH = "/opt/spark/jars"
+
+def getJarPath(config : dict[str:str]) -> str:
+    jar_path = '' 
+    user_jar = config.get('jar')
+    if user_jar is not None:  
+        jar_path = Path(JAR_PATH).joinpath(user_jar)
+    else:
+        jar_path = Path(JAR_PATH).joinpath(JDBC_JAR)
+    
+    return jar_path
