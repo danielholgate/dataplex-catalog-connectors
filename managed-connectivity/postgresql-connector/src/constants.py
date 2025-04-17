@@ -12,18 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Constants that are used in the different files."""
 import enum
 
 SOURCE_TYPE = "postgresql"
 
-JAR_FILE = "postgresql-42.7.5.jar"
+JDBC_FILE = "postgresql-42.7.5.jar"
 
 # allow common bootstrap to load connector for specific datasource
 CONNECTOR_MODULE = "src.postgres_connector"
 CONNECTOR_CLASS = "PostgresConnector"
 
-# Value to test for if column is nullable. SQL Server specific. Matches _get_dataset  
+# Value to test for if column is nullable. Postgresql specific. Matches _get_dataset  
 IS_NULLABLE_TRUE = "YES"
 
 class EntryType(enum.Enum):
