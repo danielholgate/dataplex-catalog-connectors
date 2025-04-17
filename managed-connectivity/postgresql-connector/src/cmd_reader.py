@@ -17,6 +17,7 @@ import argparse
 import sys
 from src.common.util import loadReferencedFile
 from src.common.argument_validator import validateArguments
+from src.common.argument_validator import true_or_false
 
 def read_args():
     """Reads arguments from the command line."""
@@ -43,6 +44,7 @@ def read_args():
     
     parser.add_argument("--jar", type=str, required=False, help="path to jar file")
     
+    parser.add_argument("--use_ssl", type=true_or_false,required=False,default=True,help="connect with SSL")
     parser.add_argument("--ssl_mode", type=str,required=False,choices=['disable','prefer','require','allow','verify-ca','verify-full'],default='prefer',help="SSL mode requirement")
     parser.add_argument("--ssl_cert", type=str,required=False,help="SSL cert file path")
     parser.add_argument("--ssl_key", type=str, required=False,help="SSL key file path")

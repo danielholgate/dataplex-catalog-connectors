@@ -41,7 +41,8 @@ class PostgresConnector(IExternalSourceConnector):
             "url": self._url,
             "user": config['user'],
             "password": config['password'],
-            "sslMode" : config['ssl_mode']
+            "sslMode" : config['ssl_mode'],
+            'ssl'     : config['use_ssl']
             } 
 
     def _execute(self, query: str) -> DataFrame:
