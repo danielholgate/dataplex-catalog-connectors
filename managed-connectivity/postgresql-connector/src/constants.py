@@ -16,7 +16,7 @@ import enum
 
 SOURCE_TYPE = "postgresql"
 
-JDBC_FILE = "postgresql-42.7.5.jar"
+JDBC_JAR = "postgresql-42.7.5.jar"
 
 # allow common bootstrap to load connector for specific datasource
 CONNECTOR_MODULE = "src.postgres_connector"
