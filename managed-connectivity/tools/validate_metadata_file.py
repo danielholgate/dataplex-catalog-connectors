@@ -33,32 +33,32 @@ dataplex_entry_schema = """
           "type": "string",
           "pattern": "^projects/[a-z0-9-]+/locations/[a-z0-9-_]+/entryGroups/[a-z0-9-]+/entries/[a-zA-Z0-9_]+"
         },
-        "fully_qualified_name": {
+        "fullyQualifiedName": {
           "type": "string",
           "pattern": "^[a-z]+:`[a-zA-Z0-9_:.-]+`([.][a-zA-Z0-9_#-]+)*$"
         },
-        "parent_entry": {
+        "parentEntry": {
           "type": "string",
           "pattern": "^$|^projects/[a-z0-9-]+/locations/[a-z0-9-_]+/entryGroups/[a-z0-9-]+/entries/[a-zA-Z0-9_]+"
         },
-        "entry_source": {
+        "entrySource": {
           "type": "object",
           "properties": {
-            "display_name": {
+            "displayName": {
               "type": "string"
             },
             "system": {
               "type": "string"
             }
           },
-          "required": ["display_name", "system"]
+          "required": ["displayName", "system"]
         },
         "aspects": {
           "type": "object",
           "additionalProperties": {
             "type": "object",
             "properties": {
-              "aspect_type": {
+              "aspectType": {
                 "type": "string"
               },
               "data": {
@@ -81,7 +81,7 @@ dataplex_entry_schema = """
                 "required": [],
                 "if":{
                   "properties":{
-                    "aspect_type":{
+                    "aspectType":{
                       "const":"dataplex-types.global.schema"
                     }
                   }
@@ -95,23 +95,23 @@ dataplex_entry_schema = """
                 "type": "string"
               }
             },
-            "required": ["aspect_type", "data"]
+            "required": ["aspectType", "data"]
           }
         },
-        "entry_type": {
+        "entryType": {
           "type": "string",
           "pattern": "^projects/[a-z0-9-_]+/locations/[a-z0-9-_]+/entryTypes/[a-zA-Z0-9_]+"
         }
       },
-      "required": ["name", "fully_qualified_name", "entry_type", "aspects"]
+      "required": ["name", "fullyQualifiedName", "entryType", "aspects"]
     },
-    "aspect_keys": {
+    "aspectKeys": {
       "type": "array",
       "items": {
         "type": "string"
       }
     },
-    "update_mask": {
+    "updateMask": {
       "oneOf": [
         {
           "type": "array",
@@ -125,7 +125,7 @@ dataplex_entry_schema = """
       ]
     }
   },
-  "required": ["entry", "aspect_keys", "update_mask"]
+  "required": ["entry", "aspectKeys", "updateMask"]
 }
 """
 
@@ -142,7 +142,6 @@ def validate_jsonl(file_path : str,isDebug : bool, isList : bool, min_lines: int
     entry_types = []
     fqn_list = []
     parents = []
-    top_entry_count = 0
 
     print(f"\nValidating dataplex metadata import file: {file_path}")
 
@@ -180,15 +179,19 @@ def validate_jsonl(file_path : str,isDebug : bool, isList : bool, min_lines: int
                             print(json.dumps(obj, indent=4))
 
                     # Get the entry and parent entry
-                    parent_entry = (obj['entry']['parent_entry'])
-                    if len(parent_entry) == 0:
-                        top_entry_count+=1
+                    parent_entry = ''
+                    try:
+                      parent_entry = obj['entry']['parentEntry']
+                      if len(parent_entry) == 0:
+                         print(f"!!!Entry has parentEntry but empty: Line {line_count} {obj['entry']['name']}")
+                    except Exception as e:
+                      print(f"!!!Entry does not have a parentEntry: Line {line_count} {obj['entry']['name']}")
                     parents.append(parent_entry)
                     entry_name = entry_names.append(obj['entry']['name'])
                     entry_names.append(entry_name)
-                    entry_type = (obj['entry']['entry_type'])
+                    entry_type = (obj['entry']['entryType'])
                     entry_types.append(entry_type)
-                    fqn = obj['entry']['fully_qualified_name']
+                    fqn = obj['entry']['fullyQualifiedName']
                     fqn_list.append(fqn)
 
                     if obj['entry']['aspects'] and 'dataplex-types.global.schema' in obj['entry']['aspects']:
