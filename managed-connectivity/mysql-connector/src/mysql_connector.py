@@ -25,7 +25,7 @@ class MysqlConnector(IExternalSourceConnector):
     def __init__(self, config: Dict[str, str]):
         # PySpark entrypoint
 
-        # Get jar file, allowing override for local jar file (different version / name)
+        # Get jar file. allow override for local jar file (different version / name)
         jar_path = getJarPath(config)
         print(f"Using jar path {jar_path}")
 
@@ -40,7 +40,9 @@ class MysqlConnector(IExternalSourceConnector):
             "driver": "com.mysql.cj.jdbc.Driver",
             "uRL": self._url,
             "user": config['user'],
-            "password": config['password']
+            "password": config['password'],
+            "ssl": config['use_ssl'],
+            "sslmode": config['ssl_mode'],
             }
 
     def _execute(self, query: str) -> DataFrame:
