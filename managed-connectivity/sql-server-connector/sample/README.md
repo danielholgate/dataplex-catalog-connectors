@@ -4,7 +4,7 @@ This directory contains:
  * A request to use with the Metadata Import REST API: [metadata_import_request.json](metadata_import_request.json)
 ### To import metadata into the BigQuery Unified Catalog:
 
-* In [sqlserver-output.jsonl](sqlserver-output.jsonl): 
+* In [sqlserver-sample-output.jsonl](sqlserver-sample-output.jsonl): 
     1. Search and replace all instances of "gcp-project-id" with your project ID
     2. [OPTIONAL] Search and replace all instances of "us-central1" with your region or with "global" 
     3. Upload the .jsonl metadata import file to a Google Cloud Storage bucket
@@ -15,7 +15,7 @@ This directory contains:
     3. Go to the Dataplex UI. Ensure the Entry Group, Entry Types and Aspect Types seen in metadata_import_reques exist in your project
         Note: projects/dataplex-types/locations/global/aspectTypes/schema is a built-in Aspect Type and does not need to be created.
 
-Run import via the REST Metadata Impport API, replacing gcp-project-id below for your project, and the us-central1 region with another if appropriate:
+Run import via the Metadata Import REST API using the following command, replacing gcp-project-id below for your project, and the us-central1 region with another if appropriate:
 
 ```bash
 curl -X POST -H "Authorization: Bearer $(gcloud auth print-access-token)" \

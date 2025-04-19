@@ -32,7 +32,7 @@ The connector accepts the following parameters:
 |user|User name to connect with||REQUIRED|
 |password_secret|[Secret Manager](https://cloud.google.com/security/products/secret-manager) ID holding the password for the user||REQUIRED|
 |password|Plain text user password. Use for dev or testing only, for production use --password_secret||REQUIRED|
-|jar|Name of JDBC jar file to use||OPTIONAL|
+|jar|Name (or full path to) JDBC jar file to use for connection||OPTIONAL|
 
 ## Prepare your SQL Server environment:
 
@@ -84,11 +84,11 @@ The authenticated user must have the following roles for the project: roles/secr
     ```
 
 #### Run the connector
-To execute the metadata extraction run the following, substituting appropriate values for your environment as needed:
+To execute metadata extraction run the following command, substituting appropriate values for your environment as needed:
 
 ```shell 
 python3 main.py \
---target_project_id my-gcp-project-id \
+--target_project_id gcp-project-id \
 --target_location_id us-central1 \
 --target_entry_group_id sqlserver \
 --host the-sqlserver-server \
@@ -101,7 +101,7 @@ python3 main.py \
 ```
 
 ### Connector Output:
-The connector generates a metadata extract file in JSONL format as described [in the documentation](https://cloud.google.com/dataplex/docs/import-metadata#metadata-import-file) and stores the file in the local 'output' directory within the connector. It also uploads the file to a Google Cloud Storage bucket as specified in --output_bucket and --output_folder (unless in --local-output_only mode)
+The connector generates a metadata extract file in JSONL format as described [in the documentation](https://cloud.google.com/dataplex/docs/import-metadata#metadata-import-file) and stores the file locally in the 'output' directory. The connector also uploads the file to the Google Cloud Storage bucket and folder specified in the --output_bucket and --output_folder parameters (unless the --local-output_only parameter is used)
 
 A sample output from the SQL Server connector can be found [here](sample/sqlserver_output_sample.jsonl).
 
@@ -143,23 +143,23 @@ You can use this [script](../common_scripts/grant_SA_dataproc_roles.sh) to grant
 Run the containerised metadata connector with the following command, substituting appropriate values for your environment: 
 ```shell
 gcloud dataproc batches submit pyspark \
-    --project=my-gcp-project-id \
+    --project=gcp-project-id \
     --region=us-central1 \
     --batch=0001 \
     --deps-bucket=dataplex-metadata-collection-usc1 \  
-    --container-image=us-central1-docker.pkg.dev/the-project-id/docker-repo/universal-catalog-sqlserver-pyspark:latest \
+    --container-image=us-central1-docker.pkg.dev/gcp-project-id/docker-repo/universal-catalog-sqlserver-pyspark:latest \
     --service-account=499995342669-compute@developer.gserviceaccount.com \
-    --jars=gs://path/to/mssql-jdbc-12.10.0.jre11.jar  \
-    --network=[Your-Network-Name] \
-    main.py \
---  --target_project_id my-gcp-project-id \
+    --jars=mssql-jdbc-12.10.0.jre11.jar  \
+    --network=projects/gcp-project-id/global/networks/default \
+main.py \
+--  --target_project_id gcp-project-id \
     --target_location_id us-central1 \
     --target_entry_group_id sqlserver \
-    --host sqlserver-server-host \
+    --host the-sqlserver-server \
     --port 1433 \
     --database dbtoextractfrom \
-    --user catalogagent \
-    --password-secret projects/73899954526/secrets/catalogagent_sqlserver \
+    --user dataplexagent \
+    --password-secret projects/73899954526/secrets/dataplexagent_sqlserver \
     --output_bucket dataplex_connectivity_imports \
     --output_folder sqlserver
 ```
