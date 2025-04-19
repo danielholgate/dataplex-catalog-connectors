@@ -53,7 +53,6 @@ class MysqlConnector(IExternalSourceConnector):
             .load()
 
     def get_db_schemas(self) -> DataFrame:
-        """In Mysql, schemas are the databases."""
         query = f"SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA where SCHEMA_NAME = '{self._config['database']}'"
         return self._execute(query)
 

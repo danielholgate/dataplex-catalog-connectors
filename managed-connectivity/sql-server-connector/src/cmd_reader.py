@@ -28,7 +28,7 @@ def read_args():
     parser.add_argument("--target_location_id", type=str, required=True,
                         help="Google Cloud region metadata will be imported into")
     parser.add_argument("--target_entry_group_id", type=str, required=True,
-                        help="universal catalog Entry Group ID to import metadata into")
+                        help="universal catalog EntryGroup ID to import metadata into")
 
     # SQL Server specific arguments
     parser.add_argument("--host", type=str, required=True,
@@ -37,7 +37,7 @@ def read_args():
         help="SQL Server port number ")
     parser.add_argument("--user", type=str, required=True, help="SQL Server User")
 
-    parser.add_argument("--jar", type=str, required=False, help="path to JDBC jar file")
+    parser.add_argument("--jar", type=str, required=False, help="Path to JDBC jar file")
 
     password_option_group = parser.add_mutually_exclusive_group()
     password_option_group.add_argument("--password_secret",type=str,help="Google Secret Manager ID of the password")
@@ -72,7 +72,7 @@ def read_args():
     
     parsed_args = parser.parse_known_args()[0]
 
-     # Apply common argument validation checks first
+    # Apply common argument validation checks first
     parsed_args = validateArguments(parsed_args)
 
     if not checkOptionProvided(parsed_args, ["password_secret", "password"]):

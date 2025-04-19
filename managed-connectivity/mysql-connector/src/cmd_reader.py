@@ -45,9 +45,6 @@ def read_args():
     
     parser.add_argument("--use_ssl", type=true_or_false,required=False,default=True,help="connect with SSL")
     parser.add_argument("--ssl_mode", type=str, required=False,choices=['prefer','require','allow','verify-ca','verify-full'],default='prefer',help="SSL mode requirement")
-    parser.add_argument("--ssl_cert", type=str, required=False,help="SSL cert file path")
-    parser.add_argument("--ssl_key", type=str, required=False,help="SSL key file path")
-    parser.add_argument("--ssl_rootcert", type=str, required=False,help="SSL root cert file path")
     
     # Output destination arguments. Generate local only, or local + to GCS bucket
     output_option_group = parser.add_mutually_exclusive_group()

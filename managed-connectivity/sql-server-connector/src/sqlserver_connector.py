@@ -52,7 +52,7 @@ class SQLServerConnector(IExternalSourceConnector):
             "trustServerCertificate": config['trust_server_certificate']
             }
         
-        if config['hostname_in_certificate'] is not None:
+        if config.get('hostname_in_certificate') is not None:
             self._connectOptions.hostNameInCertificate = config['hostname_in_certificate']
 
     def _execute(self, query: str) -> DataFrame:

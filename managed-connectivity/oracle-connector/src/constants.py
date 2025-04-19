@@ -28,7 +28,7 @@ CONNECTOR_CLASS = "OracleConnector"
 IS_NULLABLE_TRUE = "Y"
 
 class EntryType(enum.Enum):
-    """Types of Oracle entries."""
+    """Logical Hierarechy of EntryTypes in Oracle"""
     INSTANCE: str = "projects/{project}/locations/{location}/entryTypes/oracle-instance"
     DATABASE: str = "projects/{project}/locations/{location}/entryTypes/oracle-database"
     DB_SCHEMA: str = "projects/{project}/locations/{location}/entryTypes/oracle-schema"

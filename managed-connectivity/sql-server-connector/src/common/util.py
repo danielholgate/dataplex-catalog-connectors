@@ -13,7 +13,6 @@
 # limitations under the License.
 
 # Utility convenience functions
-import argparse
 import sys
 from datetime import datetime
 import re
@@ -37,4 +36,5 @@ def to_camel_case(text) -> str:
 # folder name with timestamp
 def generateFolderName(SOURCE_TYPE : str) -> str:
     currentDate = datetime.now()
-    return f"{SOURCE_TYPE}/{currentDate.year}{currentDate.month}{currentDate.day}-{currentDate.hour}{currentDate.minute}{currentDate.second}"     
+    return f"{SOURCE_TYPE}/{currentDate.year}{currentDate.month}{currentDate.day}-{currentDate.hour}{currentDate.minute}{currentDate.second}" 
+    

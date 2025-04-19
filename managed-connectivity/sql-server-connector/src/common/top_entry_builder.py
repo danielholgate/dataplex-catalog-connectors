@@ -131,5 +131,4 @@ def create(config, entry_type: EntryType):
     """Creates a dataplex entry, packs it to Import Item and converts to json."""
     import_item = _entry_to_import_item(_create_entry(config, entry_type))
     camelCase_item = dataclasses.asdict(import_item, dict_factory=_dict_factory_camcelCase)
-   # print(f"\n {camelCase_item}\n")
     return json.dumps(camelCase_item)
