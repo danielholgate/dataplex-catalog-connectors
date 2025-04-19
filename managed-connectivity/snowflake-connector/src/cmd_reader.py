@@ -36,6 +36,7 @@ def read_args():
     parser.add_argument("--database", type=str, required=True, help="Snowflake database")
     parser.add_argument("--warehouse", type=str,required=False,help="Snowflake warehouse")
     parser.add_argument("--schema", type=str,required=False,help="Snowflake schema")
+    parser.add_argument("--role", type=str,required=False,help="Snowflake Role")
 
     # Authentication arguments
     parser.add_argument("--authentication",type=str,required=False,choices=['oauth','password'],help="Authentication method")
