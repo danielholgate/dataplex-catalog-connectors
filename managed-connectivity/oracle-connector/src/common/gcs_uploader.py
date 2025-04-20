@@ -35,7 +35,7 @@ def checkDestination(bucketpath: str):
     bucket = client.bucket(bucketpath)
 
     if not bucket.exists():
-        print(f"Output cloud storage bucket {bucketpath} does not exist")
+        print(f"Cloud storage bucket {bucketpath} does not exist")
         return False
     
     return True

@@ -63,7 +63,6 @@ def run():
     
     if not config['local_output_only']:
         FOLDERNAME = config['output_folder']
-        #FOLDERNAME = generateFolderName(SOURCE_TYPE)
 
     # Instantiate connector class 
     ConnectorClass = getattr(importlib.import_module(CONNECTOR_MODULE), CONNECTOR_CLASS)
@@ -104,7 +103,8 @@ def run():
 
     # If 'min_expected_entries set, file must meet minimum number of expected entries
     if entries_count < config['min_expected_entries']:
-        print(f"Row count is less then min_expected_entries value of {config['min_expected_entries']}. Will not upload to GCS bucket.")
+        print(f"Row count is less then min_expected_entries value of {config['min_expected_entries']}. Will not upload to cloud storage bucket.")
     elif not config['local_output_only']:
-        print(f"Uploading to GCS bucket: {config['output_bucket']}/{FOLDERNAME}")
+        print(f"Uploading to cloud storage bucket: {config['output_bucket']}/{FOLDERNAME}")
         gcs_uploader.upload(config,output_path,FILENAME,FOLDERNAME)
+    print(f"\nFinished")

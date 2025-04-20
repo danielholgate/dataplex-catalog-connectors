@@ -51,7 +51,8 @@ KEY_COLUMNS = "columns"
 COLUMN_TABLE_NAME = "TABLE_NAME"
 COLUMN_DATA_TYPE = "DATA_TYPE"
 COLUMN_COLUMN_NAME = "COLUMN_NAME"
-COLUMN_IS_NULLABLE = "NULLABLE"
+COLUMN_IS_NULLABLE = "IS_NULLABLE"
+COLUMN_SCHEMA_NAME = "SCHEMA_NAME"
 
 VALUE_NULLABLE = "NULLABLE"
 VALUE_REQUIRED = "REQUIRED"
@@ -122,7 +123,7 @@ def build_schemas(config, df_raw_schemas):
         location=config["target_location_id"])
 
     # Converts a list of schema names to the Dataplex-compatible form
-    column = F.col("SCHEMA_NAME")
+    column = F.col(COLUMN_SCHEMA_NAME)
     df = df_raw_schemas.withColumn(KEY_NAME, create_name_udf(column)) \
       .withColumn(KEY_FQN, create_fqn_udf(column)) \
       .withColumn(KEY_PARENT_ENTRY, F.lit(parent_name)) \
@@ -159,7 +160,7 @@ def build_dataset(config, df_raw, db_schema, entry_type):
         .withColumn(KEY_METADATA_TYPE, choose_metadata_type_udf(KEY_DATA_TYPE)) \
         .withColumnRenamed(COLUMN_COLUMN_NAME, KEY_NAME)
 
-    # The transformation below aggregate fields, denormalizing the table
+    # The transformation below aggregates fields, denormalizing the table
     # TABLE_NAME becomes top-level filed, and the rest is put into
     # the array type called "fields"
     aspect_columns = [KEY_NAME, KEY_MODE, KEY_DATA_TYPE, KEY_METADATA_TYPE]

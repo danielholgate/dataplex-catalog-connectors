@@ -25,7 +25,7 @@ def getJarPath(config : dict[str:str]):
     jar_path = '' 
     user_jar = config.get('jar')
     if user_jar is not None:
-        # If given file path to jar, use full path. Otherwise just jar name
+        # if file path to jar provided then use, otherwise current path + jar name
         if (user_jar.startswith(".") or user_jar.startswith("/")):
                 jar_path = user_jar
         else:

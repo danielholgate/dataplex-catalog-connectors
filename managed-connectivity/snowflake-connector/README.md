@@ -12,9 +12,9 @@ The connector extracts metadata for the following database objects:
 The Snowflake connector takes the following parameters:
 |Parameter|Description|Required/Optional|
 |---------|------------|-------------|
-|target_project_id|GCP Project ID, or 'global'. Used in the generated Dataplex Entry, Aspects and AspectTypes|REQUIRED|
-|target_location_id|GCP Region ID, or 'global'. Used in the generated Dataplex Entry, Aspects and AspectTypes|REQUIRED|
-|target_entry_group_id|Dataplex Entry Group ID to use in generated metadata|REQUIRED|
+|target_project_id|Google Cloud Project ID. Used in the generated metadata and indicates the project metadata file will be imported to|REQUIRED|
+|target_location_id|Google Cloud Region ID, or 'global'. Used in the generated metadata and indicates region where Entries are associated|REQUIRED|
+|target_entry_group_id|Dataplex Entry Group ID under which Entries will be imported|REQUIRED|
 |account|Snowflake account to connect to|REQUIRED|
 |user|Snowflake username to connect with|REQUIRED|
 |authentication|Authentication method: password or oauth (default is 'password')|OPTIONAL

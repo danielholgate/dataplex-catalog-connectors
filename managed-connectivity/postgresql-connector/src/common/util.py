@@ -13,9 +13,9 @@
 # limitations under the License.
 
 # Utility convenience functions
-import argparse
 import sys
 from datetime import datetime
+import re
 
 # Returns string content from file at given path
 def loadReferencedFile(file_path) -> str:
@@ -29,8 +29,12 @@ def loadReferencedFile(file_path) -> str:
         sys.exit(1)
     return None
 
+# Convert string to camel case - dataplex v1 property names
+def to_camel_case(text) -> str:
+    return re.sub(r"[-_]([a-zA-Z])", lambda x: x[1].upper(), text)
+
 # folder name with timestamp
-def generateFolderName(SOURCE_TYPE : str):
+def generateFolderName(SOURCE_TYPE : str) -> str:
     currentDate = datetime.now()
-    return f"{SOURCE_TYPE}/{currentDate.year}{currentDate.month}{currentDate.day}-{currentDate.hour}{currentDate.minute}{currentDate.second}"
-     
+    return f"{SOURCE_TYPE}/{currentDate.year}{currentDate.month}{currentDate.day}-{currentDate.hour}{currentDate.minute}{currentDate.second}" 
+    

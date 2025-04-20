@@ -16,12 +16,13 @@ from src.common.gcs_uploader import checkDestination
 from src.common.secret_manager import get_password
 import argparse
 import sys
+import re
 
 # Standard validation checks and value replacements. Additional checks can be applied in cmd_reader for specific data sources
 def validateArguments(parsed_args):
 
     if parsed_args.local_output_only == False and (parsed_args.output_bucket is None or parsed_args.output_folder is None):
-        print("both --output_bucket and --output_folder must be supplied if not using --local_output_only")
+        print("ERROR: both --output_bucket and --output_folder must be supplied if not using --local_output_only")
         sys.exit(1)
 
     if not parsed_args.local_output_only and not checkDestination(parsed_args.output_bucket):
@@ -29,6 +30,9 @@ def validateArguments(parsed_args):
             sys.exit(1)     
 
     if parsed_args.password_secret is not None:
+        
+        validateSecretID(parsed_args.password_secret)
+
         try:
             parsed_args.password = get_password(parsed_args.password_secret)
         except Exception as ex:
@@ -36,6 +40,14 @@ def validateArguments(parsed_args):
             print("Exiting")
             sys.exit(1)
     return parsed_args
+
+def validateSecretID(secretpath : str) -> bool:
+    pattern = r"^projects/[^/]+/secrets/[^/]+$"
+
+    if not re.match(pattern, secretpath):
+        print(f"ERROR: {secretpath} is not a valid Secret ID. Format is projects/PROJECTID/secrets/SECRETNAME.\nExiting.")
+        sys.exit(1)
+    return True
 
 # Validates that a value for least one of given list arguments has been supplied
 def checkOptionProvided(args : argparse.Namespace, checkParams : list):
@@ -53,6 +65,6 @@ def true_or_false(arg):
     elif 'FALSE'.startswith(ua):
        return False
     else:
-       print(f"Received parameter value '{arg}' but expected true or false")
+       print(f"ERROR: Received parameter value '{arg}' but expected true or false")
        print("Exiting")
        sys.exit(1)
