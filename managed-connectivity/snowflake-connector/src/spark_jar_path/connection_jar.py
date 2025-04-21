@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # Jar files and paths for when connector is containerised
-from src.sqlserver_connector import JDBC_JAR
+from src.snowflake_connector import JDBC_JAR
 
 SPARK_JAR_PATH = f"/opt/spark/jars"
 

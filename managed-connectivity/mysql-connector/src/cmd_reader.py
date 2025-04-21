@@ -62,12 +62,4 @@ def read_args():
     # Apply common argument validation checks first
     parsed_args = validateArguments(parsed_args)
 
-    if parsed_args.ssl_cert is not None:
-        try:
-            parsed_args.password = loadReferencedFile(parsed_args.ssl_cert)
-        except Exception as ex:
-            print(ex)
-            print("Exiting")
-            sys.exit(1)
-
     return vars(parsed_args)
