@@ -12,7 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Snowflake specific constants and functions
+# SQL Server specific constants and functions
+
 import enum
 from typing import List
 
@@ -21,7 +22,7 @@ SOURCE_TYPE = "sqlserver"
 # Default JDBC jar file. Can override with --jar
 JDBC_JAR = "mssql-jdbc-12.10.0.jre11.jar"
 
-# allow common bootstrap to load connector for specific datasource
+# Allow common bootstrap code to dynamically load connector for specific datasource
 CONNECTOR_MODULE = "src.sqlserver_connector"
 CONNECTOR_CLASS = "SQLServerConnector"
 
@@ -29,7 +30,7 @@ CONNECTOR_CLASS = "SQLServerConnector"
 IS_NULLABLE_TRUE = "Y"
 
 class EntryType(enum.Enum):
-    """Hierarchy of SQL Server entries."""
+    """Hierarchy of SQL Server entries"""
     INSTANCE: str = "projects/{project}/locations/{location}/entryTypes/sqlserver-instance"
     DATABASE: str = "projects/{project}/locations/{location}/entryTypes/sqlserver-database"
     DB_SCHEMA: str = "projects/{project}/locations/{location}/entryTypes/sqlserver-schema"
@@ -39,7 +40,7 @@ class EntryType(enum.Enum):
 # Top-level entries from above hierarchy which will be written to file before schema processing starts
 TOP_ENTRY_HIERARCHY : List[EntryType] = [EntryType.INSTANCE, EntryType.DATABASE]
 
-# EntryType in hierarchy under which database objects like tables, views are organised and processed
+# EntryType in the hierarchy under which database objects like tables, views are organised and processed
 COLLECTION_ENTRY : EntryType = EntryType.DB_SCHEMA
 
 # DB objects to extract metadata for

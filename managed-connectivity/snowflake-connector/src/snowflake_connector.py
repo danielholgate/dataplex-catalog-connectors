@@ -15,7 +15,7 @@
 from typing import Dict
 from pyspark.sql import SparkSession, DataFrame
 from src.constants import EntryType
-from src.connection_jar import SPARK_JAR_PATH
+from src.common.connection_jar import getJarPath
 
 class SnowflakeConnector:
     """Reads data from Snowflake and returns Spark Dataframes."""
@@ -23,10 +23,9 @@ class SnowflakeConnector:
     def __init__(self, config: Dict[str, str]):
         # PySpark entrypoint
 
-        # Allow override for local jar file (different version / name)
-        jar_path = SPARK_JAR_PATH
-        if config['jar']:
-            jar_path = config['jar']
+        # Get jar file, allowing override for local jar file (different version / name)
+        jar_path = getJarPath(config)
+        print(f"Using jar path {jar_path}")
 
         self._spark = SparkSession.builder.appName("SnowflakeIngestor") \
             .config("spark.jars",jar_path) \

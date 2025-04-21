@@ -38,7 +38,7 @@ grant references on all tables in schema <schema_name> to role <role_name>;
 grant references on all views in schema <schema_name> to role <role_name>;
 ```
 
-2. Add the password for the snowflake user to the Google Cloud Secret Manager in your project and note the Secret ID (format is: projects/[project-number]/secrets/[secret-name])
+2. Add the password for the snowflake user to the Google Secret Manager in your project and note the Secret ID (format is: projects/[project-number]/secrets/[secret-name])
 
 ## Running the connector
 There are three ways to run the connector:

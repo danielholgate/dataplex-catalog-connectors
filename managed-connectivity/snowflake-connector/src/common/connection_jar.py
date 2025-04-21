@@ -16,6 +16,7 @@
 
 from pathlib import Path
 from src.constants import JDBC_JAR
+from src.constants import SNOWFLAKE_SPARK_JAR
 
 # Default assumes jar file is in root of the project
 JAR_PATH = "."
@@ -32,5 +33,7 @@ def getJarPath(config : dict[str:str]):
                 jar_path = Path(JAR_PATH).joinpath(user_jar)
     else:
         jar_path = Path(JAR_PATH).joinpath(JDBC_JAR)
+        # Add the Snowflake Spark Jar
+        jar_path = f"{jar_path},{Path(JAR_PATH).joinpath(SNOWFLAKE_SPARK_JAR)}"
     
     return jar_path

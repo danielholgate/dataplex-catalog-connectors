@@ -14,7 +14,9 @@
 
 """Builds Dataplex hierarchy identifiers."""
 from typing import Dict
-from src.constants import EntryType, SOURCE_TYPE
+from src.constants import EntryType
+from src.constants import SOURCE_TYPE
+from src.constants import DB_OBJECT_TYPES_TO_PROCESS
 
 # In that case in names it is changed to C!!, and escaped with backticks in FQNs
 FORBIDDEN_SYMBOL = "#"
@@ -76,7 +78,7 @@ def create_parent_name(config: Dict[str, str], entry_type: EntryType,
         return create_name(config, EntryType.ACCOUNT)
     if entry_type == EntryType.DB_SCHEMA:
         return create_name(config, EntryType.DATABASE)
-    if entry_type == EntryType.TABLE:
+    if entry_type in DB_OBJECT_TYPES_TO_PROCESS:
         return create_name(config, EntryType.DB_SCHEMA, parent_name)
     return ""
 
