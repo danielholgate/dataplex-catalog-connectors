@@ -33,7 +33,7 @@ def read_args():
     # Oracle specific arguments
     parser.add_argument("--host", type=str, required=True,
         help="Oracle host server")
-    parser.add_argument("--port", type=str, required=True,
+    parser.add_argument("--port", type=int, required=True,
         help="The port number (usually 1521)")
     parser.add_argument("--user", type=str, required=True, help="Oracle User")
     parser.add_argument("--password_secret", type=str, required=True,

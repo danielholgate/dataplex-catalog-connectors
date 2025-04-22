@@ -16,6 +16,8 @@
 import sys
 from datetime import datetime
 import re
+#from cryptography.hazmat.backends import default_backend
+#from cryptography.hazmat.primitives import serialization
 
 # Returns string content from file at given path
 def loadReferencedFile(file_path) -> str:
@@ -28,6 +30,28 @@ def loadReferencedFile(file_path) -> str:
         print("Exiting")
         sys.exit(1)
     return None
+
+''' 
+# Loads keyfile
+def loadKeyFile(key_file_path):
+    with open("{key_file_path}", "rb") as key_file:
+        p_key = serialization.load_pem_private_key(
+            key_file.read(),
+            #password = os.environ['PRIVATE_KEY_PASSPHRASE'].encode(),
+            backend = default_backend()
+        )
+
+    privateKeyBytes = p_key.private_bytes(
+        encoding = serialization.Encoding.PEM,
+        format = serialization.PrivateFormat.PKCS8,
+        encryption_algorithm = serialization.NoEncryption()
+    )
+
+    privateKeyBytes = privateKeyBytes.decode("UTF-8")
+    privateKeyBytes = re.sub("-*(BEGIN|END) PRIVATE KEY-*\n","",privateKeyBytes).replace("\n","")
+
+    return privateKeyBytes
+'''
 
 # Convert string to camel case - dataplex v1 property names
 def to_camel_case(text) -> str:

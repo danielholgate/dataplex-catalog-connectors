@@ -55,7 +55,7 @@ def read_args():
         help="Trust server TLS certificate for connection")
     parser.add_argument("--hostname_in_certificate",type=str,required=False,
         help="Domain of the host certificate")
-    parser.add_argument("--authentication",type=str,required=False,help="SQL Server authentication scheme")
+    parser.add_argument("--authentication",type=str,required=False,default="NotSpecified",help="SQL Server authentication scheme")
     
     # Output destination arguments. Generate metadata file in local directory only, or local + to GCS bucket
     output_option_group = parser.add_mutually_exclusive_group()

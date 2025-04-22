@@ -19,7 +19,7 @@ from typing import List
 
 SOURCE_TYPE = "snowflake"
 
-# Default JDBC and Snowflake Spark JAR file. # Default JDBC jar file. Can override with --jar
+# Default JDBC and Snowflake Spark JAR file.
 # Note: These versions + Spark Scala version must be aligned/compatible.
 JDBC_JAR = "snowflake-jdbc-3.19.0.jar"
 SNOWFLAKE_SPARK_JAR = "spark-snowflake_2.12-3.1.1.jar"
@@ -28,7 +28,8 @@ SNOWFLAKE_SPARK_JAR = "spark-snowflake_2.12-3.1.1.jar"
 CONNECTOR_MODULE = "src.snowflake_connector"
 CONNECTOR_CLASS = "SnowflakeConnector"
 
-# Value to test for if column is nullable. Snowflake specific. Matches _get_dataset  
+# Value to test for if column is nullable. Snowflake specific. 
+# Matches value in is_nullable column from _get_columns
 IS_NULLABLE_TRUE = "Y"
 
 class EntryType(enum.Enum):

@@ -26,7 +26,7 @@ CONNECTOR_CLASS = "PostgresConnector"
 IS_NULLABLE_TRUE = "YES"
 
 class EntryType(enum.Enum):
-    """Hierarchy of Postgres entries"""
+    """Hierarchy of Postgresql entries"""
     INSTANCE: str = "projects/{project}/locations/{location}/entryTypes/postgresql-instance"
     DATABASE: str = "projects/{project}/locations/{location}/entryTypes/postgresql-database"
     DB_SCHEMA: str = "projects/{project}/locations/{location}/entryTypes/postgresql-schema"
