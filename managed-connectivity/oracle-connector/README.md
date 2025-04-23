@@ -153,9 +153,8 @@ gcloud dataproc batches submit pyspark \
     --region=us-central1 \
     --batch=0001 \
     --deps-bucket=dataplex-metadata-collection-bucket \  
-    --container-image=us-central1-docker.pkg.dev/my-gcp-project-id/docker-repo/oracle-pyspark@sha256:dab02ca02f60a9e12769999191b06d859b947d89490d636a34fc734d4a0b6d08 \
+    --container-image=us-central1-docker.pkg.dev/my-gcp-project-id/docker-repo/univerisal-catalog-oracle-pyspark:latest \
     --service-account=440199992669-compute@developer.gserviceaccount.com \
-    --jars=gs://gcs/path/to/ojdbc11.jar  \
     --network=Your-Network-Name \
     main.py \
 --  --target_project_id my-gcp-project-id \
@@ -164,7 +163,7 @@ gcloud dataproc batches submit pyspark \
       --host the-oracle-server \
       --port 1521 \
       --user dataplexagent \
-      --password-secret projects/73819994526/secrets/dataplexagent_oracle \
+      --password_secret projects/73819994526/secrets/dataplexagent_oracle \
       --service XEPDB1 \
       --output_bucket gcs_output_bucket_path \
       --output_folder oracle

@@ -25,12 +25,12 @@ The connector accepts the following parameters:
 |port|SQL Server host port|1433|OPTIONAL|
 |instancename|The SQL Server instance to connect to|defaultinstance|OPTIONAL|
 |database|The SQL Server database name||REQUIRED|
+|local_output_only|Generate metadata in local directory only, do not push to cloud storage||OPTIONAL|
 |output_bucket|Cloud Storage bucket where the output file will be stored.  Required if **--local_output_only** = False||REQUIRED|
 |output_folder|Folder in the Cloud Storage bucket where the output metadata file will be stored.  Required if **--local_output_only** = False||REQUIRED|
 |login_timeout|Time to establish connection to database (seconds)|0 (=use JDBC driver default)|OPTIONAL
 |encrypt|Use encryption for connection to database [True/False]|True|OPTIONAL|
 |trust_server_certificate|Trust SQL Server TLS certificate [True/False]|True|OPTIONAL|
-|local_output_only|Generate metadata in local directory only, do not push to cloud storage||OPTIONAL|
 |hostname_in_certificate|domain of host certificate||OPTIONAL|
 |user|User name to connect with||REQUIRED|
 |password_secret|[Secret Manager](https://cloud.google.com/security/products/secret-manager) ID holding password for the user||REQUIRED|
@@ -75,10 +75,10 @@ The authenticated user have the following roles in the project:
 * roles/secretmanager.secretAccessor
 * roles/storage.objectUser
 
-
 ```bash
     gcloud auth application-default login
 ```
+
 #### Set up
 * Ensure you are in the root directory of the connector
     ```bash
@@ -112,7 +112,6 @@ python3 main.py \
 The connector generates a metadata extract file in JSONL format as described [in the documentation](https://cloud.google.com/dataplex/docs/import-metadata#metadata-import-file) and stores the file locally in the 'output' directory. The connector also uploads the file to the Google Cloud Storage bucket and folder specified in the **--output_bucket** and **--output_folder** parameters unless **--local-output_only** is used.
 
 A sample output from the SQL Server connector can be found [here](sample/sqlserver_output_sample.jsonl).
-
 
 ## Import metadata into universal catalog
 
@@ -152,7 +151,7 @@ Note:
 
 #### Submit a Dataproc Serverless job
 
-Run the containerised metadata connector with the following command, substituting appropriate values for your environment and unique batch ID:
+Run the containerised metadata connector with the following command, substituting appropriate values for your environment and unique batch ID:`
 ```shell
 gcloud dataproc batches submit pyspark \
     --project=gcp-project-id \
@@ -187,4 +186,4 @@ An end-to-end metadata extraction and import pipeline with monitoring can be cre
 
 Follow the documentation here: [Import metadata from a custom source using Workflows](https://cloud.google.com/dataplex/docs/import-using-workflows-custom-source) and use [this yaml file](https://github.com/GoogleCloudPlatform/cloud-dataplex/blob/main/managed-connectivity/cloud-workflows/byo-connector/templates/byo-connector.yaml) as a template.
 
-Sample input parameters for an import job with Google Workflows can be found in the [workflows](workflows) directory to 
+Sample input parameters for an import job with Google Workflows can be found in the [workflows](workflows) directory
