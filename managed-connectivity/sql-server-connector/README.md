@@ -36,7 +36,7 @@ The connector accepts the following parameters:
 |password_secret|[Secret Manager](https://cloud.google.com/security/products/secret-manager) ID holding password for the user||REQUIRED|
 |password|Plain text user password. Use for dev or testing only. For production use **--password_secret**||OPTIONAL|
 |jar|Name (or full path to) JDBC jar file to use for connection||OPTIONAL|
-|min_expected_entries|Mininum number of entries expected in generated metadata file. If less then file is not uploaded to Cloud Storage|-1|OPTIONAL|
+|min_expected_entries|Minimum number of entries expected in generated metadata file. If less, file is not uploaded to Cloud Storage|-1|OPTIONAL|
 
 Note: **target_project_id**, **target_location_id** and **target_entry_group_id** are used as string values in generated metadata files only and do not need to match the project where the connector is being run.
 
