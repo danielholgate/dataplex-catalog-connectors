@@ -31,6 +31,7 @@ The Oracle connector takes the following parameters:
 |output_bucket|Cloud Storage bucket where the output file will be stored. Required if **--local_output_only** = False||REQUIRED|
 |output_folder|Folder in the Cloud Storage bucket where the output metadata file will be stored. Required if **--local_output_only** = False||
 |jar|Name (or full path to) JDBC jar file to use for connection|ojdbc11.jar|OPTIONAL|
+|min_expected_entries|Minimum number of entries expected in generated metadata file. If less file is not uploaded to Cloud Storage|-1|OPTIONAL|
 
 Note: **target_project_id**, **target_location_id** and **target_entry_group_id** are used as string values in generated metadata files only and do not need to match the project where the connector is being run.
 

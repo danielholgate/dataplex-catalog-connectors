@@ -23,6 +23,7 @@ The Snowflake connector takes the following parameters:
 |local_output_only|Generate metadata in local directory only, do not push to cloud storage||OPTIONAL|
 |output_bucket|Cloud Storage bucket where the output file will be stored.  Required if **--local_output_only** = False||REQUIRED|
 |output_folder|Folder in the Cloud Storage bucket where the output metadata file will be stored.  Required if **--local_output_only** = False||
+|min_expected_entries|Minimum number of entries expected in generated metadata file. If less file is not uploaded to Cloud Storage|-1|OPTIONAL|
 ### Prepare your Snowflake environment:
 
 Best practise is to connect to the database using a dedicated user with the minimum privileges required to extract metadata. 
