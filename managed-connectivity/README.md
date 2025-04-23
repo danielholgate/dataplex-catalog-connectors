@@ -1,6 +1,6 @@
-# Connectors for BigQuery Universal Catalog 
+# Connectors for BigQuery universal catalog 
 
-These connectors extract metadata from external systems into [BigQuery Universal Catalog](https://cloud.google.com/dataplex/docs/catalog-overview) in order to enhance the collection of metadata which occurs for services on Google Cloud.
+These connectors extract metadata from external systems into [BigQuery universal catalog](https://cloud.google.com/dataplex/docs/catalog-overview) in order to enhance the collection of metadata which occurs for services on Google Cloud.
 
 Disclaimer: These connectors are not official Google products and are provided on an as-is basis.
 
