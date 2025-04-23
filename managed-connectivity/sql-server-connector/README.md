@@ -30,6 +30,7 @@ The connector accepts the following parameters:
 |login_timeout|Time to establish connection to database (seconds)|0 (=use JDBC driver default)|OPTIONAL
 |encrypt|Use encryption for connection to database [True/False]|True|OPTIONAL|
 |trust_server_certificate|Trust SQL Server TLS certificate [True/False]|True|OPTIONAL|
+|local_output_only|Generate metadata in local directory only, do not push to cloud storage||OPTIONAL|
 |hostname_in_certificate|domain of host certificate||OPTIONAL|
 |user|User name to connect with||REQUIRED|
 |password_secret|[Secret Manager](https://cloud.google.com/security/products/secret-manager) ID holding password for the user||REQUIRED|

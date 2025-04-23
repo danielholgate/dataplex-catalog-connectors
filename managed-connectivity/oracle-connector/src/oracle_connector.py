@@ -36,7 +36,7 @@ class OracleConnector(IExternalSourceConnector):
 
         self._config = config
         # Use correct JDBC connection string depending on Service vs SID
-        if (config['sid']):
+        if config['sid']:
             self._url = f"jdbc:oracle:thin:@{config['host']}:{config['port']}:{config['sid']}"
         else:
             self._url = f"jdbc:oracle:thin:@{config['host']}:{config['port']}/{config['service']}"
@@ -57,7 +57,6 @@ class OracleConnector(IExternalSourceConnector):
 
     def get_db_schemas(self) -> DataFrame:
         """Select db schemas to process. Exclude system schemas"""
-        """Column must be called SCHEMA_NAME for common code to process dataframe"""
         query = """
         SELECT username as SCHEMA_NAME 
         FROM dba_users 

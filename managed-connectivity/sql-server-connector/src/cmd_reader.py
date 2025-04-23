@@ -41,7 +41,7 @@ def read_args():
 
     password_option_group = parser.add_mutually_exclusive_group()
     password_option_group.add_argument("--password_secret",type=str,help="Google Secret Manager ID of the password")
-    password_option_group.add_argument("--password",type=str,help="Password. Recommended only for development or testing, use --password_secret instead")
+    password_option_group.add_argument("--password",type=str,help="Password (recommended only for development or testing : use --password_secret instead)")
     
     parser.add_argument("--instancename",type=str,required=False,
         help="SQL Server instance to connect to")
