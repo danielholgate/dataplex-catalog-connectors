@@ -17,13 +17,12 @@ The Snowflake connector takes the following parameters:
 |user|Snowflake username to connect with||REQUIRED|
 |authentication|Authentication method: password or oauth (default is 'password')||OPTIONAL
 |password_secret|GCP Secret Manager ID holding the password for the Snowflake user. Format: projects/[PROJ]/secrets/[SECRET]||REQUIRED if using password auth|
-|token|Token for oauth ||REQUIRED if using **--authentication oauth**|
+|token|OAUTH Token||REQUIRED if using **--authentication oauth**|
 |database|Snowflake database to connect to||REQUIRED|
 |warehouse|Snowflake warehouse to connect to||OPTIONAL|
 |local_output_only|Generate metadata in local directory only, do not push to cloud storage||OPTIONAL|
-|output_bucket|GCS bucket where the output file will be stored||REQUIRED|
-|output_folder|Folder in the GCS bucket where the export output file will be stored||OPTIONAL|
-
+|output_bucket|Cloud Storage bucket where the output file will be stored.  Required if **--local_output_only** = False||REQUIRED|
+|output_folder|Folder in the Cloud Storage bucket where the output metadata file will be stored.  Required if **--local_output_only** = False||
 ### Prepare your Snowflake environment:
 
 Best practise is to connect to the database using a dedicated user with the minimum privileges required to extract metadata. 
@@ -53,6 +52,7 @@ The following tools must be installed in order to run the connector:
     sudo apt install default-jre
     ```
 * A python Virtual Environment. Follow the instructions [here](https://cloud.google.com/python/docs/setup#installing_and_using_virtualenv) to create and activate your environment.
+
 * Install PySpark
     ```bash
     pip3 install pyspark
@@ -71,10 +71,12 @@ The authenticated user must have the following roles for the project: roles/secr
     ```bash
     cd sql-server-connector
     ```
+
 * Download the following jars [from Maven](https://repo1.maven.org/maven2/net/snowflake/)
     * [snowflake-jdbc-3.19.0.jar](https://repo1.maven.org/maven2/net/snowflake/snowflake-jdbc/3.19.0/)
     * [spark-snowflake_2.12-3.1.1.jar](https://repo1.maven.org/maven2/net/snowflake/spark-snowflake_2.12/3.1.1/)
-** Install all python dependencies 
+
+* Install all python dependencies 
     ```bash
     pip3 install -r requirements.txt
     ```
