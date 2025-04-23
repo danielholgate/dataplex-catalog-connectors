@@ -25,7 +25,6 @@ class SnowflakeConnector:
 
         # Get jar file, allowing override for local jar file (different version / name)
         jar_path = getJarPath(config)
-        print(f"Using jar path {jar_path}")
 
         self._spark = SparkSession.builder.appName("SnowflakeIngestor") \
             .config("spark.jars",jar_path) \

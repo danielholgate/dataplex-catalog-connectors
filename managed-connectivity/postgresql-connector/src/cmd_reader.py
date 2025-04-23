@@ -34,7 +34,7 @@ def read_args():
     # PostgreSQL specific arguments
     parser.add_argument("--host", type=str, required=True,
         help="The PostgreSQL host server")
-    parser.add_argument("--port", type=str, required=True,
+    parser.add_argument("--port", type=int, required=True,
         help="The port number (usually 5432)")
     parser.add_argument("--user", type=str, required=True, help="Postgres User")
     parser.add_argument("--password_secret", type=str, required=True,
@@ -46,9 +46,6 @@ def read_args():
     
     parser.add_argument("--use_ssl", type=true_or_false,required=False,default=False,help="connect with SSL")
     parser.add_argument("--ssl_mode", type=str,required=False,choices=['disable','prefer','require','allow','verify-ca','verify-full'],default='prefer',help="SSL mode requirement")
-    parser.add_argument("--ssl_cert", type=str,required=False,help="SSL cert file path")
-    parser.add_argument("--ssl_key", type=str, required=False,help="SSL key file path")
-    parser.add_argument("--ssl_rootcert", type=str, required=False,help="SSL root cert file path")
  
     # Output destination arguments. Generate local only, or local + to GCS bucket
     output_option_group = parser.add_mutually_exclusive_group()
@@ -66,13 +63,5 @@ def read_args():
 
     # Apply common argument validation checks first
     parsed_args = validateArguments(parsed_args)
-
-    if parsed_args.ssl_cert is not None:
-        try:
-            parsed_args.password = loadReferencedFile(parsed_args.ssl_cert)
-        except Exception as ex:
-            print(ex)
-            print("Exiting")
-            sys.exit(1)
     
     return vars(parsed_args)

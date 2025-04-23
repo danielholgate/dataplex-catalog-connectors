@@ -32,6 +32,8 @@ The Oracle connector takes the following parameters:
 |output_folder|Folder in the Cloud Storage bucket where the output metadata file will be stored. Required if **--local_output_only** = False||
 |jar|Name (or full path to) JDBC jar file to use for connection|ojdbc11.jar|OPTIONAL|
 
+Note: **target_project_id**, **target_location_id** and **target_entry_group_id** are used as string values in generated metadata files only and do not need to match the project where the connector is being run.
+
 ### Prepare your database environment:
 
 Best practice is to connect to the database using a dedicated user with the minimum privileges required to extract metadata. 

@@ -24,11 +24,8 @@ class SQLServerConnector(IExternalSourceConnector):
 
     def __init__(self, config: Dict[str, str]):
 
-        print(f"Starting SQLServer connector: config = {config}\n")
-
         # Get jar file, allowing override for local jar file (different version / name)
         jar_path = getJarPath(config)
-        print(f"Using jar path {jar_path}")
 
         self._spark = SparkSession.builder.appName("SQLServerIngestor") \
             .config("spark.jars", jar_path) \

@@ -28,7 +28,6 @@ class OracleConnector(IExternalSourceConnector):
 
         # Get jar file. allow override for local jar file (different version / name)
         jar_path = getJarPath(config)
-        print(f"Using jar path {jar_path}")
 
         self._spark = SparkSession.builder.appName("OracleIngestor") \
             .config("spark.jars", jar_path) \
