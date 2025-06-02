@@ -15,25 +15,33 @@
 # Jar files and paths for when connector is running as local script
 
 from pathlib import Path
-from src.constants import JDBC_JAR
-from src.constants import SNOWFLAKE_SPARK_JAR
+from src.common.util import isRunningInContainer
 
-# Default assumes jar file is in root of the project
-JAR_PATH = "."
+# Returns jar path, allowing override with --jar option
+def getJarPath(config : dict[str:str], jars_to_include: [str]) -> str:
 
-# Returns jar path allowing override with --jar option
-def getJarPath(config : dict[str:str]):
-    jar_path = '' 
+    base_jar_path = "" 
     user_jar = config.get('jar')
-    if user_jar is not None:
-        # if file path to jar provided then use, otherwise current path + jar name
-        if (user_jar.startswith(".") or user_jar.startswith("/")):
-                jar_path = user_jar
-        else:
-                jar_path = Path(JAR_PATH).joinpath(user_jar)
+    output_jar_path = ''
+
+    # jar directory path depending on whether local script or running in container
+    if isRunningInContainer():
+        base_jar_path = "/opt/spark/jars"
     else:
-        jar_path = Path(JAR_PATH).joinpath(JDBC_JAR)
-        # Add the Snowflake Spark Jar
-        jar_path = f"{jar_path},{Path(JAR_PATH).joinpath(SNOWFLAKE_SPARK_JAR)}"
-    
-    return jar_path
+        base_jar_path = "."
+
+    if user_jar is not None:
+        # if file path to jar provided then use it, otherwise current path + jar name
+        if (user_jar.startswith(".") or user_jar.startswith("/")):
+                output_jar_path = user_jar
+        else:
+                output_jar_path = f"{Path(base_jar_path).joinpath(user_jar)}"
+    else:
+        # Build path for one or more jar files
+        for jar in jars_to_include:
+            if len(output_jar_path) > 0:
+                output_jar_path = f"{output_jar_path},{Path(base_jar_path).joinpath(jar)}"
+            else:
+                output_jar_path = f"{Path(base_jar_path).joinpath(jar)}"
+
+    return output_jar_path

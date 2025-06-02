@@ -16,8 +16,9 @@
 import sys
 from datetime import datetime
 import re
+import os
 
-# Returns string content from file at given path
+# Loads file at a given path and returns the content as a string
 def loadReferencedFile(file_path) -> str:
     try:
         with open(file_path, 'r', encoding='utf-8') as f:
@@ -25,7 +26,6 @@ def loadReferencedFile(file_path) -> str:
         return content
     except Exception as e:
         print(f"Error while reading file {file_path}: {e}")
-        print("Exiting")
         sys.exit(1)
     return None
 
@@ -34,7 +34,28 @@ def to_camel_case(text) -> str:
     return re.sub(r"[-_]([a-zA-Z])", lambda x: x[1].upper(), text)
 
 # folder name with timestamp
-def generateFolderName(SOURCE_TYPE : str) -> str:
+def generateFolderName(SOURCE_TYPE: str) -> str:
     currentDate = datetime.now()
-    return f"{SOURCE_TYPE}/{currentDate.year}{currentDate.month}{currentDate.day}-{currentDate.hour}{currentDate.minute}{currentDate.second}" 
-    
+    return f"{SOURCE_TYPE}/{currentDate.year}{currentDate.month}{currentDate.day}-{currentDate.hour}{currentDate.minute}{currentDate.second}"
+
+# True if running in container
+def isRunningInContainer() -> bool:
+    return os.environ.get("RUNNING_IN_CONTAINER", "").lower() in ("yes", "y", "on", "true", "1")
+
+
+# Returns True is file exists at given path.
+# filePath can also be comma-seperated list of multiple jar paths
+def fileExists(filepath : str) -> bool:
+
+    if "," in filepath:
+        # Split into individual file paths and check each
+        jar_list = filepath.split(",")
+        for jar_file_path in jar_list:
+            if not os.path.isfile(jar_file_path):
+                raise Exception(f"Jar file not found: {jar_file_path}")
+    else:
+        # check single file path
+        if not os.path.isfile(filepath):
+            raise Exception(f"Jar file not found: {filepath}")
+
+    return True

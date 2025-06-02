@@ -17,7 +17,9 @@ from typing import Dict
 from pyspark.sql import SparkSession, DataFrame
 from src.common.ExternalSourceConnector import IExternalSourceConnector
 from src.constants import EntryType
+from src.common.util import fileExists
 from src.common.connection_jar import getJarPath
+from src.constants import JDBC_JAR
 
 class SQLServerConnector(IExternalSourceConnector):
     """Reads data from SQL Server and returns Spark Dataframes."""
@@ -25,10 +27,13 @@ class SQLServerConnector(IExternalSourceConnector):
     def __init__(self, config: Dict[str, str]):
 
         # Get jar file, allowing override for local jar file (different version / name)
-        jar_path = getJarPath(config)
+        jar_path = getJarPath(config,[JDBC_JAR])
+        # Check jdbc jar file exist. Throws exception if not found
+        jarsExist = fileExists(jar_path)
 
         self._spark = SparkSession.builder.appName("SQLServerIngestor") \
             .config("spark.jars", jar_path) \
+            .config("spark.log.level", "ERROR") \
             .getOrCreate()
 
         self._config = config
@@ -55,10 +60,11 @@ class SQLServerConnector(IExternalSourceConnector):
 
     def _execute(self, query: str) -> DataFrame:
         """A generic method to execute any query."""
+
         return self._spark.read.format("jdbc") \
-            .options(**self._connectOptions) \
-            .option("query", query) \
-            .load()
+                .options(**self._connectOptions) \
+                .option("query", query) \
+                .load()
 
     def get_db_schemas(self) -> DataFrame:
         """Gets a list of schemas in the database"""
@@ -71,8 +77,6 @@ class SQLServerConnector(IExternalSourceConnector):
 
     def _get_columns(self, schema_name: str, object_type: str) -> str:
         """Gets a list of columns in tables or views."""
-        # Every line here is a column that belongs to the table or to the view.
-        # This SQL gets data from ALL the tables in a given schema.
         return (f"SELECT t.name AS TABLE_NAME, "
                 f"c.name AS COLUMN_NAME, "
                 f"ty.name AS DATA_TYPE, "
@@ -85,7 +89,7 @@ class SQLServerConnector(IExternalSourceConnector):
                 f"AND t.type = '{object_type}'")
 
     def get_dataset(self, schema_name: str, entry_type: EntryType):
-        """Gets data for a table or a view."""
+        """Gets data for a table or view."""
         # Dataset means that these entities can contain end user data.
         short_type = {"TABLE":"U", "VIEW":"V"}
         query = self._get_columns(schema_name, short_type[entry_type.name])

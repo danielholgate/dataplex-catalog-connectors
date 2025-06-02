@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 # Copyright 2025 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,14 +19,14 @@
 PROJECT_ID=PROJECT_ID
 REGION=us-central1
 
-IMAGE_NAME="universal-catalog-oracle-pyspark"
+IMAGE_NAME="catalog-oracle-pyspark"
 IMAGE_VERSION="0.0.1"
 IMAGE=${IMAGE_NAME}:${IMAGE_VERSION}
 REPO_IMAGE=${REGION}-docker.pkg.dev/${PROJECT_ID}/docker-repo/${IMAGE_NAME}
 
 docker build -t "${IMAGE}" .
 
-# Tag and push to GCP container registry
+# Tag and push to Artifact Registry
 gcloud config set project ${PROJECT_ID}
 gcloud auth configure-docker ${REGION}-docker.pkg.dev
 docker tag "${IMAGE}" "${REPO_IMAGE}"

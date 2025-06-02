@@ -19,18 +19,23 @@ from pyspark.sql import DataFrame
 from src.common.ExternalSourceConnector import IExternalSourceConnector
 from src.constants import EntryType
 from src.common.connection_jar import getJarPath
+from src.common.util import fileExists
 from src.common.entry_builder import COLUMN_IS_NULLABLE
+from src.constants import JDBC_JAR
 
 class OracleConnector(IExternalSourceConnector):
     """Reads data from Oracle and returns Spark Dataframes."""
 
     def __init__(self, config: Dict[str, str]):
 
-        # Get jar file. allow override for local jar file (different version / name)
-        jar_path = getJarPath(config)
+        # Get jar file, allowing override for local jar file (different version / name)
+        jar_path = getJarPath(config,[JDBC_JAR])
+        # Check jdbc jar file exist. Throws exception if not found
+        jarsExist = fileExists(jar_path)
 
         self._spark = SparkSession.builder.appName("OracleIngestor") \
             .config("spark.jars", jar_path) \
+            .config("spark.log.level", "ERROR") \
             .getOrCreate()
 
         self._config = config

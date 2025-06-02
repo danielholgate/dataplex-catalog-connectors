@@ -14,6 +14,7 @@
 
 """Constants that are used in the different files."""
 import enum
+from typing import List
 
 SOURCE_TYPE = "oracle"
 
@@ -36,17 +37,17 @@ class EntryType(enum.Enum):
     VIEW: str = "projects/{project}/locations/{location}/entryTypes/oracle-view"
 
 # Top-level entries from above hierarchy which will be written to file before schema processing starts
-TOP_ENTRY_HIERARCHY = [EntryType.INSTANCE, EntryType.DATABASE]
+TOP_ENTRY_HIERARCHY : List[EntryType] = [EntryType.INSTANCE, EntryType.DATABASE]
 
 # EntryType in hierarchy under which database objects (tables, views) are organised and processed ( = schema-level)
-COLLECTION_ENTRY = EntryType.DB_SCHEMA
+COLLECTION_ENTRY : EntryType = EntryType.DB_SCHEMA
 
 # DB objects to extract metadata for
-DB_OBJECT_TYPES_TO_PROCESS = [EntryType.TABLE, EntryType.VIEW]
+DB_OBJECT_TYPES_TO_PROCESS : List[EntryType] = [EntryType.TABLE, EntryType.VIEW]
 
 def generateFileName(config: dict[str:str]) -> str:
     filename = ''
-    if config.get('sid'):
+    if config.get('sid') and config.get('sid') is not None:
         filename = f"{SOURCE_TYPE}-{config['host']}-{config['sid']}.jsonl"
     elif config.get('service') and config.get('service') is not None:
         filename = f"{SOURCE_TYPE}-{config['host']}-{config['service']}.jsonl"

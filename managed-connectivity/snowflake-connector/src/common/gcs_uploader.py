@@ -12,12 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Sends files to GCP storage."""
+"""Sends files to Cloud Storage."""
 from typing import Dict
 from google.cloud import storage
+import logging
 
 def upload(config: Dict[str, str], fileDirectory: str, filename: str, folder: str):
-    """Uploads a file to GCP bucket."""
+    """Uploads a file to a Cloud Storage bucket."""
     client = storage.Client()
     bucket = client.get_bucket((config["output_bucket"]))
 
@@ -25,17 +26,15 @@ def upload(config: Dict[str, str], fileDirectory: str, filename: str, folder: st
     blob.upload_from_filename(f"{fileDirectory}/{filename}")
 
 def checkDestination(bucketpath: str):
-    """Check GCS output folder exists"""
+    """Check Cloud Storage output folder exists"""
     client = storage.Client()
 
     if bucketpath.startswith("gs://"):
-        print(f"Please provide output cloud storage bucket {bucketpath} without gs:// prefix")
-        return False
+        raise Exception(f"Please provide output Cloud Storage bucket {bucketpath} without gs:// prefix")
     
     bucket = client.bucket(bucketpath)
 
     if not bucket.exists():
-        print(f"Cloud storage bucket {bucketpath} does not exist")
-        return False
+        raise Exception(f"Cloud Storage bucket {bucketpath} does not exist")
     
     return True

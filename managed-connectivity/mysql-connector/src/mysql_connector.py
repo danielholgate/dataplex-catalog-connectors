@@ -12,29 +12,33 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Reads Mysql using PySpark."""
+"""Reads MySQL using PySpark."""
 from typing import Dict
 from pyspark.sql import SparkSession, DataFrame
 from src.common.ExternalSourceConnector import IExternalSourceConnector
 from src.constants import EntryType
 from src.common.connection_jar import getJarPath
+from src.common.util import fileExists
+from src.constants import JDBC_JAR
 
 class MysqlConnector(IExternalSourceConnector):
-    """Reads data from Mysql and returns Spark Dataframes."""
+    """Reads data from MySQL and returns Spark Dataframes."""
 
     def __init__(self, config: Dict[str, str]):
         # PySpark entrypoint
 
-        # Get jar file. allow override for local jar file (different version / name)
-        jar_path = getJarPath(config)
-        print(f"Using jar path {jar_path}")
+        # Get jar file, allowing override for local jar file (different version / name)
+        jar_path = getJarPath(config,[JDBC_JAR])
+        # Check jdbc jar file exist. Throws exception if not found
+        jarsExist = fileExists(jar_path)
 
         self._spark = SparkSession.builder.appName("MySQLIngestor") \
             .config("spark.jars", jar_path) \
+            .config("spark.log.level", "ERROR") \
             .getOrCreate()
 
         self._config = config
-        self._url = f"jdbc:mysql://{config['host']}:{config['port']}/{config['database']}?zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&allowPublicKeyRetrieval=true"
+        self._url = f"jdbc:mysql://{config['host']}:{config['port']}/{config['database']}?zeroDateTimeBehavior=CONVERT_TO_NULL&allowPublicKeyRetrieval=true"
 
         self._connectOptions = {
             "driver": "com.mysql.cj.jdbc.Driver",

@@ -1,13 +1,7 @@
-# Connectors for BigQuery universal catalog 
+# Custom metadata connectors 
 
-These connectors extract metadata from external systems into [BigQuery universal catalog](https://cloud.google.com/dataplex/docs/catalog-overview) in order to enhance the collection of metadata which occurs for services on Google Cloud.
+These custom connectors extract metadata from third-party systems and can be used when running a [managed connectivity pipeline](https://cloud.google.com/dataplex/docs/managed-connectivity-overview) to import metadata into [BigQuery universal catalog](https://cloud.google.com/dataplex/docs/catalog-overview).
 
-Disclaimer: These connectors are not official Google products and are provided on an as-is basis.
+They have been built based on the sample connector code found in [sample-custom-connector](../sample-custom-connector) and use python and pyspark.
 
-## Connector List
-
-* [Oracle](/managed-connectivity/oracle-connector)
-* [SQL Server](/managed-connectivity/sql-server-connector)
-* [PostgreSQL](/managed-connectivity/postgresql-connector)
-* [MySQL](/managed-connectivity/mysql-connector)
-* [SnowFlake](/managed-connectivity/snowflake-connector)
+**Disclaimer: These are not officially supported Google products and are provided on an as-is basis. This project is not eligible for the [Google Open Source Software Vulnerability Rewards Program](https://bughunters.google.com/open-source-security)**
