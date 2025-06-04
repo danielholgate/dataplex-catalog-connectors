@@ -14,6 +14,7 @@
 
 import json
 import sys
+import re
 import argparse
 from collections import Counter
 from jsonschema import validate, ValidationError
@@ -35,7 +36,7 @@ dataplex_entry_schema = """
         },
         "fullyQualifiedName": {
           "type": "string",
-          "pattern": "^[a-z]+:`[a-zA-Z0-9_:.-]+`([.][`]*[a-zA-Z0-9_#-$]+[`]*)*$"
+          "pattern": "^[a-z]+:`[a-zA-Z0-9_:.-]+`([.][a-zA-Z0-9_#-]+)*$"
         },
         "parentEntry": {
           "type": "string",
@@ -131,7 +132,7 @@ dataplex_entry_schema = """
 
 GCP_REGIONS = ['asia-east1','asia-east2','asia-northeast1','asia-northeast2','asia-northeast3','asia-south1','asia-south2','asia-southeast1','asia-southeast2','australia-southeast1','australia-southeast2','europe-central2','europe-north1','europe-southwest1','europe-west1','europe-west2','europe-west3','europe-west4','europe-west6','europe-west8','europe-west9','europe-west12','me-central1','me-west1','northamerica-northeast1','northamerica-northeast2','southamerica-east1','southamerica-east2','us-central1','us-east1','us-east4','us-east5','us-south1','us-west1','us-west2','us-west3','us-west4']
 
-def validate_jsonl(file_path : str,isDebug : bool, isList : bool, min_lines: int, exact_lines: int):
+def validate_jsonl(file_path : str,isDebug : bool, isList : bool, min_lines: int, exact_lines: int, top: int):
     """
     Validates Dataplex Catalog  metadata import file to confirm it is well-formed and values fulfill requirements for import
     """
@@ -145,13 +146,22 @@ def validate_jsonl(file_path : str,isDebug : bool, isList : bool, min_lines: int
     fqn_list = []
     parents = []
 
-    print(f"\nValidating dataplex metadata import file: {file_path}")
+    print(f"\nValidating universal catalog metadata import file: {file_path}")
 
     dataplex_schama = json.loads(dataplex_entry_schema)
 
     try:
         with open(file_path, 'r', encoding='utf-8') as f:
+            
             for line in f:
+                
+                if line_count > top:
+                   print(f"Reached line specified in top: {top}")
+                   print("Finishing\n")
+                   sys.exit();
+                                
+                print(f"Validating line {line_count}")
+                
                 if isDebug:
                   print(f"Line {line_count} : ")
                 line = line.strip()
@@ -173,8 +183,8 @@ def validate_jsonl(file_path : str,isDebug : bool, isList : bool, min_lines: int
                         if isDebug:
                           print("  JSON conforms to dataplex catalog entry schema")
                     except ValidationError as e:
-                        print("  Failed validation against dataplex catalog entry schema:")
-                        print(f"  {e}")
+                        print(f" Line {line_count}: ValidationError against dataplex catalog entry schema")
+                        print(f" Exception detail is: {e}'")
                         dataplex_entry_error_count += 1
                         is_valid = False
                         if isDebug:
@@ -185,9 +195,11 @@ def validate_jsonl(file_path : str,isDebug : bool, isList : bool, min_lines: int
                     try:
                       parent_entry = obj['entry']['parentEntry']
                       if len(parent_entry) == 0:
-                         print(f"!!!Entry has parentEntry but empty: Line {line_count} {obj['entry']['name']}")
+                         print(f"Line {line_count}: Warning")
+                         print(f"   Entry has parentEntry with empty value. entryName = {obj['entry']['name']}")
                     except Exception as e:
-                      print(f"!!!Entry does not have a parentEntry: Line {line_count} {obj['entry']['name']}")
+                      print(f"Line {line_count}: Exception")
+                      print(f"    Entry is missing parentEntry property:  entryName = {obj['entry']['name']}")
                     parents.append(parent_entry)
                     entry_name = entry_names.append(obj['entry']['name'])
                     entry_names.append(entry_name)
@@ -200,15 +212,18 @@ def validate_jsonl(file_path : str,isDebug : bool, isList : bool, min_lines: int
                         data_fields = obj['entry']['aspects']['dataplex-types.global.schema']['data']['fields']
                         for x in data_fields:
                            if x['metadataType'] == 'OTHER':
-                              print(f"  FYI: Line {line_count} Entry with {fqn} has column which has been mapped to generic metadata type OTHER")
-                              print(f"  {x}")
+                              print(f"  Note: Entry with {fqn} has column which has been mapped to generic metadata type OTHER")
+                              print(f"  data type {x['dataType']}: {x}")
 
                 except json.JSONDecodeError as e:
-                    print(f"Error: Invalid JSON on line {line_count}:\n {line}") 
+                    print(f"Line {line_count} Exception. Invalid JSON. Exception detail is '{e}'") 
+                    pattern = r"Extra data: line (\d+) column (\d+) \(char (\d+)\)"
+                    match = re.search(pattern, e)
+                    print(f"    Line {line_count}: {line}")
                     json_errors_count+=1
                 except Exception as e:
-                    print(f"An unexpected error occured on line {line_count}: {e}")
-                    print(f"Offending Line: {line}")
+                    print(f"Line {line_count} unexpected error: Exception detail is '{e}'") 
+                    print(f"    Line {line_count}: {line}")
                     is_valid = False
                 line_count += 1
 
@@ -289,8 +304,9 @@ if __name__ == "__main__":
     parser.add_argument("file_path", help="Path to metadata import file")
     parser.add_argument("--debug",default=False,help="prints details of JSON line validation",  action="store_true")
     parser.add_argument("--list",default=False,help="lists out the lines in the file", action="store_true")
+    parser.add_argument("--top",type=int,default=999999,help="number of lines in file to validate/list, starting from beginning")
     parser.add_argument("--min_lines",type=int,default=False,help="minimum number of lines that must be in file")
     parser.add_argument("--exact_lines",type=int,default=False,help="exact number of lines that must be in file")
     args = parser.parse_args()
 
-    validate_jsonl(args.file_path,args.debug,args.list,args.min_lines, args.exact_lines)
+    validate_jsonl(args.file_path,args.debug,args.list,args.min_lines, args.exact_lines, args.top)
