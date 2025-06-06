@@ -1,11 +1,10 @@
-# Google Cloud Dataplex - Managed Connectivity Connectors for External Systems
+# Google Cloud Dataplex - Managed Connectivity
 
-This repo contains connectors for importing metadata from external systems to Google Dataplex, based on the [Managed connectivity framework](https://cloud.google.com/dataplex/docs/managed-connectivity-overview) 
+Managed connectivity lets you import metadata into Dataplex at scale. A managed connectivity pipeline extracts metadata from your data sources and then imports the metadata into Dataplex. Refer to our official guide at [Managed connectivity overview](https://cloud.google.com/dataplex/docs/managed-connectivity-overview) for more details.  
 
-## Connector List
+## Additional Resources
 
-* [Oracle](/managed-connectivity/oracle-connector)
-* [SQL Server](/managed-connectivity/sql-server-connector)
-* [PostgreSQL](/managed-connectivity/postgresql-connector)
-* [MySQL](/managed-connectivity/mysql-connector)
-* [SnowFlake](/managed-connectivity/snowflake-connector)
+* [Managed Connectivity overview](https://cloud.google.com/dataplex/docs/managed-connectivity-overview)
+* [Import metadata from a custom source using Workflows](https://cloud.google.com/dataplex/docs/import-using-workflows-custom-source)
+* [Develop a custom connector for metadata import](https://cloud.google.com/dataplex/docs/develop-custom-connector)
+*  [Import metadata using a custom pipeline](https://cloud.google.com/dataplex/docs/import-metadata)
