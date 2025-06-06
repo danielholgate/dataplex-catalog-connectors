@@ -86,6 +86,10 @@ Note:  The authenticated user must have the following IAM roles in the project w
 - roles/storage.objectUser
 
 #### Set-up
+* Clone the repository
+    ```bash
+    git clone git@github.com:GoogleCloudPlatform/cloud-dataplex.git
+    ```
 * Ensure you are in the root directory of the connector
     ```bash
     cd oracle-connector
