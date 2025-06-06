@@ -1,0 +1,29 @@
+{
+    "type": "IMPORT",
+    "import_spec": {
+        "source_storage_uri": "gs://dataplex-metadata-collector/sybase/",
+        "scope": {
+            "entryGroups": [
+                "projects/daniel-dataplex/locations/us-central1/entryGroups/sybase-ase"
+            ],
+            "entry_types": [
+                "projects/daniel-dataplex/locations/us-central1/entryTypes/sybase-ase-instance",
+                "projects/daniel-dataplex/locations/us-central1/entryTypes/sybase-ase-schema",
+                "projects/daniel-dataplex/locations/us-central1/entryTypes/sybase-ase-database",
+                "projects/daniel-dataplex/locations/us-central1/entryTypes/sybase-ase-table",
+                "projects/daniel-dataplex/locations/us-central1/entryTypes/sybase-ase-view"
+            ],
+            "aspect_types": [
+                "projects/daniel-dataplex/locations/us-central1/aspectTypes/sybase-ase-schema",
+                "projects/daniel-dataplex/locations/us-central1/aspectTypes/sybase-ase-database",
+                "projects/daniel-dataplex/locations/us-central1/aspectTypes/sybase-ase-view",
+                "projects/dataplex-types/locations/global/aspectTypes/schema",
+                "projects/daniel-dataplex/locations/us-central1/aspectTypes/sybase-ase-table",
+                "projects/daniel-dataplex/locations/us-central1/aspectTypes/sybase-ase-instance"
+            ]
+        },
+        "entry_sync_mode": "FULL",
+        "aspect_sync_mode": "INCREMENTAL",
+        "log_level": "DEBUG"
+    }
+}
