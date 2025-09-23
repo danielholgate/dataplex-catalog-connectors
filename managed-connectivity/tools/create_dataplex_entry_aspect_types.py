@@ -256,24 +256,32 @@ def create_entry_aspect_types(file_path : str, project : str, location : str):
         print("Entry Groups error in file: {set_entrygroups}")
         sys.exit()
     
-    # If user provided value for project or location on command line, use that instead of values from file
-    if location is None:
-        location = set_locations.pop()
+    # If user-provided value for project or location on command line, use that instead of values from file
     if project is None:
         project = set_projects.pop()
+        print(f"Will create in project {project} from metadata file")
+    else:
+        print(f"Will create in project in project {project}")
+    if location is None:
+        location = set_locations.pop()
+        print(f"Will create in location {location} from metadata file")
+    else:
+        print(f"Will create in location {location}")
+
+    print("\n")
 
     entrygroup = set_entrygroups.pop()
 
     try:
         create_entry_group(project,location,entrygroup)
     except Exception as e:
-        print(f"Exception occured trying to create Entry Group {entrygroup} in project: {project} location: {location}:\n{e}")
+        print(f"Error occured trying to create Entry Group '{entrygroup}' in project {project}, location {location}:\n{e}")
 
     for et in set_entrytypesonly:
         try:
             create_entry_type(project,location,et)
         except Exception as e:
-            print(f"Exception occured trying to create Entry Type {et} in project: {project} location: {location}:\n{e}")
+            print(f"Error occured trying to create Entry Type '{et}' in project {project}, location {location}:\n{e}")
     
     for at in set_aspecttypesonly:
         aspectID = at.split(".")[2]
@@ -281,17 +289,17 @@ def create_entry_aspect_types(file_path : str, project : str, location : str):
         try:
             create_aspect_type(project,location,aspectID)
         except Exception as e:
-            print(f"Exception occured trying to create Aspect Type {aspectID}:\n{e}")
+            print(f"Error occured trying to create Aspect Type '{aspectID}' in project {project}, location {location}:\n{e}")
 
     print(f"Finished")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Creates Entry Group, Entry Types, Aspect Types from a dataplex catalog metadata import file (.jsonl)")
     parser.add_argument("file_path", help="Path to metadata import file")
-    parser.add_argument("--project",type=str,help="Project override", default=None)
-    parser.add_argument("--location",type=str,help="Location override", default=None)
+    parser.add_argument("--project",type=str,help="Optional project override for creating hierarchy in another project", default=None)
+    parser.add_argument("--location",type=str,help="Optional location override for creating hierarchy in another location", default=None)
     args = parser.parse_args()
 
-    print(f"\nProcessing metadata import file {args.file_path}")
+    print(f"\nCreating Dataplex Universal Catalog Entry Group, Entry Types, Aspect Types from metadata import file:\n {args.file_path}")
 
     create_entry_aspect_types(args.file_path,args.project,args.location)
