@@ -17,6 +17,7 @@ import re
 import sys
 import argparse
 from collections import Counter
+from typing import List
 from google.cloud import dataplex_v1
 
 ## Creates required Entry Group, Entry Types, Aspect Types from a metadata import file
@@ -24,7 +25,7 @@ from google.cloud import dataplex_v1
 def create_entry_group(
     project_id: str, location: str, entry_group_id: str
 ) -> dataplex_v1.EntryGroup:
-    """Method to create Entry Group located in project_id, location and with entry_group_id"""
+    """Create Entry Group identified by entry_group_id, located in project_id, locatio """
 
     with dataplex_v1.CatalogServiceClient() as client:
         # The resource name of the Entry Group location
@@ -41,7 +42,7 @@ def create_entry_group(
 def create_entry_type(
     project_id: str, location: str, entry_type_id: str
 ) -> dataplex_v1.EntryType:
-    """Method to create Entry Type located in project_id, location and with entry_type_id"""
+    """Create Entry Type identified by entry_type_id, located in project_id, location """
 
     print(f"Creating Entry Type {entry_type_id}")
 
@@ -78,6 +79,75 @@ def create_entry_type(
             parent=parent, entry_type=entry_type, entry_type_id=entry_type_id
         )
         return create_operation.result(60)
+    
+def create_aspect_type(
+    project_id: str, location: str, aspect_type_id: str,
+) -> dataplex_v1.AspectType:
+    """Create Aspect Type identified by aspect_type_id, located in project_id, location """
+
+    aspect_fields = List[dataplex_v1.AspectType.MetadataTemplate]
+
+    with dataplex_v1.CatalogServiceClient() as client:
+        # The resource name of the Aspect Type location
+        parent = f"projects/{project_id}/locations/{location}"
+
+        # Define the Aspect Type resource.
+        # It requires a metadata_template (a JSON schema) to define the
+        # properties of the Aspect.
+
+        aspect_field = dataplex_v1.AspectType.MetadataTemplate(
+        # The name must follow regex ^(([a-zA-Z]{1})([\\w\\-_]{0,62}))$
+        # That means name must only contain alphanumeric character or dashes or underscores,
+        # start with an alphabet, and must be less than 63 characters.
+        name="name_of_the_field",
+        # Metadata Template is recursive structure,
+        # primitive types such as "string" or "integer" indicate leaf node,
+        # complex types such as "record" or "array" would require nested Metadata Template
+        type="string",
+        index=1,
+        annotations=dataplex_v1.AspectType.MetadataTemplate.Annotations(
+            description="description of the field"
+        ),
+        constraints=dataplex_v1.AspectType.MetadataTemplate.Constraints(
+            # Specifies if field will be required in Aspect Type.
+            required=False
+        ),
+        )
+        
+        aspect_fields = [aspect_field]
+
+        aspect_type = dataplex_v1.AspectType(
+            description="description of the aspect type",
+            metadata_template=dataplex_v1.AspectType.MetadataTemplate(
+                # The name must follow regex ^(([a-zA-Z]{1})([\\w\\-_]{0,62}))$
+                # That means name must only contain alphanumeric character or dashes or underscores,
+                # start with an alphabet, and must be less than 63 characters.
+                name="name_of_the_template",
+                type="record",
+                # Aspect Type fields, that themselves are Metadata Templates.
+                record_fields=aspect_fields,
+            ),
+        )
+
+        create_operation = client.create_aspect_type(
+            parent=parent,
+            aspect_type=aspect_type,
+            aspect_type_id=aspect_type_id
+        )
+
+        # Dataplex operations are long-running, so we wait for the result.
+        # The timeout is set to 120 seconds (2 minutes).
+        print("Waiting for creation operation to complete...")
+        try:
+            response = create_operation.result(timeout=30)
+        except Exception as e:
+            print(f"Error during Aspect Type creation: {e}")
+            raise
+
+        print(
+            f"Successfully created Aspect Type: projects/{project_id}/locations/{location}/aspectTypes/{aspect_type_id}"
+        )
+        return response
 
 def create_entry_aspect_types(file_path : str, project : str, location : str):
 
@@ -133,6 +203,7 @@ def create_entry_aspect_types(file_path : str, project : str, location : str):
 
     # Deduplicate aspect types and entry types
     set_entrytypes = set(entry_types)
+    set_aspecttypes = set(aspect_types)
 
     set_entrytypesonly = []
 
@@ -142,7 +213,14 @@ def create_entry_aspect_types(file_path : str, project : str, location : str):
         if match:
             set_entrytypesonly.append(match.group(1))
 
-    set_aspecttypes = set(aspect_types)
+    set_aspecttypesonly = []
+
+    atregex = r'aspectType/([^/]+)'
+    for at in set_aspecttypes:
+        if at == 'dataplex-types.global.schema':
+            continue
+        set_aspecttypesonly.append(at)
+
     set_entrynames = set(entry_names)
 
   # Extract Entry Group(s), Location, Projects from entry names
@@ -163,6 +241,7 @@ def create_entry_aspect_types(file_path : str, project : str, location : str):
         if pmatch:
             projects.append(pmatch.group(1))
 
+    # Build sets of unique entry groups, locations, projects 
     set_entrygroups = set(entry_groups)
     set_locations = set(locations)
     set_projects = set(projects)
@@ -177,34 +256,42 @@ def create_entry_aspect_types(file_path : str, project : str, location : str):
         print("Entry Groups error in file: {set_entrygroups}")
         sys.exit()
     
+    # If user provided value for project or location on command line, use that instead of values from file
     if location is None:
         location = set_locations.pop()
     if project is None:
         project = set_projects.pop()
-    entrygroup = set_entrygroups.pop()
 
-    print(f"Project: {projects}")
-    print(f"Location: {location}")
-    print(f"Entry Group: {entrygroup}")
+    entrygroup = set_entrygroups.pop()
 
     try:
         create_entry_group(project,location,entrygroup)
-    except:
-        print(f"Exception occured trying to creare Entry Group {entrygroup} in project: {project} location: {location}")
+    except Exception as e:
+        print(f"Exception occured trying to create Entry Group {entrygroup} in project: {project} location: {location}:\n{e}")
 
     for et in set_entrytypesonly:
         try:
             create_entry_type(project,location,et)
-        except:
-            print(f"Exception occured trying to creare Entry Type {et} in project: {project} location: {location}")
+        except Exception as e:
+            print(f"Exception occured trying to create Entry Type {et} in project: {project} location: {location}:\n{e}")
+    
+    for at in set_aspecttypesonly:
+        aspectID = at.split(".")[2]
+        print(f"Creating Aspect Type {aspectID}")
+        try:
+            create_aspect_type(project,location,aspectID)
+        except Exception as e:
+            print(f"Exception occured trying to create Aspect Type {aspectID}:\n{e}")
 
     print(f"Finished")
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Generates an import request for the Dataplex Import API for a metadata import file (.jsonl)")
+    parser = argparse.ArgumentParser(description="Creates Entry Group, Entry Types, Aspect Types from a dataplex catalog metadata import file (.jsonl)")
     parser.add_argument("file_path", help="Path to metadata import file")
-    parser.add_argument("--project",type=str,help="project override", default=None)
-    parser.add_argument("--location",type=str,help="location override", default=None)
+    parser.add_argument("--project",type=str,help="Project override", default=None)
+    parser.add_argument("--location",type=str,help="Location override", default=None)
     args = parser.parse_args()
+
+    print(f"\nProcessing metadata import file {args.file_path}")
 
     create_entry_aspect_types(args.file_path,args.project,args.location)
