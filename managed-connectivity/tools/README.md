@@ -39,7 +39,20 @@ To run:
 ```bash
  python generate_metadata_import_request.py file_path_to_metadata_file [ADDITIONAL OPTIONS see below]
 ```
+
 Options:
 |Parameter|Value|Description|
+
+### Entry Type, Aspect Type, Entry Groups creation tool
+[create_dataplex_entry_aspect_types.py](create_dataplex_entry_aspect_types.py)
+
+Analyses a metadata import file (.jsonl) and creates the required dataplex metadata hierarchy (aspect types, entry types, entry group)
+(https://cloud.google.com/dataplex/docs/import-metadata#import-item). Some additional logic checks are also performed.
+
+To run:
+```bash
+ python create_dataplex_entry_aspect_types.py path_to_metadata_file [ADDITIONAL OPTIONS see below]
+```
+
 |---------|-----|-----------|
 |--output_filename|name of file|Output file. Default is 'metadata_import_request.json'|
