@@ -3,6 +3,7 @@ This directory contains tools which can be used for working with metadata import
 
 * Metadata Validation tool
 * Metadata Import API request generator tool
+* Create required aspect types, entry types, entrgy group from an existing metadta import file
 
 Set up:
 ```bash
