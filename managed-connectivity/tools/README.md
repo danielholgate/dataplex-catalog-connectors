@@ -54,5 +54,9 @@ To run:
  python create_dataplex_entry_aspect_types.py path_to_metadata_file [ADDITIONAL OPTIONS see below]
 ```
 
+|Parameter|Description|Required|
 |---------|-----|-----------|
-|--output_filename|name of file|Output file. Default is 'metadata_import_request.json'|
+file_path|Path to the input metadata import file|Yes
+--project|Optional project override for creating hierarchy in another project, Otherwise uses project id from the file|Yes
+--location|Optional location override for creating hierarchy in another location.Otherwise uses location from the file|No
+--output_filename|Output file. Default is 'metadata_import_request.json'|No
