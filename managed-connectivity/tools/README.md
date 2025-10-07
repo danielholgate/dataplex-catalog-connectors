@@ -1,9 +1,9 @@
 # Tools
 This directory contains tools which can be used for working with metadata import files:
 
-* Metadata Validation tool
+* Metadata file validation tool
 * Metadata Import API request generator tool
-* Tool to create the required aspect types, entry types, entrgy group from an existing metadata import file
+* Tool to create required aspect types, entry types, entrgy group from an existing metadata import file
 
 Set up for all tools:
 ```bash
