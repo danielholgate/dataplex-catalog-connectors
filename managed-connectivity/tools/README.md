@@ -46,8 +46,7 @@ Options:
 ### Entry Type, Aspect Type, Entry Groups creation tool
 [create_dataplex_entry_aspect_types.py](create_dataplex_entry_aspect_types.py)
 
-Analyses a metadata import file (.jsonl) and creates the required dataplex metadata hierarchy (aspect types, entry types, entry group)
-(https://cloud.google.com/dataplex/docs/import-metadata#import-item). Some additional logic checks are also performed.
+Analyses a metadata import file (.jsonl) and calls Dataplex APIs to create the required dataplex metadata hierarchy (aspect types, entry types, entry group)
 
 To run:
 ```bash
