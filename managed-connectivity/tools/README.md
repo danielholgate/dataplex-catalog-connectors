@@ -3,9 +3,9 @@ This directory contains tools which can be used for working with metadata import
 
 * Metadata Validation tool
 * Metadata Import API request generator tool
-* Too to Create required aspect types, entry types, entrgy group from an existing metadata import file
+* Tool to create the required aspect types, entry types, entrgy group from an existing metadata import file
 
-Set up:
+Set up for all tools:
 ```bash
 pip install -r requirements.txt
 ```
