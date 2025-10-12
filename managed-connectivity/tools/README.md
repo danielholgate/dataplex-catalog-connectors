@@ -1,5 +1,5 @@
 # Tools
-This directory contains tools which can be used for working with metadata import files:
+This directory contains tools which can be used for working with Dataplex Universal Catalog metadata import files:
 
 * Metadata file validation tool
 * Metadata Import API request generator tool
@@ -37,11 +37,8 @@ See [here](../oracle-connector/sample/metadata_import_request.json) for an examp
 
 To run:
 ```bash
- python generate_metadata_import_request.py file_path_to_metadata_file [ADDITIONAL OPTIONS see below]
+ python generate_metadata_import_request.py file_path_to_metadata_file
 ```
-
-Options:
-|Parameter|Value|Description|
 
 ### Entry Type, Aspect Type, Entry Groups creation tool
 [create_dataplex_entry_aspect_types.py](create_dataplex_entry_aspect_types.py)
@@ -55,7 +52,7 @@ To run:
 
 |Parameter|Description|Required|
 |---------|-----|-----------|
-file_path|Path to the input metadata import file|Yes
---project|Optional project override for creating hierarchy in another project, Otherwise uses project id from the file|No
---location|Optional location override for creating hierarchy in another location.Otherwise uses location from the file|No
---output_filename|Output file. Default is 'metadata_import_request.json'|No
+file_path|Path to the input metadata import file|Yes|
+--project|Optional project override for creating hierarchy in another project, Otherwise uses project id from the file|No|
+--location|Optional location override for creating hierarchy in another location.Otherwise uses location from the file|No|
+--output_filename|Output file. Default is 'metadata_import_request.json'|No|
