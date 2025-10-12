@@ -40,6 +40,13 @@ To run:
  python generate_metadata_import_request.py file_path_to_metadata_file
 ```
 
+|Parameter|Description|Required|
+|---------|-----|-----------|
+file_path|Path to the input metadata import file|Yes|
+--output_filename|Output file. Default is 'metadata_import_request.json'|No|
+--project|Optional project override for creating hierarchy in another project. Otherwise uses project id from the file|No|
+--location|Optional location override for creating hierarchy in another location. Otherwise uses location from the file|No|
+
 ### Entry Type, Aspect Type, Entry Groups creation tool
 [create_dataplex_entry_aspect_types.py](create_dataplex_entry_aspect_types.py)
 
