@@ -56,6 +56,6 @@ To run:
 |Parameter|Description|Required|
 |---------|-----|-----------|
 file_path|Path to the input metadata import file|Yes
---project|Optional project override for creating hierarchy in another project, Otherwise uses project id from the file|Yes
+--project|Optional project override for creating hierarchy in another project, Otherwise uses project id from the file|No
 --location|Optional location override for creating hierarchy in another location.Otherwise uses location from the file|No
 --output_filename|Output file. Default is 'metadata_import_request.json'|No
